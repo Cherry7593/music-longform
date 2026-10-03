@@ -1,0 +1,15 @@
+# secrets and local state
+.env
+.env.*
+!.env.example
+*.db
+*.sqlite
+*.sqlite3
+.pi/
+
+# private keys
+*.pem
+*.key
+id_rsa
+id_ed25519
+id_ed25519_*
