@@ -1,0 +1,28 @@
+appId: local.musiccanvas.desktop
+productName: 油管视频生成
+copyright: Copyright © 2026 Music Canvas
+directories:
+  output: dist
+  buildResources: build
+files:
+  - out/**/*
+  - package.json
+  - '!out/**/*.map'
+asar: true
+asarUnpack:
+  - node_modules/sharp/**/*
+  - node_modules/@img/**/*
+extraResources:
+  - from: build/icon.ico
+    to: icon.ico
+npmRebuild: false
+electronDist: node_modules/electron/dist
+win:
+  icon: build/icon.ico
+  signAndEditExecutable: true
+  target:
+    - target: portable
+      arch: [x64]
+portable:
+  artifactName: 油管视频生成-${version}-Windows-x64.exe
+  requestExecutionLevel: user

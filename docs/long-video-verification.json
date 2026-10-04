@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "durationSeconds": 3600,
+  "videoDurationSeconds": 3600,
+  "audioDurationSeconds": 3600,
+  "bytes": 101987893,
+  "elapsedSeconds": 364.339,
+  "sourceDurations": [1805, 1805],
+  "transitionSeconds": 3,
+  "video": {"codec": "h264", "width": 1920, "height": 1080, "fps": 30, "pixelFormat": "yuv420p"},
+  "audio": {"codec": "aac", "sampleRate": 48000, "channels": 2},
+  "frameSampleSeconds": [0.5, 1800, 3599.5],
+  "frameMeanAbsoluteDifferences": [0.17811471193415637, 0.17811471193415637],
+  "frameComparisonThreshold": 2,
+  "audioLooped": false,
+  "paidCalls": 0,
+  "temporaryFixtureDirectory": "yt-video-fixture y2aHnq"
+}

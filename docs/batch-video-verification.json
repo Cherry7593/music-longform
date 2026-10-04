@@ -1,0 +1,1461 @@
+{
+  "passed": true,
+  "short": false,
+  "batchId": "9c3d38aa-1077-4ff9-8d63-8abfcdc0eff8",
+  "minimumSeconds": 3600,
+  "audioCount": 60,
+  "imageCount": 3,
+  "elapsedSeconds": 1210.179,
+  "audioLooped": false,
+  "silencePadded": false,
+  "paidCalls": 0,
+  "plan": {
+    "id": "45f4708e-e5f5-4f44-afa1-a0d9d34c8199",
+    "createdAt": "2026-10-03T22:59:58.666Z",
+    "request": {
+      "minimumSeconds": 3600,
+      "transition": "crossfade",
+      "transitionSeconds": 3,
+      "fadeInSeconds": 2,
+      "fadeOutSeconds": 2,
+      "normalize": false,
+      "fit": "contain",
+      "name": "三个一小时批量验收",
+      "audioIds": [
+        "fb8a1735-d485-488d-b246-1e8c4e839618",
+        "f1ff0fcc-3fb0-47bb-a46c-eb3aabb8cf9e",
+        "de1018e6-5831-4b61-80ba-d3b2a720e860",
+        "2c0a4ad2-15c9-407b-9028-e2d9f1e73867",
+        "018beb01-ec00-42cf-a509-f3bc5bad8574",
+        "21a55762-fd00-4e5a-b85a-94f0fbd299c5",
+        "a1f0e155-a351-4f2f-995f-84b80ccd8515",
+        "7f66f3bf-a80b-45e8-9cb5-46126b622548",
+        "e2acbad8-3609-4604-969f-02f3461884fb",
+        "b48bb3d7-0798-4e25-8cef-9cebbe1f2456",
+        "905d61d7-f11b-4104-9a46-eeb5186cf31a",
+        "cf69cd59-9b76-493a-8445-7d554a2c42fa",
+        "31273dc0-1912-4e46-bfd5-7218136ba33c",
+        "8d1dabfd-486a-4e8d-b274-17b87704b30f",
+        "2d89602a-d686-4868-a3e2-e1f69ebe904a",
+        "55f7ed1a-77ad-451e-9bc0-2d65245fa127",
+        "240151c5-4590-4c80-995e-33ab3593fbc2",
+        "af1f54b9-1feb-4c34-bb0a-ab964a02ffa4",
+        "a4907f97-a061-46da-a6d4-2bea5b1774e2",
+        "f8315b15-cb0b-475d-b8ef-073c36522429",
+        "451bbeaa-973b-410f-a575-ea4a64b9968e",
+        "9b34b7ab-f6fb-48e0-b161-c26f81db9ebb",
+        "a77f34db-2b3e-4a46-ad8c-6e2d7d45827e",
+        "5dfb474f-362a-4b82-93a9-5bb06c14fda1",
+        "eab46369-9cfa-45eb-b77f-78cbfaf4ff7f",
+        "ba5be940-fac7-45d1-b2c9-eff946333d2c",
+        "c14b592d-06cd-43ff-8297-762710398cf2",
+        "96a0739b-84cc-494a-9e72-8212ee42ab3e",
+        "67436b8a-3851-4c9d-962f-2563f1bf026a",
+        "75316fc1-b99c-4cee-a081-0d9544ac0c58",
+        "a2fed5f6-19d3-4559-8d2f-8b6558860f6e",
+        "f9b55a92-46b7-4e23-bcce-559316d0c670",
+        "07b64e75-905c-438d-a59b-50fb67d2de6c",
+        "a2298294-065b-4c63-9072-8529d9827f03",
+        "789661af-4f31-4173-b1c2-28b9a8fe4f0e",
+        "f1e1aa31-0f6d-447f-8b6e-d4820904d77d",
+        "cce37053-1400-41d7-a0eb-215b65d3faff",
+        "978fbaba-bde9-4f9d-badb-e8a6f18bc1cc",
+        "21d5d4de-1721-40d2-b69a-7b25ce2f9983",
+        "cc6978c5-559c-4ad5-9337-cf643e82f4fe",
+        "2fc91a32-d535-47d1-9d96-cf18d1277676",
+        "117b9b42-e96d-4f05-9c69-cb39e3a9764b",
+        "2a16ddf7-7fff-45ec-a63f-f7cd2c271718",
+        "e710781c-68d0-4957-a5e2-6fb815786755",
+        "369e76ce-66cf-4ce3-87e1-02319228bc53",
+        "acba4890-f0d0-4b31-aab7-e268ee9e1093",
+        "7305abe8-009f-4f87-b9a9-2f7efb6d2c0c",
+        "61b9df30-c1b0-4c05-81bd-b7ba5d2a0f02",
+        "bd91d915-bf99-4d72-836f-09f80204ed5e",
+        "2c736aa7-6717-49b7-8fa9-88f59ae43063",
+        "796124e8-98c9-4ffe-93ef-ef33311cc38f",
+        "eab9ed6d-bbc6-4fa7-aa28-ea9e746e9e61",
+        "b9bae82e-60fc-4c28-9b29-8bd50cb31518",
+        "9b4f7fba-5365-4966-ba9f-b1b8ef9f31f6",
+        "0ef5a367-2ceb-496c-bb35-46cc188e3182",
+        "8340f227-2534-46e2-991b-a58a903f5330",
+        "00884241-1fdb-4a81-8671-7607ba452e88",
+        "71a09458-4586-4c46-b0c0-13cd49ee289b",
+        "342b13fa-dc9e-4972-ba48-7a32c2cf4102",
+        "68a1173f-232f-4e08-8742-0ce9406ab0e5"
+      ],
+      "imageIds": [
+        "a4fd40f3-a8c2-425d-8906-630b686b9e00",
+        "94eff2a9-5989-45ac-ae03-72b45712a112",
+        "365a9649-5633-4ba2-837e-8dcab5e1ec6f"
+      ]
+    },
+    "assets": [
+      {
+        "id": "fb8a1735-d485-488d-b246-1e8c4e839618",
+        "kind": "audio",
+        "name": "音乐 01.flac",
+        "sha256": "b73c1a1a86e3523e8673676dedfb9e2f3a90f986f4771fbc4ea2d43ca141c815",
+        "bytes": 1583226,
+        "durationSeconds": 185
+      },
+      {
+        "id": "f1ff0fcc-3fb0-47bb-a46c-eb3aabb8cf9e",
+        "kind": "audio",
+        "name": "音乐 02.flac",
+        "sha256": "cbc7a28672ecddc6b08527cf443b884de224eedaee506e707fa4d57f911fe8b5",
+        "bytes": 1583473,
+        "durationSeconds": 185
+      },
+      {
+        "id": "de1018e6-5831-4b61-80ba-d3b2a720e860",
+        "kind": "audio",
+        "name": "音乐 03.flac",
+        "sha256": "1a67bffa13b78b6d4fc082b17f7603632dc09fe658d4a0c508915d0ffdcef69f",
+        "bytes": 1586299,
+        "durationSeconds": 185
+      },
+      {
+        "id": "2c0a4ad2-15c9-407b-9028-e2d9f1e73867",
+        "kind": "audio",
+        "name": "音乐 04.flac",
+        "sha256": "6462c505014570494e0b5fb9041e9e75d0c6b53e0b84976503e2db5d9e2695f2",
+        "bytes": 1591669,
+        "durationSeconds": 185
+      },
+      {
+        "id": "018beb01-ec00-42cf-a509-f3bc5bad8574",
+        "kind": "audio",
+        "name": "音乐 05.flac",
+        "sha256": "83c94759397ab56cbf2f658f0d6058ec768eba61c68c63cfc0cd3f55945b5ed1",
+        "bytes": 1586414,
+        "durationSeconds": 185
+      },
+      {
+        "id": "21a55762-fd00-4e5a-b85a-94f0fbd299c5",
+        "kind": "audio",
+        "name": "音乐 06.flac",
+        "sha256": "fff2c40466e7d6c1da5468047e3be96b8f7cf634377e016592662548186b5a9a",
+        "bytes": 1572237,
+        "durationSeconds": 185
+      },
+      {
+        "id": "a1f0e155-a351-4f2f-995f-84b80ccd8515",
+        "kind": "audio",
+        "name": "音乐 07.flac",
+        "sha256": "bd66f19cc707721feee168fd6c09e4c62abf7fd8c78d3b5123461bb45fa99311",
+        "bytes": 1587553,
+        "durationSeconds": 185
+      },
+      {
+        "id": "7f66f3bf-a80b-45e8-9cb5-46126b622548",
+        "kind": "audio",
+        "name": "音乐 08.flac",
+        "sha256": "ba54bc7408f0a76901ed6cb76d2b130fe210ed5cd87112d4b52b753e2b76750d",
+        "bytes": 1587898,
+        "durationSeconds": 185
+      },
+      {
+        "id": "e2acbad8-3609-4604-969f-02f3461884fb",
+        "kind": "audio",
+        "name": "音乐 09.flac",
+        "sha256": "263cd806a4272a20280462d597c7e78658106a5720f834e6bc98c5c862298d2d",
+        "bytes": 1602292,
+        "durationSeconds": 185
+      },
+      {
+        "id": "b48bb3d7-0798-4e25-8cef-9cebbe1f2456",
+        "kind": "audio",
+        "name": "音乐 10.flac",
+        "sha256": "0aa18258222efd9a578863ff4c25d8c0abc9d0591bc32d603c585f53d61eca05",
+        "bytes": 1603073,
+        "durationSeconds": 185
+      },
+      {
+        "id": "905d61d7-f11b-4104-9a46-eeb5186cf31a",
+        "kind": "audio",
+        "name": "音乐 11.flac",
+        "sha256": "9615ba84b92a90bbacc9164233ce438c856c11f472ced83939cc6e37a258bdce",
+        "bytes": 1598806,
+        "durationSeconds": 185
+      },
+      {
+        "id": "cf69cd59-9b76-493a-8445-7d554a2c42fa",
+        "kind": "audio",
+        "name": "音乐 12.flac",
+        "sha256": "d18ea54187bce890978e90de454d400c07c87a28d80eebaaa9770366d9612c8d",
+        "bytes": 1631513,
+        "durationSeconds": 185
+      },
+      {
+        "id": "31273dc0-1912-4e46-bfd5-7218136ba33c",
+        "kind": "audio",
+        "name": "音乐 13.flac",
+        "sha256": "f2eb2a22630b8150b69f42dc1518952392c89534458e0a4a75142f7e5b394ae6",
+        "bytes": 1614347,
+        "durationSeconds": 185
+      },
+      {
+        "id": "8d1dabfd-486a-4e8d-b274-17b87704b30f",
+        "kind": "audio",
+        "name": "音乐 14.flac",
+        "sha256": "05ef541e0a8a574c62e70e79ae43f5a3e8f46c9dd0606bc90b711d7808bb365b",
+        "bytes": 1649605,
+        "durationSeconds": 185
+      },
+      {
+        "id": "2d89602a-d686-4868-a3e2-e1f69ebe904a",
+        "kind": "audio",
+        "name": "音乐 15.flac",
+        "sha256": "41110e4a1a96f290fc3d6eb06e98325f7883e7cd44f4bffb6d6233a61985c918",
+        "bytes": 1641668,
+        "durationSeconds": 185
+      },
+      {
+        "id": "55f7ed1a-77ad-451e-9bc0-2d65245fa127",
+        "kind": "audio",
+        "name": "音乐 16.flac",
+        "sha256": "564dfce5667d028c6d2216964a89e424c4ff552230d072ee710a2922e317ae59",
+        "bytes": 1652557,
+        "durationSeconds": 185
+      },
+      {
+        "id": "240151c5-4590-4c80-995e-33ab3593fbc2",
+        "kind": "audio",
+        "name": "音乐 17.flac",
+        "sha256": "132a7e23286614b139d23373ebeb5807e7b3dfda16df53ce2c7539ba97d2dc94",
+        "bytes": 1650154,
+        "durationSeconds": 185
+      },
+      {
+        "id": "af1f54b9-1feb-4c34-bb0a-ab964a02ffa4",
+        "kind": "audio",
+        "name": "音乐 18.flac",
+        "sha256": "5edc62012378353f91bccf0cfd56093fbdb61ce9e1086a2b54db567275ce606e",
+        "bytes": 1654511,
+        "durationSeconds": 185
+      },
+      {
+        "id": "a4907f97-a061-46da-a6d4-2bea5b1774e2",
+        "kind": "audio",
+        "name": "音乐 19.flac",
+        "sha256": "526954163a68e4530b290a76e46fc83277fb3816a6ade4f3db867ecdd0b3e679",
+        "bytes": 1660283,
+        "durationSeconds": 185
+      },
+      {
+        "id": "f8315b15-cb0b-475d-b8ef-073c36522429",
+        "kind": "audio",
+        "name": "音乐 20.flac",
+        "sha256": "ff43ad2f798514063d354a5a62ba78b04508431f61a81f4a6030abbb1e019c12",
+        "bytes": 1667769,
+        "durationSeconds": 185
+      },
+      {
+        "id": "451bbeaa-973b-410f-a575-ea4a64b9968e",
+        "kind": "audio",
+        "name": "音乐 21.flac",
+        "sha256": "957c8b30046b9d962b3689a29883ecb0aa6605b34a61c1f32dd163ee0ea2c624",
+        "bytes": 1671241,
+        "durationSeconds": 185
+      },
+      {
+        "id": "9b34b7ab-f6fb-48e0-b161-c26f81db9ebb",
+        "kind": "audio",
+        "name": "音乐 22.flac",
+        "sha256": "f4a3ff56500d196e5333986983a161af5eed1226907290b263518885e12d96c4",
+        "bytes": 1671662,
+        "durationSeconds": 185
+      },
+      {
+        "id": "a77f34db-2b3e-4a46-ad8c-6e2d7d45827e",
+        "kind": "audio",
+        "name": "音乐 23.flac",
+        "sha256": "a97c93554c38a7e8f7d18973939fec3f80cbe8154c12e70b6e4041656ba176ee",
+        "bytes": 1676305,
+        "durationSeconds": 185
+      },
+      {
+        "id": "5dfb474f-362a-4b82-93a9-5bb06c14fda1",
+        "kind": "audio",
+        "name": "音乐 24.flac",
+        "sha256": "bbcf779f0fc06105592a49893ed4774ce6e7be7ba2bd91b06341da30a8e3ce48",
+        "bytes": 1677946,
+        "durationSeconds": 185
+      },
+      {
+        "id": "eab46369-9cfa-45eb-b77f-78cbfaf4ff7f",
+        "kind": "audio",
+        "name": "音乐 25.flac",
+        "sha256": "60e5e42ca0884e66a968d03f0f81b0ed572aa24a8483c41f8cef34b65d4a14a2",
+        "bytes": 1684020,
+        "durationSeconds": 185
+      },
+      {
+        "id": "ba5be940-fac7-45d1-b2c9-eff946333d2c",
+        "kind": "audio",
+        "name": "音乐 26.flac",
+        "sha256": "a603ceb99508b9fb02de38fb8aee5c3a5ce4d0579b3f8e7eb0afe9d6ff9ec71c",
+        "bytes": 1675786,
+        "durationSeconds": 185
+      },
+      {
+        "id": "c14b592d-06cd-43ff-8297-762710398cf2",
+        "kind": "audio",
+        "name": "音乐 27.flac",
+        "sha256": "045821e48b033164f0c9a60fc281fda9845ee9cb250c593e9430ba96b0d2fa8f",
+        "bytes": 1676860,
+        "durationSeconds": 185
+      },
+      {
+        "id": "96a0739b-84cc-494a-9e72-8212ee42ab3e",
+        "kind": "audio",
+        "name": "音乐 28.flac",
+        "sha256": "6caa87cf5686239759bb21a697b8b23d2f0f684dd405b9c4d99507feb2405c7d",
+        "bytes": 1681646,
+        "durationSeconds": 185
+      },
+      {
+        "id": "67436b8a-3851-4c9d-962f-2563f1bf026a",
+        "kind": "audio",
+        "name": "音乐 29.flac",
+        "sha256": "ba3be24247c47de80ab575f4bcb9625d95823db1273f221efb45f2feca10c50b",
+        "bytes": 1639861,
+        "durationSeconds": 185
+      },
+      {
+        "id": "75316fc1-b99c-4cee-a081-0d9544ac0c58",
+        "kind": "audio",
+        "name": "音乐 30.flac",
+        "sha256": "a7e49aaa92069e86dcb641f15fd5819f04f3f29afef2a47cad55f8f9e4fbf1a4",
+        "bytes": 1672915,
+        "durationSeconds": 185
+      },
+      {
+        "id": "a2fed5f6-19d3-4559-8d2f-8b6558860f6e",
+        "kind": "audio",
+        "name": "音乐 31.flac",
+        "sha256": "1236122dbc39bbf20d753626204d92f7c9f946be76280f384daee33bb7ebe4e6",
+        "bytes": 1646238,
+        "durationSeconds": 185
+      },
+      {
+        "id": "f9b55a92-46b7-4e23-bcce-559316d0c670",
+        "kind": "audio",
+        "name": "音乐 32.flac",
+        "sha256": "ada215b91eefe82b18431bbb86f8311a9db0bac0e41f71ef25337eb3591376fe",
+        "bytes": 1682002,
+        "durationSeconds": 185
+      },
+      {
+        "id": "07b64e75-905c-438d-a59b-50fb67d2de6c",
+        "kind": "audio",
+        "name": "音乐 33.flac",
+        "sha256": "9281c7409e2bd60499eb02cf8a8157994d9ed42797a1b540939745f900195025",
+        "bytes": 1669973,
+        "durationSeconds": 185
+      },
+      {
+        "id": "a2298294-065b-4c63-9072-8529d9827f03",
+        "kind": "audio",
+        "name": "音乐 34.flac",
+        "sha256": "f7e57f436080d5365c617cb08ab31e39b2a77cf3ad789474466496841a4fbee7",
+        "bytes": 1675049,
+        "durationSeconds": 185
+      },
+      {
+        "id": "789661af-4f31-4173-b1c2-28b9a8fe4f0e",
+        "kind": "audio",
+        "name": "音乐 35.flac",
+        "sha256": "d96b9b0916c4bbc28ba4409064415fe5cb9dc982683f33dcf38f0734d5c5f4cc",
+        "bytes": 1681876,
+        "durationSeconds": 185
+      },
+      {
+        "id": "f1e1aa31-0f6d-447f-8b6e-d4820904d77d",
+        "kind": "audio",
+        "name": "音乐 36.flac",
+        "sha256": "d3820ceb86837bf24e5b2abb2661612e5bc38d806aaac89f076555e459e8c74d",
+        "bytes": 1690416,
+        "durationSeconds": 185
+      },
+      {
+        "id": "cce37053-1400-41d7-a0eb-215b65d3faff",
+        "kind": "audio",
+        "name": "音乐 37.flac",
+        "sha256": "1d32b7ddbd49ec17dde2d3153dbf72f945829b80f0d1190235699317abb04485",
+        "bytes": 1694178,
+        "durationSeconds": 185
+      },
+      {
+        "id": "978fbaba-bde9-4f9d-badb-e8a6f18bc1cc",
+        "kind": "audio",
+        "name": "音乐 38.flac",
+        "sha256": "3d7bbf074779bf84a7bf8c7f0dc63609859ff2c0e9f8eac0ce10a607cce29ff3",
+        "bytes": 1698050,
+        "durationSeconds": 185
+      },
+      {
+        "id": "21d5d4de-1721-40d2-b69a-7b25ce2f9983",
+        "kind": "audio",
+        "name": "音乐 39.flac",
+        "sha256": "3c8c538c1b01b776db935fa59d92805ada67ff67c04b143af775fdbfbb19dd5e",
+        "bytes": 1699788,
+        "durationSeconds": 185
+      },
+      {
+        "id": "cc6978c5-559c-4ad5-9337-cf643e82f4fe",
+        "kind": "audio",
+        "name": "音乐 40.flac",
+        "sha256": "4d7765e7087b0b28fdc251630fe8ceec3eea474a21b1eeb534fd420db6243572",
+        "bytes": 1711954,
+        "durationSeconds": 185
+      },
+      {
+        "id": "2fc91a32-d535-47d1-9d96-cf18d1277676",
+        "kind": "audio",
+        "name": "音乐 41.flac",
+        "sha256": "5eafd69951f5e15b897539bf3ba60e5b95d419c63551fd0d0fed6cace42f7a1d",
+        "bytes": 1687586,
+        "durationSeconds": 185
+      },
+      {
+        "id": "117b9b42-e96d-4f05-9c69-cb39e3a9764b",
+        "kind": "audio",
+        "name": "音乐 42.flac",
+        "sha256": "15a1b4c3cec9d7da218a4d2ad4b02e30caa496ca109ea00e6dd75ab04c54f496",
+        "bytes": 1728257,
+        "durationSeconds": 185
+      },
+      {
+        "id": "2a16ddf7-7fff-45ec-a63f-f7cd2c271718",
+        "kind": "audio",
+        "name": "音乐 43.flac",
+        "sha256": "d84b92c7197b60f59bc4509d0637e049902e3567fe691c32d69f566ca8829da5",
+        "bytes": 1737891,
+        "durationSeconds": 185
+      },
+      {
+        "id": "e710781c-68d0-4957-a5e2-6fb815786755",
+        "kind": "audio",
+        "name": "音乐 44.flac",
+        "sha256": "5c564dc980cf3fb9cf33fdc3400ec91fedf7fdcf17889f0bdf24e5ceb64211e2",
+        "bytes": 1755047,
+        "durationSeconds": 185
+      },
+      {
+        "id": "369e76ce-66cf-4ce3-87e1-02319228bc53",
+        "kind": "audio",
+        "name": "音乐 45.flac",
+        "sha256": "c63a102b12201f9db2b07a415ab8ea2acc86f25dc9b43d37fa5200862d1b63f1",
+        "bytes": 1726193,
+        "durationSeconds": 185
+      },
+      {
+        "id": "acba4890-f0d0-4b31-aab7-e268ee9e1093",
+        "kind": "audio",
+        "name": "音乐 46.flac",
+        "sha256": "a24b8111c11d9fdfbccd93a3c633da7015c814cb3c42daf9a9a1cc957b2f4668",
+        "bytes": 1776675,
+        "durationSeconds": 185
+      },
+      {
+        "id": "7305abe8-009f-4f87-b9a9-2f7efb6d2c0c",
+        "kind": "audio",
+        "name": "音乐 47.flac",
+        "sha256": "81d942fbc7875a91c4c2b114547974b2a758bbfa7484cf91e4bd53387e09d444",
+        "bytes": 1758110,
+        "durationSeconds": 185
+      },
+      {
+        "id": "61b9df30-c1b0-4c05-81bd-b7ba5d2a0f02",
+        "kind": "audio",
+        "name": "音乐 48.flac",
+        "sha256": "54e8765011becd3600061a14fd7c777043ae8b044bc3462a80784480ccaa3e6e",
+        "bytes": 1766736,
+        "durationSeconds": 185
+      },
+      {
+        "id": "bd91d915-bf99-4d72-836f-09f80204ed5e",
+        "kind": "audio",
+        "name": "音乐 49.flac",
+        "sha256": "b8512619a606f31175bdb4097366a3db908622d90ff0eabb7772fbaed8886645",
+        "bytes": 1777141,
+        "durationSeconds": 185
+      },
+      {
+        "id": "2c736aa7-6717-49b7-8fa9-88f59ae43063",
+        "kind": "audio",
+        "name": "音乐 50.flac",
+        "sha256": "314ee354f9fc671bd547ca3223da12070f2f51eb69c668d32c9df540006e7750",
+        "bytes": 1794949,
+        "durationSeconds": 185
+      },
+      {
+        "id": "796124e8-98c9-4ffe-93ef-ef33311cc38f",
+        "kind": "audio",
+        "name": "音乐 51.flac",
+        "sha256": "2214761caa2317fe39f86111a11ab65eda393d86edb989663570f7e1a4d70680",
+        "bytes": 1786359,
+        "durationSeconds": 185
+      },
+      {
+        "id": "eab9ed6d-bbc6-4fa7-aa28-ea9e746e9e61",
+        "kind": "audio",
+        "name": "音乐 52.flac",
+        "sha256": "3065d37a219404e73c0a846c48c5bb5a04dffab15da041ff25780570264c53f6",
+        "bytes": 1806841,
+        "durationSeconds": 185
+      },
+      {
+        "id": "b9bae82e-60fc-4c28-9b29-8bd50cb31518",
+        "kind": "audio",
+        "name": "音乐 53.flac",
+        "sha256": "a00cb1d01c75b0df37907638b36257edd2168e04370e1ff665f0177ad5b22dc3",
+        "bytes": 1800069,
+        "durationSeconds": 185
+      },
+      {
+        "id": "9b4f7fba-5365-4966-ba9f-b1b8ef9f31f6",
+        "kind": "audio",
+        "name": "音乐 54.flac",
+        "sha256": "17578883efc439699abc36321e50ceb0982cb77743d390d1bb1aa5771adbee70",
+        "bytes": 1802194,
+        "durationSeconds": 185
+      },
+      {
+        "id": "0ef5a367-2ceb-496c-bb35-46cc188e3182",
+        "kind": "audio",
+        "name": "音乐 55.flac",
+        "sha256": "71cbe81333ff2e07fa9535472a86805d9ccb680e32149393e19f02ed2e3c2f40",
+        "bytes": 1800177,
+        "durationSeconds": 185
+      },
+      {
+        "id": "8340f227-2534-46e2-991b-a58a903f5330",
+        "kind": "audio",
+        "name": "音乐 56.flac",
+        "sha256": "f32d181ac1811d52d747a5a4757ae6ffdb0648dd95065ea95c881bb89a65eb8e",
+        "bytes": 1809841,
+        "durationSeconds": 185
+      },
+      {
+        "id": "00884241-1fdb-4a81-8671-7607ba452e88",
+        "kind": "audio",
+        "name": "音乐 57.flac",
+        "sha256": "726653dc391e6dc9b8e3ea4048bf84c2a06ea539b6ded0d0762729e0099bf11c",
+        "bytes": 1812167,
+        "durationSeconds": 185
+      },
+      {
+        "id": "71a09458-4586-4c46-b0c0-13cd49ee289b",
+        "kind": "audio",
+        "name": "音乐 58.flac",
+        "sha256": "0b26d29f04b4c06d51727349c34ebf0e1bb2ec7aefe0329cbe90f19d3df8360b",
+        "bytes": 1806845,
+        "durationSeconds": 185
+      },
+      {
+        "id": "342b13fa-dc9e-4972-ba48-7a32c2cf4102",
+        "kind": "audio",
+        "name": "音乐 59.flac",
+        "sha256": "5f1536c65a0aab2c981dd91d66fcb199a8a96555969d4a5f89eb667a9e734cce",
+        "bytes": 1796542,
+        "durationSeconds": 185
+      },
+      {
+        "id": "68a1173f-232f-4e08-8742-0ce9406ab0e5",
+        "kind": "audio",
+        "name": "音乐 60.flac",
+        "sha256": "deb4758bf41c673ca8e2c899cd8514507f0a8962401531de93ae530eaea39a72",
+        "bytes": 1793091,
+        "durationSeconds": 185
+      },
+      {
+        "id": "a4fd40f3-a8c2-425d-8906-630b686b9e00",
+        "kind": "image",
+        "name": "背景 1.png",
+        "sha256": "4fc635e489d3749744545385da971f4d74bf4d037131f4c5c4bd2c2ef047db45",
+        "bytes": 28487
+      },
+      {
+        "id": "94eff2a9-5989-45ac-ae03-72b45712a112",
+        "kind": "image",
+        "name": "背景 2.jpg",
+        "sha256": "745bd1c1944542063d635a070ed3412f9caea402137473ebf429a7e5dee91dd3",
+        "bytes": 10602
+      },
+      {
+        "id": "365a9649-5633-4ba2-837e-8dcab5e1ec6f",
+        "kind": "image",
+        "name": "背景 3.webp",
+        "sha256": "953531161fd320d116063b91340df7d3245b841e3485aca4bb5c67273b2918df",
+        "bytes": 3386
+      }
+    ],
+    "groups": [
+      {
+        "imageId": "a4fd40f3-a8c2-425d-8906-630b686b9e00",
+        "audioIds": [
+          "fb8a1735-d485-488d-b246-1e8c4e839618",
+          "2c0a4ad2-15c9-407b-9028-e2d9f1e73867",
+          "a1f0e155-a351-4f2f-995f-84b80ccd8515",
+          "b48bb3d7-0798-4e25-8cef-9cebbe1f2456",
+          "31273dc0-1912-4e46-bfd5-7218136ba33c",
+          "55f7ed1a-77ad-451e-9bc0-2d65245fa127",
+          "a4907f97-a061-46da-a6d4-2bea5b1774e2",
+          "9b34b7ab-f6fb-48e0-b161-c26f81db9ebb",
+          "eab46369-9cfa-45eb-b77f-78cbfaf4ff7f",
+          "96a0739b-84cc-494a-9e72-8212ee42ab3e",
+          "a2fed5f6-19d3-4559-8d2f-8b6558860f6e",
+          "a2298294-065b-4c63-9072-8529d9827f03",
+          "cce37053-1400-41d7-a0eb-215b65d3faff",
+          "cc6978c5-559c-4ad5-9337-cf643e82f4fe",
+          "2a16ddf7-7fff-45ec-a63f-f7cd2c271718",
+          "acba4890-f0d0-4b31-aab7-e268ee9e1093",
+          "bd91d915-bf99-4d72-836f-09f80204ed5e",
+          "eab9ed6d-bbc6-4fa7-aa28-ea9e746e9e61",
+          "0ef5a367-2ceb-496c-bb35-46cc188e3182",
+          "71a09458-4586-4c46-b0c0-13cd49ee289b"
+        ],
+        "durationSeconds": 3643,
+        "issues": []
+      },
+      {
+        "imageId": "94eff2a9-5989-45ac-ae03-72b45712a112",
+        "audioIds": [
+          "f1ff0fcc-3fb0-47bb-a46c-eb3aabb8cf9e",
+          "018beb01-ec00-42cf-a509-f3bc5bad8574",
+          "7f66f3bf-a80b-45e8-9cb5-46126b622548",
+          "905d61d7-f11b-4104-9a46-eeb5186cf31a",
+          "8d1dabfd-486a-4e8d-b274-17b87704b30f",
+          "240151c5-4590-4c80-995e-33ab3593fbc2",
+          "f8315b15-cb0b-475d-b8ef-073c36522429",
+          "a77f34db-2b3e-4a46-ad8c-6e2d7d45827e",
+          "ba5be940-fac7-45d1-b2c9-eff946333d2c",
+          "67436b8a-3851-4c9d-962f-2563f1bf026a",
+          "f9b55a92-46b7-4e23-bcce-559316d0c670",
+          "789661af-4f31-4173-b1c2-28b9a8fe4f0e",
+          "978fbaba-bde9-4f9d-badb-e8a6f18bc1cc",
+          "2fc91a32-d535-47d1-9d96-cf18d1277676",
+          "e710781c-68d0-4957-a5e2-6fb815786755",
+          "7305abe8-009f-4f87-b9a9-2f7efb6d2c0c",
+          "2c736aa7-6717-49b7-8fa9-88f59ae43063",
+          "b9bae82e-60fc-4c28-9b29-8bd50cb31518",
+          "8340f227-2534-46e2-991b-a58a903f5330",
+          "342b13fa-dc9e-4972-ba48-7a32c2cf4102"
+        ],
+        "durationSeconds": 3643,
+        "issues": []
+      },
+      {
+        "imageId": "365a9649-5633-4ba2-837e-8dcab5e1ec6f",
+        "audioIds": [
+          "de1018e6-5831-4b61-80ba-d3b2a720e860",
+          "21a55762-fd00-4e5a-b85a-94f0fbd299c5",
+          "e2acbad8-3609-4604-969f-02f3461884fb",
+          "cf69cd59-9b76-493a-8445-7d554a2c42fa",
+          "2d89602a-d686-4868-a3e2-e1f69ebe904a",
+          "af1f54b9-1feb-4c34-bb0a-ab964a02ffa4",
+          "451bbeaa-973b-410f-a575-ea4a64b9968e",
+          "5dfb474f-362a-4b82-93a9-5bb06c14fda1",
+          "c14b592d-06cd-43ff-8297-762710398cf2",
+          "75316fc1-b99c-4cee-a081-0d9544ac0c58",
+          "07b64e75-905c-438d-a59b-50fb67d2de6c",
+          "f1e1aa31-0f6d-447f-8b6e-d4820904d77d",
+          "21d5d4de-1721-40d2-b69a-7b25ce2f9983",
+          "117b9b42-e96d-4f05-9c69-cb39e3a9764b",
+          "369e76ce-66cf-4ce3-87e1-02319228bc53",
+          "61b9df30-c1b0-4c05-81bd-b7ba5d2a0f02",
+          "796124e8-98c9-4ffe-93ef-ef33311cc38f",
+          "9b4f7fba-5365-4966-ba9f-b1b8ef9f31f6",
+          "00884241-1fdb-4a81-8671-7607ba452e88",
+          "68a1173f-232f-4e08-8742-0ce9406ab0e5"
+        ],
+        "durationSeconds": 3643,
+        "issues": []
+      }
+    ],
+    "issues": []
+  },
+  "outputs": [
+    {
+      "jobId": "928618d9-6b3f-417a-ac8d-52c1ef5e62e5",
+      "output": "C:\\Users\\11478\\.pi-desktop\\scratch\\0fce201b-ce76-4776-834b-dcd8f04f2e25\\yt-v3-batch 4oyXto\\总素材库\\批量视频\\三个一小时批量验收-9c3d38aa-1077-4ff9-8d63-8abfcdc0eff8\\videos\\928618d9-6b3f-417a-ac8d-52c1ef5e62e5.mp4",
+      "bytes": 100798019,
+      "durationSeconds": 3643,
+      "imageId": "a4fd40f3-a8c2-425d-8906-630b686b9e00",
+      "audioIds": [
+        "fb8a1735-d485-488d-b246-1e8c4e839618",
+        "2c0a4ad2-15c9-407b-9028-e2d9f1e73867",
+        "a1f0e155-a351-4f2f-995f-84b80ccd8515",
+        "b48bb3d7-0798-4e25-8cef-9cebbe1f2456",
+        "31273dc0-1912-4e46-bfd5-7218136ba33c",
+        "55f7ed1a-77ad-451e-9bc0-2d65245fa127",
+        "a4907f97-a061-46da-a6d4-2bea5b1774e2",
+        "9b34b7ab-f6fb-48e0-b161-c26f81db9ebb",
+        "eab46369-9cfa-45eb-b77f-78cbfaf4ff7f",
+        "96a0739b-84cc-494a-9e72-8212ee42ab3e",
+        "a2fed5f6-19d3-4559-8d2f-8b6558860f6e",
+        "a2298294-065b-4c63-9072-8529d9827f03",
+        "cce37053-1400-41d7-a0eb-215b65d3faff",
+        "cc6978c5-559c-4ad5-9337-cf643e82f4fe",
+        "2a16ddf7-7fff-45ec-a63f-f7cd2c271718",
+        "acba4890-f0d0-4b31-aab7-e268ee9e1093",
+        "bd91d915-bf99-4d72-836f-09f80204ed5e",
+        "eab9ed6d-bbc6-4fa7-aa28-ea9e746e9e61",
+        "0ef5a367-2ceb-496c-bb35-46cc188e3182",
+        "71a09458-4586-4c46-b0c0-13cd49ee289b"
+      ],
+      "audioOrder": [
+        {
+          "assetId": "fb8a1735-d485-488d-b246-1e8c4e839618",
+          "sourceIndex": 0,
+          "frequency": 220,
+          "sampledAt": 92.5
+        },
+        {
+          "assetId": "2c0a4ad2-15c9-407b-9028-e2d9f1e73867",
+          "sourceIndex": 3,
+          "frequency": 253,
+          "sampledAt": 274.5
+        },
+        {
+          "assetId": "a1f0e155-a351-4f2f-995f-84b80ccd8515",
+          "sourceIndex": 6,
+          "frequency": 286,
+          "sampledAt": 456.5
+        },
+        {
+          "assetId": "b48bb3d7-0798-4e25-8cef-9cebbe1f2456",
+          "sourceIndex": 9,
+          "frequency": 319,
+          "sampledAt": 638.5
+        },
+        {
+          "assetId": "31273dc0-1912-4e46-bfd5-7218136ba33c",
+          "sourceIndex": 12,
+          "frequency": 352,
+          "sampledAt": 820.5
+        },
+        {
+          "assetId": "55f7ed1a-77ad-451e-9bc0-2d65245fa127",
+          "sourceIndex": 15,
+          "frequency": 385,
+          "sampledAt": 1002.5
+        },
+        {
+          "assetId": "a4907f97-a061-46da-a6d4-2bea5b1774e2",
+          "sourceIndex": 18,
+          "frequency": 418,
+          "sampledAt": 1184.5
+        },
+        {
+          "assetId": "9b34b7ab-f6fb-48e0-b161-c26f81db9ebb",
+          "sourceIndex": 21,
+          "frequency": 451,
+          "sampledAt": 1366.5
+        },
+        {
+          "assetId": "eab46369-9cfa-45eb-b77f-78cbfaf4ff7f",
+          "sourceIndex": 24,
+          "frequency": 484,
+          "sampledAt": 1548.5
+        },
+        {
+          "assetId": "96a0739b-84cc-494a-9e72-8212ee42ab3e",
+          "sourceIndex": 27,
+          "frequency": 517,
+          "sampledAt": 1730.5
+        },
+        {
+          "assetId": "a2fed5f6-19d3-4559-8d2f-8b6558860f6e",
+          "sourceIndex": 30,
+          "frequency": 550,
+          "sampledAt": 1912.5
+        },
+        {
+          "assetId": "a2298294-065b-4c63-9072-8529d9827f03",
+          "sourceIndex": 33,
+          "frequency": 583,
+          "sampledAt": 2094.5
+        },
+        {
+          "assetId": "cce37053-1400-41d7-a0eb-215b65d3faff",
+          "sourceIndex": 36,
+          "frequency": 616,
+          "sampledAt": 2276.5
+        },
+        {
+          "assetId": "cc6978c5-559c-4ad5-9337-cf643e82f4fe",
+          "sourceIndex": 39,
+          "frequency": 649,
+          "sampledAt": 2458.5
+        },
+        {
+          "assetId": "2a16ddf7-7fff-45ec-a63f-f7cd2c271718",
+          "sourceIndex": 42,
+          "frequency": 682,
+          "sampledAt": 2640.5
+        },
+        {
+          "assetId": "acba4890-f0d0-4b31-aab7-e268ee9e1093",
+          "sourceIndex": 45,
+          "frequency": 715,
+          "sampledAt": 2822.5
+        },
+        {
+          "assetId": "bd91d915-bf99-4d72-836f-09f80204ed5e",
+          "sourceIndex": 48,
+          "frequency": 748,
+          "sampledAt": 3004.5
+        },
+        {
+          "assetId": "eab9ed6d-bbc6-4fa7-aa28-ea9e746e9e61",
+          "sourceIndex": 51,
+          "frequency": 781,
+          "sampledAt": 3186.5
+        },
+        {
+          "assetId": "0ef5a367-2ceb-496c-bb35-46cc188e3182",
+          "sourceIndex": 54,
+          "frequency": 814,
+          "sampledAt": 3368.5
+        },
+        {
+          "assetId": "71a09458-4586-4c46-b0c0-13cd49ee289b",
+          "sourceIndex": 57,
+          "frequency": 847,
+          "sampledAt": 3550.5
+        }
+      ],
+      "frameDifferences": [
+        0.032597736625514406,
+        0.032597736625514406
+      ],
+      "sourceFrameDifference": 1.5659156378600823,
+      "streams": [
+        {
+          "codec_type": "video",
+          "codec_name": "h264",
+          "pix_fmt": "yuv420p",
+          "r_frame_rate": "30/1",
+          "duration": "3643.000000",
+          "width": 1920,
+          "height": 1080
+        },
+        {
+          "codec_type": "audio",
+          "codec_name": "aac",
+          "r_frame_rate": "0/0",
+          "sample_rate": "48000",
+          "duration": "3643.000000",
+          "channels": 2
+        }
+      ]
+    },
+    {
+      "jobId": "6f2dcda1-6192-49ab-ad45-db58c2b1b97e",
+      "output": "C:\\Users\\11478\\.pi-desktop\\scratch\\0fce201b-ce76-4776-834b-dcd8f04f2e25\\yt-v3-batch 4oyXto\\总素材库\\批量视频\\三个一小时批量验收-9c3d38aa-1077-4ff9-8d63-8abfcdc0eff8\\videos\\6f2dcda1-6192-49ab-ad45-db58c2b1b97e.mp4",
+      "bytes": 104176575,
+      "durationSeconds": 3643,
+      "imageId": "94eff2a9-5989-45ac-ae03-72b45712a112",
+      "audioIds": [
+        "f1ff0fcc-3fb0-47bb-a46c-eb3aabb8cf9e",
+        "018beb01-ec00-42cf-a509-f3bc5bad8574",
+        "7f66f3bf-a80b-45e8-9cb5-46126b622548",
+        "905d61d7-f11b-4104-9a46-eeb5186cf31a",
+        "8d1dabfd-486a-4e8d-b274-17b87704b30f",
+        "240151c5-4590-4c80-995e-33ab3593fbc2",
+        "f8315b15-cb0b-475d-b8ef-073c36522429",
+        "a77f34db-2b3e-4a46-ad8c-6e2d7d45827e",
+        "ba5be940-fac7-45d1-b2c9-eff946333d2c",
+        "67436b8a-3851-4c9d-962f-2563f1bf026a",
+        "f9b55a92-46b7-4e23-bcce-559316d0c670",
+        "789661af-4f31-4173-b1c2-28b9a8fe4f0e",
+        "978fbaba-bde9-4f9d-badb-e8a6f18bc1cc",
+        "2fc91a32-d535-47d1-9d96-cf18d1277676",
+        "e710781c-68d0-4957-a5e2-6fb815786755",
+        "7305abe8-009f-4f87-b9a9-2f7efb6d2c0c",
+        "2c736aa7-6717-49b7-8fa9-88f59ae43063",
+        "b9bae82e-60fc-4c28-9b29-8bd50cb31518",
+        "8340f227-2534-46e2-991b-a58a903f5330",
+        "342b13fa-dc9e-4972-ba48-7a32c2cf4102"
+      ],
+      "audioOrder": [
+        {
+          "assetId": "f1ff0fcc-3fb0-47bb-a46c-eb3aabb8cf9e",
+          "sourceIndex": 1,
+          "frequency": 231,
+          "sampledAt": 92.5
+        },
+        {
+          "assetId": "018beb01-ec00-42cf-a509-f3bc5bad8574",
+          "sourceIndex": 4,
+          "frequency": 264,
+          "sampledAt": 274.5
+        },
+        {
+          "assetId": "7f66f3bf-a80b-45e8-9cb5-46126b622548",
+          "sourceIndex": 7,
+          "frequency": 297,
+          "sampledAt": 456.5
+        },
+        {
+          "assetId": "905d61d7-f11b-4104-9a46-eeb5186cf31a",
+          "sourceIndex": 10,
+          "frequency": 330,
+          "sampledAt": 638.5
+        },
+        {
+          "assetId": "8d1dabfd-486a-4e8d-b274-17b87704b30f",
+          "sourceIndex": 13,
+          "frequency": 363,
+          "sampledAt": 820.5
+        },
+        {
+          "assetId": "240151c5-4590-4c80-995e-33ab3593fbc2",
+          "sourceIndex": 16,
+          "frequency": 396,
+          "sampledAt": 1002.5
+        },
+        {
+          "assetId": "f8315b15-cb0b-475d-b8ef-073c36522429",
+          "sourceIndex": 19,
+          "frequency": 429,
+          "sampledAt": 1184.5
+        },
+        {
+          "assetId": "a77f34db-2b3e-4a46-ad8c-6e2d7d45827e",
+          "sourceIndex": 22,
+          "frequency": 462,
+          "sampledAt": 1366.5
+        },
+        {
+          "assetId": "ba5be940-fac7-45d1-b2c9-eff946333d2c",
+          "sourceIndex": 25,
+          "frequency": 495,
+          "sampledAt": 1548.5
+        },
+        {
+          "assetId": "67436b8a-3851-4c9d-962f-2563f1bf026a",
+          "sourceIndex": 28,
+          "frequency": 528,
+          "sampledAt": 1730.5
+        },
+        {
+          "assetId": "f9b55a92-46b7-4e23-bcce-559316d0c670",
+          "sourceIndex": 31,
+          "frequency": 561,
+          "sampledAt": 1912.5
+        },
+        {
+          "assetId": "789661af-4f31-4173-b1c2-28b9a8fe4f0e",
+          "sourceIndex": 34,
+          "frequency": 594,
+          "sampledAt": 2094.5
+        },
+        {
+          "assetId": "978fbaba-bde9-4f9d-badb-e8a6f18bc1cc",
+          "sourceIndex": 37,
+          "frequency": 627,
+          "sampledAt": 2276.5
+        },
+        {
+          "assetId": "2fc91a32-d535-47d1-9d96-cf18d1277676",
+          "sourceIndex": 40,
+          "frequency": 660,
+          "sampledAt": 2458.5
+        },
+        {
+          "assetId": "e710781c-68d0-4957-a5e2-6fb815786755",
+          "sourceIndex": 43,
+          "frequency": 693,
+          "sampledAt": 2640.5
+        },
+        {
+          "assetId": "7305abe8-009f-4f87-b9a9-2f7efb6d2c0c",
+          "sourceIndex": 46,
+          "frequency": 726,
+          "sampledAt": 2822.5
+        },
+        {
+          "assetId": "2c736aa7-6717-49b7-8fa9-88f59ae43063",
+          "sourceIndex": 49,
+          "frequency": 759,
+          "sampledAt": 3004.5
+        },
+        {
+          "assetId": "b9bae82e-60fc-4c28-9b29-8bd50cb31518",
+          "sourceIndex": 52,
+          "frequency": 792,
+          "sampledAt": 3186.5
+        },
+        {
+          "assetId": "8340f227-2534-46e2-991b-a58a903f5330",
+          "sourceIndex": 55,
+          "frequency": 825,
+          "sampledAt": 3368.5
+        },
+        {
+          "assetId": "342b13fa-dc9e-4972-ba48-7a32c2cf4102",
+          "sourceIndex": 58,
+          "frequency": 858,
+          "sampledAt": 3550.5
+        }
+      ],
+      "frameDifferences": [
+        0.132445987654321,
+        0.132445987654321
+      ],
+      "sourceFrameDifference": 1.3665380658436215,
+      "streams": [
+        {
+          "codec_type": "video",
+          "codec_name": "h264",
+          "pix_fmt": "yuv420p",
+          "r_frame_rate": "30/1",
+          "duration": "3643.000000",
+          "width": 1920,
+          "height": 1080
+        },
+        {
+          "codec_type": "audio",
+          "codec_name": "aac",
+          "r_frame_rate": "0/0",
+          "sample_rate": "48000",
+          "duration": "3643.000000",
+          "channels": 2
+        }
+      ]
+    },
+    {
+      "jobId": "214520d0-b67c-42a3-8ecb-ee976e8918e4",
+      "output": "C:\\Users\\11478\\.pi-desktop\\scratch\\0fce201b-ce76-4776-834b-dcd8f04f2e25\\yt-v3-batch 4oyXto\\总素材库\\批量视频\\三个一小时批量验收-9c3d38aa-1077-4ff9-8d63-8abfcdc0eff8\\videos\\214520d0-b67c-42a3-8ecb-ee976e8918e4.mp4",
+      "bytes": 100222697,
+      "durationSeconds": 3643,
+      "imageId": "365a9649-5633-4ba2-837e-8dcab5e1ec6f",
+      "audioIds": [
+        "de1018e6-5831-4b61-80ba-d3b2a720e860",
+        "21a55762-fd00-4e5a-b85a-94f0fbd299c5",
+        "e2acbad8-3609-4604-969f-02f3461884fb",
+        "cf69cd59-9b76-493a-8445-7d554a2c42fa",
+        "2d89602a-d686-4868-a3e2-e1f69ebe904a",
+        "af1f54b9-1feb-4c34-bb0a-ab964a02ffa4",
+        "451bbeaa-973b-410f-a575-ea4a64b9968e",
+        "5dfb474f-362a-4b82-93a9-5bb06c14fda1",
+        "c14b592d-06cd-43ff-8297-762710398cf2",
+        "75316fc1-b99c-4cee-a081-0d9544ac0c58",
+        "07b64e75-905c-438d-a59b-50fb67d2de6c",
+        "f1e1aa31-0f6d-447f-8b6e-d4820904d77d",
+        "21d5d4de-1721-40d2-b69a-7b25ce2f9983",
+        "117b9b42-e96d-4f05-9c69-cb39e3a9764b",
+        "369e76ce-66cf-4ce3-87e1-02319228bc53",
+        "61b9df30-c1b0-4c05-81bd-b7ba5d2a0f02",
+        "796124e8-98c9-4ffe-93ef-ef33311cc38f",
+        "9b4f7fba-5365-4966-ba9f-b1b8ef9f31f6",
+        "00884241-1fdb-4a81-8671-7607ba452e88",
+        "68a1173f-232f-4e08-8742-0ce9406ab0e5"
+      ],
+      "audioOrder": [
+        {
+          "assetId": "de1018e6-5831-4b61-80ba-d3b2a720e860",
+          "sourceIndex": 2,
+          "frequency": 242,
+          "sampledAt": 92.5
+        },
+        {
+          "assetId": "21a55762-fd00-4e5a-b85a-94f0fbd299c5",
+          "sourceIndex": 5,
+          "frequency": 275,
+          "sampledAt": 274.5
+        },
+        {
+          "assetId": "e2acbad8-3609-4604-969f-02f3461884fb",
+          "sourceIndex": 8,
+          "frequency": 308,
+          "sampledAt": 456.5
+        },
+        {
+          "assetId": "cf69cd59-9b76-493a-8445-7d554a2c42fa",
+          "sourceIndex": 11,
+          "frequency": 341,
+          "sampledAt": 638.5
+        },
+        {
+          "assetId": "2d89602a-d686-4868-a3e2-e1f69ebe904a",
+          "sourceIndex": 14,
+          "frequency": 374,
+          "sampledAt": 820.5
+        },
+        {
+          "assetId": "af1f54b9-1feb-4c34-bb0a-ab964a02ffa4",
+          "sourceIndex": 17,
+          "frequency": 407,
+          "sampledAt": 1002.5
+        },
+        {
+          "assetId": "451bbeaa-973b-410f-a575-ea4a64b9968e",
+          "sourceIndex": 20,
+          "frequency": 440,
+          "sampledAt": 1184.5
+        },
+        {
+          "assetId": "5dfb474f-362a-4b82-93a9-5bb06c14fda1",
+          "sourceIndex": 23,
+          "frequency": 473,
+          "sampledAt": 1366.5
+        },
+        {
+          "assetId": "c14b592d-06cd-43ff-8297-762710398cf2",
+          "sourceIndex": 26,
+          "frequency": 506,
+          "sampledAt": 1548.5
+        },
+        {
+          "assetId": "75316fc1-b99c-4cee-a081-0d9544ac0c58",
+          "sourceIndex": 29,
+          "frequency": 539,
+          "sampledAt": 1730.5
+        },
+        {
+          "assetId": "07b64e75-905c-438d-a59b-50fb67d2de6c",
+          "sourceIndex": 32,
+          "frequency": 572,
+          "sampledAt": 1912.5
+        },
+        {
+          "assetId": "f1e1aa31-0f6d-447f-8b6e-d4820904d77d",
+          "sourceIndex": 35,
+          "frequency": 605,
+          "sampledAt": 2094.5
+        },
+        {
+          "assetId": "21d5d4de-1721-40d2-b69a-7b25ce2f9983",
+          "sourceIndex": 38,
+          "frequency": 638,
+          "sampledAt": 2276.5
+        },
+        {
+          "assetId": "117b9b42-e96d-4f05-9c69-cb39e3a9764b",
+          "sourceIndex": 41,
+          "frequency": 671,
+          "sampledAt": 2458.5
+        },
+        {
+          "assetId": "369e76ce-66cf-4ce3-87e1-02319228bc53",
+          "sourceIndex": 44,
+          "frequency": 704,
+          "sampledAt": 2640.5
+        },
+        {
+          "assetId": "61b9df30-c1b0-4c05-81bd-b7ba5d2a0f02",
+          "sourceIndex": 47,
+          "frequency": 737,
+          "sampledAt": 2822.5
+        },
+        {
+          "assetId": "796124e8-98c9-4ffe-93ef-ef33311cc38f",
+          "sourceIndex": 50,
+          "frequency": 770,
+          "sampledAt": 3004.5
+        },
+        {
+          "assetId": "9b4f7fba-5365-4966-ba9f-b1b8ef9f31f6",
+          "sourceIndex": 53,
+          "frequency": 803,
+          "sampledAt": 3186.5
+        },
+        {
+          "assetId": "00884241-1fdb-4a81-8671-7607ba452e88",
+          "sourceIndex": 56,
+          "frequency": 836,
+          "sampledAt": 3368.5
+        },
+        {
+          "assetId": "68a1173f-232f-4e08-8742-0ce9406ab0e5",
+          "sourceIndex": 59,
+          "frequency": 869,
+          "sampledAt": 3550.5
+        }
+      ],
+      "frameDifferences": [
+        0.017011316872427983,
+        0.017011316872427983
+      ],
+      "sourceFrameDifference": 1.4126800411522633,
+      "streams": [
+        {
+          "codec_type": "video",
+          "codec_name": "h264",
+          "pix_fmt": "yuv420p",
+          "r_frame_rate": "30/1",
+          "duration": "3643.000000",
+          "width": 1920,
+          "height": 1080
+        },
+        {
+          "codec_type": "audio",
+          "codec_name": "aac",
+          "r_frame_rate": "0/0",
+          "sample_rate": "48000",
+          "duration": "3643.000000",
+          "channels": 2
+        }
+      ]
+    }
+  ],
+  "usageCounts": [
+    {
+      "id": "365a9649-5633-4ba2-837e-8dcab5e1ec6f",
+      "count": 1
+    },
+    {
+      "id": "94eff2a9-5989-45ac-ae03-72b45712a112",
+      "count": 1
+    },
+    {
+      "id": "a4fd40f3-a8c2-425d-8906-630b686b9e00",
+      "count": 1
+    },
+    {
+      "id": "68a1173f-232f-4e08-8742-0ce9406ab0e5",
+      "count": 1
+    },
+    {
+      "id": "342b13fa-dc9e-4972-ba48-7a32c2cf4102",
+      "count": 1
+    },
+    {
+      "id": "71a09458-4586-4c46-b0c0-13cd49ee289b",
+      "count": 1
+    },
+    {
+      "id": "00884241-1fdb-4a81-8671-7607ba452e88",
+      "count": 1
+    },
+    {
+      "id": "8340f227-2534-46e2-991b-a58a903f5330",
+      "count": 1
+    },
+    {
+      "id": "0ef5a367-2ceb-496c-bb35-46cc188e3182",
+      "count": 1
+    },
+    {
+      "id": "9b4f7fba-5365-4966-ba9f-b1b8ef9f31f6",
+      "count": 1
+    },
+    {
+      "id": "b9bae82e-60fc-4c28-9b29-8bd50cb31518",
+      "count": 1
+    },
+    {
+      "id": "eab9ed6d-bbc6-4fa7-aa28-ea9e746e9e61",
+      "count": 1
+    },
+    {
+      "id": "796124e8-98c9-4ffe-93ef-ef33311cc38f",
+      "count": 1
+    },
+    {
+      "id": "2c736aa7-6717-49b7-8fa9-88f59ae43063",
+      "count": 1
+    },
+    {
+      "id": "bd91d915-bf99-4d72-836f-09f80204ed5e",
+      "count": 1
+    },
+    {
+      "id": "61b9df30-c1b0-4c05-81bd-b7ba5d2a0f02",
+      "count": 1
+    },
+    {
+      "id": "7305abe8-009f-4f87-b9a9-2f7efb6d2c0c",
+      "count": 1
+    },
+    {
+      "id": "acba4890-f0d0-4b31-aab7-e268ee9e1093",
+      "count": 1
+    },
+    {
+      "id": "369e76ce-66cf-4ce3-87e1-02319228bc53",
+      "count": 1
+    },
+    {
+      "id": "e710781c-68d0-4957-a5e2-6fb815786755",
+      "count": 1
+    },
+    {
+      "id": "2a16ddf7-7fff-45ec-a63f-f7cd2c271718",
+      "count": 1
+    },
+    {
+      "id": "117b9b42-e96d-4f05-9c69-cb39e3a9764b",
+      "count": 1
+    },
+    {
+      "id": "2fc91a32-d535-47d1-9d96-cf18d1277676",
+      "count": 1
+    },
+    {
+      "id": "cc6978c5-559c-4ad5-9337-cf643e82f4fe",
+      "count": 1
+    },
+    {
+      "id": "21d5d4de-1721-40d2-b69a-7b25ce2f9983",
+      "count": 1
+    },
+    {
+      "id": "978fbaba-bde9-4f9d-badb-e8a6f18bc1cc",
+      "count": 1
+    },
+    {
+      "id": "cce37053-1400-41d7-a0eb-215b65d3faff",
+      "count": 1
+    },
+    {
+      "id": "f1e1aa31-0f6d-447f-8b6e-d4820904d77d",
+      "count": 1
+    },
+    {
+      "id": "789661af-4f31-4173-b1c2-28b9a8fe4f0e",
+      "count": 1
+    },
+    {
+      "id": "a2298294-065b-4c63-9072-8529d9827f03",
+      "count": 1
+    },
+    {
+      "id": "07b64e75-905c-438d-a59b-50fb67d2de6c",
+      "count": 1
+    },
+    {
+      "id": "f9b55a92-46b7-4e23-bcce-559316d0c670",
+      "count": 1
+    },
+    {
+      "id": "a2fed5f6-19d3-4559-8d2f-8b6558860f6e",
+      "count": 1
+    },
+    {
+      "id": "75316fc1-b99c-4cee-a081-0d9544ac0c58",
+      "count": 1
+    },
+    {
+      "id": "67436b8a-3851-4c9d-962f-2563f1bf026a",
+      "count": 1
+    },
+    {
+      "id": "96a0739b-84cc-494a-9e72-8212ee42ab3e",
+      "count": 1
+    },
+    {
+      "id": "c14b592d-06cd-43ff-8297-762710398cf2",
+      "count": 1
+    },
+    {
+      "id": "ba5be940-fac7-45d1-b2c9-eff946333d2c",
+      "count": 1
+    },
+    {
+      "id": "eab46369-9cfa-45eb-b77f-78cbfaf4ff7f",
+      "count": 1
+    },
+    {
+      "id": "5dfb474f-362a-4b82-93a9-5bb06c14fda1",
+      "count": 1
+    },
+    {
+      "id": "a77f34db-2b3e-4a46-ad8c-6e2d7d45827e",
+      "count": 1
+    },
+    {
+      "id": "9b34b7ab-f6fb-48e0-b161-c26f81db9ebb",
+      "count": 1
+    },
+    {
+      "id": "451bbeaa-973b-410f-a575-ea4a64b9968e",
+      "count": 1
+    },
+    {
+      "id": "f8315b15-cb0b-475d-b8ef-073c36522429",
+      "count": 1
+    },
+    {
+      "id": "a4907f97-a061-46da-a6d4-2bea5b1774e2",
+      "count": 1
+    },
+    {
+      "id": "af1f54b9-1feb-4c34-bb0a-ab964a02ffa4",
+      "count": 1
+    },
+    {
+      "id": "240151c5-4590-4c80-995e-33ab3593fbc2",
+      "count": 1
+    },
+    {
+      "id": "55f7ed1a-77ad-451e-9bc0-2d65245fa127",
+      "count": 1
+    },
+    {
+      "id": "2d89602a-d686-4868-a3e2-e1f69ebe904a",
+      "count": 1
+    },
+    {
+      "id": "8d1dabfd-486a-4e8d-b274-17b87704b30f",
+      "count": 1
+    },
+    {
+      "id": "31273dc0-1912-4e46-bfd5-7218136ba33c",
+      "count": 1
+    },
+    {
+      "id": "cf69cd59-9b76-493a-8445-7d554a2c42fa",
+      "count": 1
+    },
+    {
+      "id": "905d61d7-f11b-4104-9a46-eeb5186cf31a",
+      "count": 1
+    },
+    {
+      "id": "b48bb3d7-0798-4e25-8cef-9cebbe1f2456",
+      "count": 1
+    },
+    {
+      "id": "e2acbad8-3609-4604-969f-02f3461884fb",
+      "count": 1
+    },
+    {
+      "id": "7f66f3bf-a80b-45e8-9cb5-46126b622548",
+      "count": 1
+    },
+    {
+      "id": "a1f0e155-a351-4f2f-995f-84b80ccd8515",
+      "count": 1
+    },
+    {
+      "id": "21a55762-fd00-4e5a-b85a-94f0fbd299c5",
+      "count": 1
+    },
+    {
+      "id": "018beb01-ec00-42cf-a509-f3bc5bad8574",
+      "count": 1
+    },
+    {
+      "id": "2c0a4ad2-15c9-407b-9028-e2d9f1e73867",
+      "count": 1
+    },
+    {
+      "id": "de1018e6-5831-4b61-80ba-d3b2a720e860",
+      "count": 1
+    },
+    {
+      "id": "f1ff0fcc-3fb0-47bb-a46c-eb3aabb8cf9e",
+      "count": 1
+    },
+    {
+      "id": "fb8a1735-d485-488d-b246-1e8c4e839618",
+      "count": 1
+    }
+  ]
+}

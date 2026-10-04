@@ -1,15 +1,37 @@
-# secrets and local state
+node_modules/
+out/
+dist/
+coverage/
+test-results/
+playwright-report/
 .env
 .env.*
 !.env.example
+*.log
+*.tsbuildinfo
+
+# Local agent files and runtime data are not source code.
+.pi/
+/user-data/
+/appdata/
+/library/
+/video-batches/
+/export-receipts/
+/secrets.json
+/总素材库/
+
+# Credentials and Python caches.
+*.pem
+*.key
+*.pfx
+*.p12
+__pycache__/
+*.py[cod]
+
+# Preserve the repository's existing database/key exclusions.
 *.db
 *.sqlite
 *.sqlite3
-.pi/
-
-# private keys
-*.pem
-*.key
 id_rsa
 id_ed25519
 id_ed25519_*

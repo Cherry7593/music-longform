@@ -1,0 +1,51 @@
+{
+  "name": "music-canvas",
+  "version": "3.0.0",
+  "description": "油管视频生成：AI 音乐、图片与本地长视频合成",
+  "main": "out/main/index.js",
+  "author": "Music Canvas",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "icons": "node scripts/create-icon.mjs",
+    "predist:win": "npm run icons",
+    "predist:dir": "npm run icons",
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:long-video": "node scripts/long-video-smoke.mjs",
+    "test:batch-video": "node scripts/batch-video-smoke.mjs",
+    "test:package": "node scripts/smoke-package.mjs",
+    "test:e2e": "npm run build && playwright test",
+    "check": "npm run typecheck && npm run lint && npm test",
+    "dist:win": "npm run build && electron-builder --win portable --x64",
+    "dist:dir": "npm run build && electron-builder --win --x64 --dir"
+  },
+  "dependencies": {
+    "lucide-react": "1.51.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "sharp": "0.35.5",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "26.6.4",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "5.2.0",
+    "electron": "44.5.1",
+    "electron-builder": "26.15.3",
+    "electron-vite": "5.0.0",
+    "esbuild": "0.25.12",
+    "eslint": "9.39.4",
+    "globals": "17.13.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.0",
+    "vite": "7.3.6",
+    "vitest": "4.1.11"
+  }
+}
