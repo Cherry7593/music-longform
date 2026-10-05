@@ -11,6 +11,8 @@ import { Banner, ConfirmDialog, EmptyState, Pager, StatusBadge, duration, useAct
 import type { Confirmation } from './Common'
 import { EntryEditor, entryIssue } from './EntryEditor'
 import { LibraryThumbnail } from './LibraryMedia'
+import { PromptImportDialog } from './PromptImportDialog'
+import { orderedProjectEntries } from '../prompt-import-utils'
 
 function SourceSummary({ entries }: { entries: Array<{ draft: GenerationEntry['draft'] }> }) {
   const sources = new Map<string, number>()
@@ -35,15 +37,16 @@ export function GenerationWorkspace({ project, data, store, onPreview, onSetting
   const [pages, setPages] = useState({ audio: 0, image: 0 })
   const [historyPages, setHistoryPages] = useState({ audio: 0, image: 0 })
   const [confirm, setConfirm] = useState<Confirmation | null>(null)
+  const [importKind, setImportKind] = useState<GenerationKind>()
   const action = useAction()
   const ace = useAceStepModels(data.apis.find(a => a.provider === 'acestep'))
-  const all = data.entries.filter(e => e.projectId === project.id && !e.deletedAt)
+  const all = orderedProjectEntries(project, data.entries)
   const entries = all.filter(e => e.kind === kind)
   const requests = data.requests.filter(r => r.projectId === project.id)
   const linkedAssets = new Set(requests.flatMap(request => [...request.assetIds, ...(request.outputs ?? []).map(output => output.libraryAssetId ?? output.assetId)]))
   const historicalAssets = data.assets.filter(asset => asset.kind === kind && !linkedAssets.has(asset.id) && asset.origins.some(origin => origin.projectId === project.id))
   const historyPage = Math.min(historyPages[kind], Math.max(0, Math.ceil(historicalAssets.length / 20) - 1))
-  const pending = pendingEntries(data.entries, project.id, kind)
+  const pending = pendingEntries(all, project.id, kind)
   const selectedPending = pending.filter(entry => selected.has(entry.id))
   const resumable = requests.filter(r => r.kind === kind && r.status === 'paused')
   const page = Math.min(pages[kind], Math.max(0, Math.ceil(entries.length / 20) - 1))
@@ -54,7 +57,8 @@ export function GenerationWorkspace({ project, data, store, onPreview, onSetting
       if (copyId) await store.flushEntry(copyId)
       const created = await window.canvas.addEntry(project.id, kind, copyId)
       await store.refresh(); setExpanded(old => new Set(old).add(created.id))
-      const list = store.getSnapshot().data?.entries.filter(e => e.projectId === project.id && e.kind === kind) ?? []
+      const snapshot = store.getSnapshot().data, live = snapshot?.generationProjects.find(item => item.id === project.id)
+      const list = snapshot && live ? orderedProjectEntries(live, snapshot.entries).filter(entry => entry.kind === kind) : []
       setPages(old => ({ ...old, [kind]: Math.floor(Math.max(0, list.findIndex(e => e.id === created.id)) / 20) }))
     })
   }
@@ -66,7 +70,9 @@ export function GenerationWorkspace({ project, data, store, onPreview, onSetting
       await store.flush(project.id)
       const snapshot = store.getSnapshot().data!
       const wanted = new Set(ids)
-      const chosen = pendingEntries(snapshot.entries, project.id, kind).filter(entry => wanted.has(entry.id))
+      const live = snapshot.generationProjects.find(item => item.id === project.id)
+      if (!live) throw new Error('项目已不存在，请重新选择')
+      const chosen = pendingEntries(orderedProjectEntries(live, snapshot.entries), project.id, kind).filter(entry => wanted.has(entry.id))
       const selectionIssue = generationSubmissionIssue(chosen.length)
       if (selectionIssue) throw new Error(selectionIssue)
       for (const entry of chosen) { const issue = entryIssue(entry, snapshot.apis, ace.status); if (issue) { setExpanded(old => new Set(old).add(entry.id)); throw new Error(`${entry.draft.title || '条目'}：${issue}`) } }
@@ -102,6 +108,7 @@ export function GenerationWorkspace({ project, data, store, onPreview, onSetting
     <div className="tabs" aria-label="生成素材类型">{(['audio', 'image'] as const).map(tab => <button className="tab" data-testid={`generation-tab-${tab}`} aria-pressed={kind === tab} key={tab} disabled={action.busy} onClick={() => void changeKind(tab)}>{tab === 'audio' ? '音乐' : '图片'}<span className="meta">{all.filter(e => e.kind === tab).length}</span></button>)}</div>
     <div className="section-row"><p className="meta" data-testid="generation-totals">{entries.length} 条目 · {requests.filter(r => r.kind === kind && (r.submittedAt || r.taskId || ['submitting', 'running', 'saving', 'succeeded', 'unknown'].includes(r.status))).length} 已发起提交 · {new Set(requests.filter(r => r.kind === kind).flatMap(r => r.assetIds)).size} 库内素材</p><span className="meta">草稿自动保存 · 不完整也可保存</span></div>
     <div className="toolbar"><div className="button-row"><button className="button" data-testid="entry-add" disabled={action.busy} onClick={() => void add()}><Plus size={17} />添加{kind === 'audio' ? '音乐' : '图片'}条目</button><button className="button" data-testid="generation-select-all" disabled={action.busy || !pending.length} onClick={() => setSelected(old => new Set(appendSelection([...old], pending.map(entry => entry.id))))}>全选待生成</button><button className="button" data-testid="generation-deselect-all" disabled={action.busy || !selectedPending.length} onClick={() => setSelected(old => new Set(deselectSelection([...old], pending.map(entry => entry.id))))}>全取消待生成</button></div><div className="button-row"><button className="button" data-testid="generate-all" disabled={action.busy || !pending.length} onClick={() => void prepare(pending.map(e => e.id))}>生成全部待生成</button><button className="button primary" data-testid="generate-selected" disabled={action.busy || !selectedPending.length} onClick={() => void prepare(selectedPending.map(e => e.id))}>生成选中 · {selectedPending.length}</button></div></div>
+    <div className="button-row"><button className="button" data-testid="prompt-template-save" disabled={action.busy} onClick={() => void action.run(async () => { const saved = await window.canvas.savePromptTemplate(kind); store.notify(saved ? `模板已保存：${saved}` : '已取消保存模板', saved ? 'success' : 'info') })}>下载{kind === 'audio' ? '音乐' : '图片'}模板</button><button className="button" data-testid="prompt-import-open" disabled={action.busy} onClick={() => setImportKind(kind)}>批量导入提示词</button><span className="meta">粘贴外部 AI 文本，预览后只创建草稿</span></div>
     <p className="meta" data-testid="generation-selected-count">当前类型待生成已选 {selectedPending.length} / {pending.length} · 跨全部分页，保留其他类型 / 项目选择 · 单次最多提交 500 个条目</p>
     {action.error && <Banner tone="error">{action.error}</Banner>}
     {!data.apis.some(a => a.kind === kind) && <Banner>此类型尚未添加 API，可先编写条目草稿。<button className="text-button" onClick={onSettings}>添加 API</button></Banner>}
@@ -130,5 +137,14 @@ export function GenerationWorkspace({ project, data, store, onPreview, onSetting
     <Pager page={page} total={entries.length} onChange={next => setPages(old => ({ ...old, [kind]: next }))} />
     {historicalAssets.length > 0 && <section className="stack" data-testid="generation-historical-assets"><h2>历史素材 · {historicalAssets.length}</h2><p className="meta">以下素材来自本项目，但旧数据未关联完整请求记录。保留原名称和来源，不补发生成请求。</p>{historicalAssets.slice(historyPage * 20, historyPage * 20 + 20).map(asset => <div className="result-asset" key={asset.id}>{asset.kind === 'image' && <LibraryThumbnail id={asset.id} name={asset.name} available={asset.available} />}<div><strong>{asset.name}</strong><p className="meta">{asset.kind === 'audio' ? duration(asset.durationSeconds) : `${asset.width ?? '—'} × ${asset.height ?? '—'}`}{!asset.available ? ' · 文件不可用' : ''}</p></div><button className="button" onClick={() => onPreview(asset)}>{asset.kind === 'audio' ? '试听' : '查看'}</button></div>)}<Pager page={historyPage} total={historicalAssets.length} onChange={next => setHistoryPages(old => ({ ...old, [kind]: next }))} /></section>}
     {confirm && <ConfirmDialog value={confirm} onClose={() => setConfirm(null)} />}
+    {importKind && <PromptImportDialog projectId={project.id} projectName={project.name} kind={importKind} data={data} store={store} onClose={() => setImportKind(undefined)} onCreated={async result => {
+      await store.refresh()
+      const snapshot = store.getSnapshot(), live = snapshot.data?.generationProjects.find(item => item.id === result.projectId)
+      if (live && snapshot.data && snapshot.generationId === result.projectId) {
+        const list = orderedProjectEntries(live, snapshot.data.entries).filter(entry => entry.kind === result.kind)
+        setPages(old => ({ ...old, [result.kind]: Math.floor(Math.max(0, list.findIndex(entry => entry.id === result.entryIds[0])) / 20) }))
+      }
+      store.notify(`已创建 ${result.entryIds.length} 个草稿，尚未提交生成`)
+    }} />}
   </div>
 }

@@ -39,3 +39,11 @@
 合成选材以`origins.projectId`匹配来源项目，重名显示ID、删除项目使用来源快照；提供全部/本地导入/历史未归属，保留使用状态交集。`selector-source/select-all/deselect-all/clear-all`跨全部分页，选可用、取消含不可用，旧顺序保留且不重复，容量10000音乐/100图片原子拒绝超限；替换模式禁用批量。应用只影响当前项目/类型，取消不保存。
 
 素材库保留名称搜索，`library-select-all/deselect-all`仅作用当前分类/搜索/使用筛选，范围外保留；`library-clear-all`明确清空所有分类。生成页`generation-select-all/deselect-all`只作用当前项目/类型未提交条目；session选择按项目隔离，500提交上限明确提示。没有批量删除、视频策略改动或全量截图重采。
+
+## V4.0.2 粘贴创建小功能
+
+沿用白色主区`#fff`、浅灰`#f5f6f8`、蓝`#426b9e`、边框`#e5e8ed`，系统字体16px/元数据14px和现有Dialog焦点/inert/Escape规则。仅增加同风格双步骤弹窗：粘贴原文 → 分页预览与参数配置。步骤编号表达真实操作顺序，不添加装饰统计或新视觉系统。
+
+入口`prompt-template-save/prompt-import-open`；弹窗`prompt-import-text/parse/count/bulk/apply-all/row-N/title/remove-N/back/discard/create`。原文及字段仅按文本展示；10条一页自然滚动，复用EntryEditor的离线草稿/仅参数模式，批量参数不覆盖正文。主按钮为“创建N个条目”，没有付费生成或模型检查副作用；返回编辑和关闭有一次放弃确认，创建中锁定，未知结果只核对本批。
+
+本次定向Electron/Python五组检查通过，含取消返回焦点、背景inert、长正文/分页、无API保存与生成拦截、批量/逐条配置、图片类型隔离及回复丢失恢复。仅2张过程截图，未重采历史图集。

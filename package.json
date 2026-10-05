@@ -1,6 +1,6 @@
 {
   "name": "music-canvas",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "油管视频生成：AI 音乐、图片与本地长视频合成",
   "main": "out/main/index.js",
   "author": "Music Canvas",

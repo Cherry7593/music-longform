@@ -1,37 +1,40 @@
-# 油管视频生成 V4.0.1
+# 油管视频生成 V4.0.2
 
 Windows 本地工作台：**独立生成项目、条目式音乐/图片生成、独立合成项目、音乐/图片/视频统一素材库**。在原 V3.1 工程内升级，旧单视频工作台与隐含全局选材已移除。
 
-## 下载与运行
+**4.0.2 更新**：新增“下载音乐/图片模板”和“批量导入提示词”。将外部 AI 返回文本粘贴、解析预览、逐条或统一配置后，一次创建 1–500 个待生成草稿；不自动生成、不产生生成费用。使用与验证说明见 [4.0.2 变更说明](docs/changes-v4.0.2.md)。
 
-从 [v4.0.1 Release](https://github.com/Cherry7593/music-longform/releases/tag/v4.0.1) 下载 `music-longform-4.0.1-Windows-x64.exe` 和同名 `.exe.sha256` 校验文件，直接运行，无需安装 Node.js。Release 使用英文附件名以兼容 GitHub 的文件名规范，内容与本地中文名成品完全相同。仓库为私有仓库，下载需要登录有访问权限的 GitHub 账号；源码下载包不包含 EXE，构建输出 `dist/` 不提交进源码历史。
+## 下载与运行（v4.0.2）
 
-本地对应文件：`dist/油管视频生成-4.0.1-Windows-x64.exe`，107,986,149 bytes。程序未签名，音频校验和本地视频合成需要已有 FFmpeg / FFprobe；不捆绑、下载或安装工具、模型、CUDA、驱动。
+从 [v4.0.2 Release](https://github.com/Cherry7593/music-longform/releases/tag/v4.0.2) 下载 [Windows x64 便携版 EXE](https://github.com/Cherry7593/music-longform/releases/download/v4.0.2/music-longform-4.0.2-Windows-x64.exe) 和 [SHA-256 校验文件](https://github.com/Cherry7593/music-longform/releases/download/v4.0.2/music-longform-4.0.2-Windows-x64.exe.sha256)，直接运行，无需安装 Node.js。Release 使用英文附件名 `music-longform-4.0.2-Windows-x64.exe`，内容与本地中文名成品完全相同。源码下载包不包含 EXE，构建输出 `dist/` 不提交进源码历史。
+
+本地对应文件：`dist/油管视频生成-4.0.2-Windows-x64.exe`，**107,997,786 bytes**。程序未签名；本次模板保存和粘贴创建草稿不需要生成 API，也不产生生成费用。音频校验和本地视频合成仍需要已有 FFmpeg / FFprobe，软件不捆绑或自动部署工具、模型、CUDA、驱动。
 
 ```text
 SHA-256
-06D5E7AE1A26BFAA41235DB3589F69ABF9D7629BCE6743BF8A438E4E38805B80
+04B47DA74B27DAC0BF084CAC47CC1846D76939588C1C5C235BD1CBD18D0DF557
 ```
 
-PowerShell 校验：`Get-FileHash -Algorithm SHA256 '.\music-longform-4.0.1-Windows-x64.exe'`。请与随包校验文件及上面的值一致。
+PowerShell 校验：`Get-FileHash -Algorithm SHA256 '.\music-longform-4.0.2-Windows-x64.exe'`。请与随包校验文件及上面的值一致。
 
 ### 版本区分
 
 | 版本 | 主要变化 | 查阅入口 |
 |---|---|---|
-| **v4.0.1 · 当前发布** | 新增独立 Mureka 国内站；来源项目筛选；三处跨页批量选择。视频算法与调度未变 | [Release](https://github.com/Cherry7593/music-longform/releases/tag/v4.0.1) · [变更与验收](docs/changes-v4.0.1.md) |
+| **v4.0.2 · 当前发布** | 内置模板下载、批量粘贴解析与预览配置、原子幂等创建草稿 | [Release](https://github.com/Cherry7593/music-longform/releases/tag/v4.0.2) · [使用与验收](docs/changes-v4.0.2.md) |
+| v4.0.1 · 已上传 GitHub | 新增独立 Mureka 国内站；来源项目筛选；三处跨页批量选择。视频算法与调度未变 | [Release](https://github.com/Cherry7593/music-longform/releases/tag/v4.0.1) · [变更与验收](docs/changes-v4.0.1.md) |
 | V4.0.0 · 历史本地交付 | 双项目、条目式生成、统一音乐/图片/视频资产、受控并行与独立诊断 | [V4 验收](docs/verification-v4.md) · [性能基线](docs/composition-performance-v4.md) |
 | V3.1.0 · 历史本地交付 | 多平台音乐与 ACE-Step 本地 REST 客户端 | [V3.1 验收](docs/verification-v3.1.md) |
 | v3.0.0 · 上次已上传源码 | 总素材库、整首批量规划与使用记录 | [历史源码标签](https://github.com/Cherry7593/music-longform/tree/v3.0.0) · [V3 验收](docs/verification-v3.md) |
 
-`main` 为当前源码，固定版本请使用对应 `vX.Y.Z` 标签。V3.1/V4.0 的累积实现包含在 v4.0.1 中，不将当前源码标成这些旧版本；原提交历史和历史文档保留。本地 4.0.0 EXE 也保持原字节不变。
+`main` 为当前源码，固定版本请使用对应 `vX.Y.Z` 标签。4.0.2 在已发布的4.0.1上增量更新；原提交历史、已有标签、旧版 Release 附件和历史文档保留。
 
-**升级前备份应用数据与全部媒体目录；不要用旧版编辑升级后的同一份数据。** 两站 Mureka 配置和凭据分开，旧国际站标识 `mureka` 不变；4.0.1 不重新迁移整个资产库。
+**升级前备份应用数据与全部媒体目录；不要用旧版编辑升级后的同一份数据。** 4.0.2 的批量导入只为新条目增加可选批次标识，不重做资产迁移，不改写旧凭据、任务或素材。
 
 ### 使用步骤
 
 1. **设置 → 已添加 API**：新安装列表为空，按需添加支持的平台，每个平台只保留一个配置。ACE-Step 可以不填 Key；这仍是有效配置。连接测试只读，不代表生成权限、额度或实际推理已验证。
-2. **素材生成**：新建生成项目，在音乐/图片页添加条目。每条独立保存 API、模型、描述/歌词和参数，可展开编辑、复制、删除未提交条目；不完整草稿也可保存。
+2. **素材生成**：新建生成项目，在音乐/图片页添加条目；也可先“下载模板”交给外部 AI，再“批量导入提示词”粘贴返回文本。解析后预览、编辑、逐条或统一配置，点击“创建 N 个条目”只追加草稿。没有 API 或参数未完善仍可保存合法内容；生成前另行校验。只支持粘贴结果文本，不导入文本文件。
 3. 选择条目，点击“生成选中”或“生成全部待生成”，**一次确认整批快照**。一个条目只创建一次请求，无“生成次数”设置。厂商返回多个版本时全部归在原条目下；返回版本数与去重后的库内素材数分别统计。
 4. **批量合成**：新建独立合成项目，直接在页内选择音乐和图片、试听/预览、调整顺序和分组，**无需先访问素材库或全局勾选**。一张图片对应一条视频，一个批次也可以只有一条输出。
 5. 设置最短时长，规划并确认提交。默认最短60分钟，可设1–360分钟；整首播放，每首在同批次只分配一次。修改草稿不会改变已提交执行快照。
@@ -113,7 +116,7 @@ PowerShell 校验：`Get-FileHash -Algorithm SHA256 '.\music-longform-4.0.1-Wind
 
 ## 旧数据迁移
 
-应用版本4.0.1；设置V5，生成/合成项目及API配置V1，资产/执行/使用发布记录V2，密钥保持V3（国内站新增可选独立字段，不重加密旧Key）。
+应用版本4.0.2；设置V5，生成/合成项目及API配置V1，资产/执行/使用发布记录V2，密钥保持V3。批量导入仅在新条目中记录可选批次标识，不重做资产迁移、不改旧密文。
 
 启动识别`音乐画布`、`music-canvas`和当前品牌历史目录；多个目录需用户选择，`--user-data-dir`优先。先校验旧V1–V4数据、独占备份元数据、保存稳定ID映射与迁移日志，再登记新索引；中断可恢复，损坏数据保留并明确停止，不以空库替换。
 
@@ -142,9 +145,9 @@ migration-v4/          原字节元数据备份、映射、日志、完成标记
 
 ## 从源码开发、验证和打包
 
-本工程验证环境为 Windows x64、Node.js 24.14.1、npm 11.19.0；先自行准备依赖和 FFmpeg/FFprobe。当前源码版本为 **4.0.1**，本次在既有 V3.0 Git 历史上发布；版本标签与 Release 区分源码和可运行成品。
+本工程验证环境为 Windows x64、Node.js 24.14.1、npm 11.19.0；先自行准备依赖和 FFmpeg/FFprobe。当前源码/发布版本为 **4.0.2**。模板原文位于 [音乐模板](docs/templates/音乐提示词模板.md) 和 [图片模板](docs/templates/图片提示词模板.md)，构建时嵌入应用，成品不依赖源码 `docs` 目录。
 
-**4.0.1 已实际通过**：TypeScript、ESLint、307 项相关单测（11 文件）、5 组定向真实桌面功能检查、开发版及便携版各两次启动/重启；一次最终打包成功。使用隔离数据与合成凭据，未调用付费生成。没有重跑 V4 小时级性能矩阵，也不把历史长测冒充 4.0.1 重新执行的成绩。详见 [4.0.1 验收与校验](docs/changes-v4.0.1.md) 和 [发布清单](docs/release-v4.0.1.json)。
+**4.0.2 已实际通过**：TypeScript、ESLint、260 项相关单测（8 文件）、5 组真实桌面定向流程、正式包内模板逐字节验证，以及便携 EXE 两次启动/重启；一次最终打包成功。包含无 API 草稿、取消不保存、批量设置保留正文、重复点击和回复丢失恢复检查。未运行小时级视频/性能矩阵或付费生成。详见 [4.0.2 验收与校验](docs/changes-v4.0.2.md) 和 [发布清单](docs/release-v4.0.2.json)。4.0.1 的独立验收保留在 [历史说明](docs/changes-v4.0.1.md)。
 
 下列为开发者可选的完整命令，视频性能/长测只在明确需要时运行，不是每个小版本的默认验证步骤。
 
@@ -161,13 +164,13 @@ node scripts/video-performance.mjs --help
 node scripts/video-performance.mjs
 node scripts/composition-performance.mjs --help
 node scripts/composition-performance.mjs
-npm.cmd run dist:win
+npm.cmd run dist:win -- --config.directories.output=dist/release-4.0.2
 npm.cmd run test:package
 python scripts/portable-smoke.py --help
 python scripts/visual-check.py --help
-Get-FileHash -Algorithm SHA256 '.\dist\油管视频生成-4.0.1-Windows-x64.exe'
+Get-FileHash -Algorithm SHA256 '.\dist\油管视频生成-4.0.2-Windows-x64.exe'
 ```
 
-Python 原生窗口脚本需要已安装的 Python Playwright；应用成品不需要它。4.0.1 定向脚本为 `scripts/v401-ui-fixture.mjs` 和 `scripts/v401-ui-check.py`（先运行 `--help`）。历史 V4 全量验收见 `docs/verification-v4.md`；真实云账号权限、计费/生成质量和 ACE 神经推理尚未验证。
+Python 原生窗口脚本需要已安装的 Python Playwright；应用成品不需要它。4.0.2 定向验证入口为 `node scripts/prompt-import-desktop.mjs --help`，正式包模板检查可传 `--exe dist/release-4.0.2/win-unpacked/油管视频生成.exe`。历史 V4 全量验收见 `docs/verification-v4.md`；外部 AI 返回质量、真实云账号生成权限/计费/效果和 ACE 神经推理仍未验证。
 
 本版不含模型部署、多账号、Udio、翻唱、续写、参考音频上传、声音克隆、声部分离、训练、云同步、视频导入/AI视频生成、字幕、动态画面、多图轮播、4K或YouTube自动上传。

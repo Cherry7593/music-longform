@@ -1,4 +1,4 @@
-"""Launch the actual V4.0.1 NSIS portable EXE twice; isolated current profiles, no AI calls."""
+"""Launch the actual V4.0.2 NSIS portable EXE twice; isolated current profiles, no AI calls."""
 import argparse
 import ctypes
 from ctypes import wintypes
@@ -35,7 +35,7 @@ def executable_version(executable):
     fields = ctypes.cast(pointer, ctypes.POINTER(wintypes.DWORD))
     assert fields[0] == 0xFEEF04BD
     result = [fields[4] >> 16, fields[4] & 0xFFFF, fields[5] >> 16, fields[5] & 0xFFFF]
-    assert result == [4, 0, 1, 0], f'Expected V4.0.1 executable, got {result}'
+    assert result == [4, 0, 2, 0], f'Expected V4.0.2 executable, got {result}'
     return result
 
 
@@ -163,7 +163,7 @@ def assert_drafts(page, expected, expect):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--exe', type=Path, default=Path('dist/油管视频生成-4.0.1-Windows-x64.exe'))
+    parser.add_argument('--exe', type=Path, default=Path('dist/油管视频生成-4.0.2-Windows-x64.exe'))
     parser.add_argument('--output', type=Path, help='Report parent directory inside PI_SCRATCH_DIR; each run gets a new child')
     parser.add_argument('--keep', action='store_true', help='Keep the isolated profile even on success (failures always retain it)')
     args = parser.parse_args()
@@ -187,7 +187,7 @@ def main():
         subprocess.run(['node', str(helper), '--help'], cwd=workspace, check=True, capture_output=True, text=True, encoding='utf-8')
         seed = subprocess.run(['node', str(helper), '--mode', 'empty', '--root', str(root)], cwd=workspace, check=True, capture_output=True, text=True, encoding='utf-8', timeout=120)
         manifest = json.loads(seed.stdout.strip().splitlines()[-1])
-        assert manifest['synthetic'] and manifest['version'] == '4.0.1'
+        assert manifest['synthetic'] and manifest['version'] == '4.0.2'
         profile = scratch_child(manifest['profile'], scratch)
         assert profile.is_relative_to(root)
         env = clean_env(root)
@@ -224,7 +224,7 @@ def main():
                 proc = None
         disk = json.loads((profile / 'workbench' / 'settings' / 'current.json').read_text(encoding='utf-8'))
         assert disk['version'] == 5 and Path(disk['mediaRoot']).resolve().is_relative_to(root)
-        report = {'passed': True, 'version': '4.0.1', 'productVersion': product_version, 'launches': 2, 'executable': str(executable), 'fixture': str(root), 'dualProjects': expected,
+        report = {'passed': True, 'version': '4.0.2', 'productVersion': product_version, 'launches': 2, 'executable': str(executable), 'fixture': str(root), 'dualProjects': expected,
                   'emptyAddedApis': True, 'draftsRetained': True, 'testMode': False, 'generationRequests': 0, 'paidCalls': 0, 'actualInference': False}
         (output / 'report.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
         passed = True

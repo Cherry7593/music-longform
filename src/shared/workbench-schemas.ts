@@ -15,10 +15,23 @@ export const entryDraftSchema = z.object({
   mode: z.enum(['song', 'instrumental']).optional(), inputMode: z.enum(['description', 'lyrics']).optional(), seconds: z.number().finite().min(0).max(100000).optional(),
   outputFormat: z.enum(['original', 'mp3']).optional(), thinking: z.boolean().optional(), language: z.string().max(50).optional(), styles: z.array(z.string().max(50)).max(30).optional(), size: z.string().max(50).optional()
 }).strict()
+export const promptImportIdentitySchema = z.object({ projectId: idSchema, kind: z.enum(['audio', 'image']), batchId: idSchema }).strict()
+export const promptImportInputSchema = promptImportIdentitySchema.extend({ drafts: z.array(entryDraftSchema).min(1, '至少创建 1 个条目').max(500, '单次最多创建 500 个条目') }).strict().superRefine((value, ctx) => {
+  value.drafts.forEach((draft, index) => {
+    const issue = (field: string, message: string): void => { ctx.addIssue({ code: 'custom', path: ['drafts', index, field], message }) }
+    if (!draft.prompt.trim()) issue('prompt', '提示词不能为空')
+    if (draft.title && /[\r\n\u2028\u2029]/.test(draft.title)) issue('title', '名称只能单行')
+    if (draft.provider && (draft.provider === 'siliconflow') !== (value.kind === 'image')) issue('provider', 'API 与素材类型不一致')
+    if (value.kind === 'audio' && draft.size !== undefined) issue('size', '音乐条目不接受图片尺寸')
+    if (value.kind === 'image' && ['lyrics', 'mode', 'inputMode', 'seconds', 'outputFormat', 'thinking', 'language', 'styles'].some(key => draft[key as keyof EntryDraft] !== undefined)) issue('provider', '图片条目不接受音乐或歌词字段')
+  })
+  if (new TextEncoder().encode(JSON.stringify(value.drafts)).byteLength > 2 * 1024 * 1024) ctx.addIssue({ code: 'custom', path: ['drafts'], message: '配置后的本批草稿超过 2 MiB，请分批创建；内容未截断' })
+})
+const promptImportMarkerSchema = z.object({ batchId: idSchema, fingerprint: z.string().regex(/^[a-f0-9]{64}$/), index: z.number().int().min(0).max(499), total: z.number().int().min(1).max(500) }).strict().refine(value => value.index < value.total, '导入顺序不正确')
 export const alternativesSchema = z.partialRecord(providerSchema, entryDraftSchema)
 export const generationProjectSchema = z.object({ version: z.literal(1), id: idSchema, name: nameSchema, createdAt: timestamp, updatedAt: timestamp, page: z.enum(['audio', 'image']), entryIds: ids(), deletedAt: timestamp.optional() }).strict()
 export const entrySchema = z.object({ version: z.literal(1), id: idSchema, projectId: idSchema, kind: z.enum(['audio', 'image']), createdAt: timestamp, updatedAt: timestamp,
-  revision: z.number().int().nonnegative(), draft: entryDraftSchema, alternatives: alternativesSchema, requestId: idSchema.optional(), deletedAt: timestamp.optional() }).strict()
+  revision: z.number().int().nonnegative(), draft: entryDraftSchema, alternatives: alternativesSchema, requestId: idSchema.optional(), deletedAt: timestamp.optional(), promptImport: promptImportMarkerSchema.optional() }).strict()
 const output = z.object({ id: idSchema, assetId: idSchema, libraryAssetId: idSchema.optional(), index: z.number().int().min(0).max(19), remoteId: z.string().max(200).optional(), title: z.string().max(500).optional(), locator: z.string().regex(/^[a-f0-9]{64}$/), status: z.enum(['pending', 'saved']) }).strict()
 const binding = z.object({ provider: z.enum(['mureka', 'mureka-cn', 'kie', 'reapi', 'sunor', 'acestep', 'siliconflow', 'openai']), adapterVersion: z.literal(1),
   local: z.object({ baseUrl: z.string().max(500), connectionId: idSchema }).strict().optional() }).strict()

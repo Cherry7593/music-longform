@@ -4,6 +4,8 @@ import type { BrowserWindow } from 'electron'
 import { registerWorkbenchIPC } from '../../src/main/workbench-ipc'
 import { initialComposition, initialEntry } from '../../src/shared/workbench-schemas'
 import type { WorkbenchService } from '../../src/main/workbench-service'
+import { readFile, mkdtemp, rm } from 'node:fs/promises'
+import path from 'node:path'
 
 const mocked = vi.hoisted(() => ({ handlers: new Map<string, (event: unknown, ...args: unknown[]) => Promise<{ ok: boolean; error?: string; value?: unknown }>>(), open: vi.fn(), save: vi.fn(), copy: vi.fn() }))
 vi.mock('electron', () => ({ ipcMain: { handle: (name: string, callback: (event: unknown, ...args: unknown[]) => Promise<{ ok: boolean }>) => mocked.handlers.set(name, callback) }, dialog: { showOpenDialog: mocked.open, showSaveDialog: mocked.save }, shell: { showItemInFolder: vi.fn() }, clipboard: { writeText: mocked.copy } }))
@@ -15,7 +17,7 @@ function fixture() {
     deps: { assets: { all: vi.fn(async () => []), importFiles: vi.fn(), get: vi.fn(async () => ({ name: 'isolated fixture' })), pathForAsset: vi.fn(async () => 'C:\\isolated\\audio.flac'), pin: vi.fn(async () => release) }, db: { list: vi.fn(() => []) } },
     snapshot: vi.fn(async () => ({ apis: [], generationProjects: [], compositionProjects: [], assets: [] })),
     track: vi.fn(async (action: () => Promise<unknown>) => action()), updateSettings: vi.fn(),
-    generationProjects: { create: vi.fn(async () => ({ id: asset })), update: vi.fn(), delete: vi.fn(), add: vi.fn(), updateEntry: vi.fn(), deleteEntry: vi.fn() },
+    generationProjects: { create: vi.fn(async () => ({ id: asset })), update: vi.fn(), delete: vi.fn(), add: vi.fn(), updateEntry: vi.fn(), deleteEntry: vi.fn(), createPromptEntries: vi.fn(), promptImportStatus: vi.fn() },
     compositionProjects: { create: vi.fn(async () => ({ id: asset })), update: vi.fn(), delete: vi.fn() },
     generation: { submit: vi.fn(), resume: vi.fn() }, composition: { start: vi.fn(), cancelJob: vi.fn(), queuedIds: vi.fn(() => []) },
     apis: { save: vi.fn(), test: vi.fn(async () => ({ message: 'read-only isolated fixture' })) },
@@ -80,5 +82,37 @@ describe('current V4 strict IPC boundary', () => {
     expect(mocked.copy).not.toHaveBeenCalled()
     expect((await f.call('copyDiagnostic', f.diagnosticId)).ok).toBe(true)
     expect(mocked.copy).toHaveBeenCalledExactlyOnceWith(JSON.stringify({ id: f.diagnosticId, stderr: '[address removed]' }, null, 2))
+  })
+  it('only permits a bounded draft batch and identity lookup, never a caller path or remote request', async () => {
+    const f = fixture(), input = { projectId: f.asset, kind: 'audio', batchId: randomUUID(), drafts: [{ ...initialEntry('audio'), prompt: '本地文本' }] }
+    expect((await f.call('createPromptEntries', input)).ok).toBe(true)
+    expect(f.service.generationProjects.createPromptEntries).toHaveBeenCalledExactlyOnceWith(input)
+    expect((await f.call('createPromptEntries', { ...input, filePath: 'C:\\outside.md' })).ok).toBe(false)
+    expect((await f.call('createPromptEntries', { ...input, drafts: [{ ...input.drafts[0], requestId: randomUUID() }] })).ok).toBe(false)
+    const identity = { projectId: input.projectId, kind: input.kind, batchId: input.batchId }
+    expect((await f.call('promptImportStatus', identity)).ok).toBe(true)
+    expect(f.service.generation.submit).not.toHaveBeenCalled(); expect(f.service.apis.test).not.toHaveBeenCalled()
+  })
+  it('exports only built-in UTF-8 templates through the native save choice, and cancellation is not an error', async () => {
+    const f = fixture(), root = await mkdtemp(path.join(process.env.PI_SCRATCH_DIR!, 'v402-template-save-'))
+    try {
+      mocked.save.mockResolvedValueOnce({ canceled: true })
+      expect(await f.call('savePromptTemplate', 'audio')).toEqual({ ok: true, value: null })
+      expect((await f.call('savePromptTemplate', 'audio', 'C:\\caller.md')).ok).toBe(false)
+      expect((await f.call('savePromptTemplate', '../secrets.json')).ok).toBe(false)
+      for (const [kind, name] of [['audio', '音乐提示词模板.md'], ['image', '图片提示词模板.md']]) {
+        const file = path.join(root, name); mocked.save.mockResolvedValueOnce({ canceled: false, filePath: file })
+        expect(await f.call('savePromptTemplate', kind)).toEqual({ ok: true, value: file })
+        expect(mocked.save.mock.calls.at(-1)?.[1]).toMatchObject({ defaultPath: name, filters: [{ extensions: ['md'] }] })
+        expect(await readFile(file)).toEqual(await readFile(path.join('docs/templates', name)))
+      }
+    } finally { await rm(root, { recursive: true, force: true }) }
+  })
+  it('guards the new imports and template export against foreign frames before any dialog or write', async () => {
+    const f = fixture()
+    for (const method of ['createPromptEntries', 'promptImportStatus', 'savePromptTemplate']) {
+      expect((await mocked.handlers.get(`canvas:workbench:${method}`)!({ ...f.event, sender: {} }, 'audio')).ok).toBe(false)
+    }
+    expect(f.service.track).not.toHaveBeenCalled(); expect(mocked.save).not.toHaveBeenCalled()
   })
 })

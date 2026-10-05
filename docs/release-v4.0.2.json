@@ -1,0 +1,199 @@
+{
+  "version": "4.0.2",
+  "passed": true,
+  "artifact": {
+    "file": "dist/油管视频生成-4.0.2-Windows-x64.exe",
+    "bytes": 107997786,
+    "sha256": "04B47DA74B27DAC0BF084CAC47CC1846D76939588C1C5C235BD1CBD18D0DF557",
+    "productVersion": "4.0.2",
+    "signature": "NotSigned"
+  },
+  "checksumMatches": true,
+  "packagedBuildFiles": [
+    {
+      "file": "out/main/chunks/testing-B867jA34.js",
+      "sha256": "B84181CC3E154FB33ED017159B8270FCD94BA2E7723A1BF6279E7F8CBC114112"
+    },
+    {
+      "file": "out/main/index.js",
+      "sha256": "0D65E781947C40A148A6D1C4024B0FC04E2B2D066D9A75361BD3854E14FCFEAB"
+    },
+    {
+      "file": "out/preload/index.js",
+      "sha256": "26FD7157789CA06CB89FB8FFD9FDC93FF8379301053050F5BE0CBE413606A0BC"
+    },
+    {
+      "file": "out/renderer/assets/index-AG4jve75.css",
+      "sha256": "AD551F8A92D96FE8F84313F2A7A9B064A36C930C592486278F09C75E61258ABB"
+    },
+    {
+      "file": "out/renderer/assets/index-DUp-J5xA.js",
+      "sha256": "4CB372B01919F9939ABDD22A4E878C2AABCE1F9369CAFD80F00EA7C9CF9466C6"
+    },
+    {
+      "file": "out/renderer/index.html",
+      "sha256": "37C585B7F5BDAD99F8D93EA2F29B714C0BD218367A91995F86F155902A4C53F7"
+    }
+  ],
+  "sourceHashes": [
+    {
+      "file": "src/main/prompt-templates.ts",
+      "sha256": "26774F1B0D3B1894ABEB09BB304CBC7FF475439C1283B5A9FB2F6C58A15F2C20"
+    },
+    {
+      "file": "src/main/storage/workbench-projects.ts",
+      "sha256": "EF53BD3E7012DDA1DE24D9C3849359DC1E82B83F91504F4586875FE67950B107"
+    },
+    {
+      "file": "src/main/workbench-ipc.ts",
+      "sha256": "EF5A9E919E7A0A4735EF7D8A7CDE5913962A078A28865F577BA69D23F7DF7CBC"
+    },
+    {
+      "file": "src/shared/prompt-import.ts",
+      "sha256": "9F8D9CB925FE19ADC9B486B7629719F75D8C73B5A6B03083DBA9044FCDF49245"
+    },
+    {
+      "file": "src/shared/raw-text.d.ts",
+      "sha256": "13BA4430CBA570B25E0061BD3AFDBA8F6386E90B2225CAA025BA582D593AE3DF"
+    },
+    {
+      "file": "src/shared/workbench-types.ts",
+      "sha256": "4ADF31F5013C3913A1FF72358C1AB9DC735524875AEF60C85E1417DAEB8EE869"
+    },
+    {
+      "file": "src/shared/workbench-schemas.ts",
+      "sha256": "BF84AB974CE9FB830DB3D2772B3467D1C7D1D2EA23570CEF8A46FFEA9EAA7367"
+    },
+    {
+      "file": "src/shared/branding.ts",
+      "sha256": "600AB7EECB73A2B8C83B08EF1A29AA4817A0C82F2E32F000BB33DA320300DEC2"
+    },
+    {
+      "file": "src/preload/index.ts",
+      "sha256": "D6FB93862B3E0A9D88B5250E84725DE9ACE00BE9A7C339A6FB7D3BAA83AD4668"
+    },
+    {
+      "file": "src/renderer/prompt-import-utils.ts",
+      "sha256": "C1DE2DC3B74D698D83495682659DBCBD48199809CA731422985BA82D94539882"
+    },
+    {
+      "file": "src/renderer/components/PromptImportDialog.tsx",
+      "sha256": "E7D56F53A5D2865C38F00ECB616C53A398183E03CA2C78A5E7F377D5F6F2E72D"
+    },
+    {
+      "file": "src/renderer/components/GenerationWorkspace.tsx",
+      "sha256": "2FB51081050A056C9AABB3FA66F3393D980E600AA19AF95EB9F24EA49CA4FCF0"
+    },
+    {
+      "file": "src/renderer/components/EntryEditor.tsx",
+      "sha256": "DE1805EAED66655642CBFC0A0FF3642B66D651F9FBDC13E4E125D7B420F9DCEA"
+    },
+    {
+      "file": "src/renderer/styles.css",
+      "sha256": "AD551F8A92D96FE8F84313F2A7A9B064A36C930C592486278F09C75E61258ABB"
+    }
+  ],
+  "oldExecutablesUnchanged": [
+    {
+      "name": "Music-Canvas-1.0.0-Windows-x64.exe",
+      "bytes": 101799292,
+      "sha256": "4B0E2DDCA78E22126AF9D34826CF3A1CD64934A9F9D21C374412A8E516314560"
+    },
+    {
+      "name": "油管视频生成-2.0.0-Windows-x64.exe",
+      "bytes": 101823303,
+      "sha256": "F6DBA918B862BC85A5A5923A3EEDB8CBA945A8454008517E6957496D69E540D3"
+    },
+    {
+      "name": "油管视频生成-2.1.0-Windows-x64.exe",
+      "bytes": 107929467,
+      "sha256": "D2A51EB9148659F204FE8DBDDD26AF0D5FBDD819E6CBD8BCBD26E88125B28775"
+    },
+    {
+      "name": "油管视频生成-3.0.0-Windows-x64.exe",
+      "bytes": 107960118,
+      "sha256": "107E9DBBC4A1847B99B9F1EC4700CB5D94157B617683266B6CCF403B64BF4923"
+    },
+    {
+      "name": "油管视频生成-3.1.0-Windows-x64.exe",
+      "bytes": 107980747,
+      "sha256": "C747A030508A11EA7CBF0580826EDED7CBEC2D3173364928F4FC07DEC0F2A46A"
+    },
+    {
+      "name": "油管视频生成-4.0.0-Windows-x64.exe",
+      "bytes": 107985607,
+      "sha256": "3E130BABD3EBBF56E57CA416E2467B987144AE7FA9DED80BF46373E7959B4690"
+    },
+    {
+      "name": "油管视频生成-4.0.1-Windows-x64.exe",
+      "bytes": 107986149,
+      "sha256": "06D5E7AE1A26BFAA41235DB3589F69ABF9D7629BCE6743BF8A438E4E38805B80"
+    }
+  ],
+  "unrelatedFilesHashUnchanged": [
+    "src/main/providers/mureka.ts",
+    "src/main/providers/music-registry.ts",
+    "src/main/providers/http.ts",
+    "src/main/providers/music-contract.ts",
+    "src/main/storage/secrets.ts",
+    "src/main/storage/api-configurations.ts",
+    "src/main/generation-jobs.ts",
+    "src/renderer/selection.ts",
+    "src/renderer/components/AssetSelector.tsx",
+    "src/renderer/components/CompositionWorkspace.tsx",
+    "src/renderer/components/LibraryWorkspace.tsx",
+    "src/main/video/composition-queue.ts",
+    "src/main/video/resource-pool.ts",
+    "src/main/video/pipeline.ts",
+    "src/main/video/encoders.ts",
+    "src/main/video/encoder-device.ts"
+  ],
+  "templates": [
+    {
+      "name": "音乐提示词模板.md",
+      "bytes": 4550,
+      "sha256": "ba5d68ef7f871eea15b88cdfe225b19fa14230970d3016087a717daf0e460294"
+    },
+    {
+      "name": "图片提示词模板.md",
+      "bytes": 4194,
+      "sha256": "cf5b59affb0cc89d4cdf864fafa1e2aeed5db7f5ffb79dcf84350f911028f8cb"
+    }
+  ],
+  "verification": {
+    "typecheck": "passed",
+    "lint": "passed",
+    "unitTests": 260,
+    "unitFiles": 8,
+    "parserCases": 153,
+    "targetedDesktopGroups": 5,
+    "createdDrafts": 36,
+    "batchCreationCalls": 3,
+    "lostReplyRecovered": true,
+    "networkCalls": 0,
+    "generationRequests": 0,
+    "packageTemplatesExact": true,
+    "externalDocsRequired": false,
+    "portableLaunches": 2,
+    "finalPackagesBuilt": 1
+  },
+  "evidence": {
+    "desktop": "v402-prompt-ui-bSEr9n/report.json",
+    "packaged": "v402-prompt-ui-5vhUcV/report.json",
+    "portable": "v402-portable-reports/run-uu8e8mod/report.json",
+    "logs": [
+      "v402-typecheck-final.log",
+      "v402-lint-final.log",
+      "v402-unit-final.log",
+      "v402-desktop.log",
+      "v402-dist.log",
+      "v402-package-templates.log",
+      "v402-portable.log"
+    ]
+  },
+  "boundaries": [
+    "Only isolated projects and synthetic API configs; no real user keys, paid generation or external model calls.",
+    "No video encode/performance matrix/full screenshots; provider transports, video and selection code hashes unchanged.",
+    "Unsigned portable; existing FFmpeg/FFprobe still needed for normal generation media validation and video."
+  ]
+}

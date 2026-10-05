@@ -142,7 +142,7 @@ def check_scroll(page, selector):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--exe', type=Path, default=Path('dist/win-unpacked/油管视频生成.exe'), help='Actual V4 unpacked EXE (not development electron.exe or the NSIS wrapper)')
+    parser.add_argument('--exe', type=Path, default=Path('dist/release-4.0.2/win-unpacked/油管视频生成.exe'), help='Actual V4 unpacked EXE (not development electron.exe or the NSIS wrapper)')
     parser.add_argument('--output', type=Path, default=Path('docs/screenshots'), help='Screenshot directory; filenames are v4-* with a unique run suffix, never overwrite history')
     parser.add_argument('--report', type=Path, help='Report parent inside PI_SCRATCH_DIR')
     parser.add_argument('--keep', action='store_true', help='Keep the synthetic fixture on success; failures always retain it')
@@ -346,7 +346,7 @@ def main():
                 final = common['bootstrap'](page)
                 assert len(final['requests']) == len(initial['requests']) and not final['batches']
                 assert not (root / 'dev-flags-must-not-be-used').exists()
-                (report_dir / 'report.json').write_text(json.dumps({'passed': True, 'version': '4.0.1', 'productVersion': product_version, 'executable': str(executable), 'fixture': str(root),
+                (report_dir / 'report.json').write_text(json.dumps({'passed': True, 'version': '4.0.2', 'productVersion': product_version, 'executable': str(executable), 'fixture': str(root),
                     'windowUnit': 'native outer pixels', 'measuredWindows': windows, 'screenshots': evidence, 'scrollChecks': scrolls, 'pageErrors': errors,
                     'testMode': False, 'newGenerationRequests': 0, 'newExecutionBatches': 0, 'paidCalls': 0, 'actualInference': False}, ensure_ascii=False, indent=2), encoding='utf-8')
                 page.close(); page = None

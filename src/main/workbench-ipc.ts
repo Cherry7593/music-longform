@@ -3,15 +3,16 @@ import { copyFile, mkdtemp, rm } from 'node:fs/promises'
 import path from 'node:path'
 import { z } from 'zod'
 import { idSchema, providerSchema } from '../shared/schemas'
-import { alternativesSchema, apiInputSchema, compositionDraftSchema, entryDraftSchema, generationSelectionSchema, nameSchema, settingsUpdateSchema } from '../shared/workbench-schemas'
+import { alternativesSchema, apiInputSchema, compositionDraftSchema, entryDraftSchema, generationSelectionSchema, nameSchema, promptImportIdentitySchema, promptImportInputSchema, settingsUpdateSchema } from '../shared/workbench-schemas'
 import { batchGroupInputSchema } from '../shared/batch-schemas'
 import type { WorkbenchAPI } from '../shared/workbench-types'
 import { AppError, safeError } from './providers/http'
 import type { WorkbenchService } from './workbench-service'
-import { atomicJson } from './storage/atomic'
+import { atomicBuffer, atomicJson } from './storage/atomic'
 import { managedDirectory } from './storage/managed'
 import { discoverTools } from './video/ffmpeg'
 import { probeEncoder, toolIdentity } from './video/encoders'
+import { promptTemplate } from './prompt-templates'
 
 /** Explicit method whitelist and per-operation schemas; no arbitrary IPC or filesystem capability. */
 export function registerWorkbenchIPC(window: BrowserWindow, rendererURL: string, service: WorkbenchService): void {
@@ -33,6 +34,16 @@ export function registerWorkbenchIPC(window: BrowserWindow, rendererURL: string,
   handle('generationProjectImpact', id, projectId => service.generationProjects.impact(projectId))
   handle('deleteGenerationProject', id, projectId => service.generationProjects.delete(projectId), true)
   handle('addEntry', z.tuple([idSchema, z.enum(['audio', 'image']), z.union([idSchema, z.undefined()])]), (projectId, kind, copyId) => service.generationProjects.add(projectId, kind, copyId), true)
+  handle('createPromptEntries', z.tuple([promptImportInputSchema]), input => service.generationProjects.createPromptEntries(input), true)
+  handle('promptImportStatus', z.tuple([promptImportIdentitySchema]), identity => service.generationProjects.promptImportStatus(identity), true)
+  handle('savePromptTemplate', z.tuple([z.enum(['audio', 'image'])]), async kind => {
+    const template = promptTemplate(kind)
+    const selected = await dialog.showSaveDialog(window, { title: '保存提示词模板', defaultPath: template.name, filters: [{ name: 'Markdown 模板', extensions: ['md'] }] })
+    if (selected.canceled || !selected.filePath) return null
+    if (path.extname(selected.filePath).toLowerCase() !== '.md') throw new AppError('请使用 .md 扩展名保存模板。')
+    await atomicBuffer(selected.filePath, Buffer.from(template.text, 'utf8'))
+    return selected.filePath
+  }, true)
   handle('updateEntry', z.tuple([idSchema, revision, entryDraftSchema, alternativesSchema]), (entryId, version, draft, alternatives) => service.generationProjects.updateEntry(entryId, version, draft, alternatives), true)
   handle('deleteEntry', id, entryId => service.generationProjects.deleteEntry(entryId), true)
   handle('submitEntries', z.tuple([generationSelectionSchema]), selection => service.generation.submit(selection), true)

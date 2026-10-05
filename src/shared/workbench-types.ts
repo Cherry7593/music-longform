@@ -29,6 +29,7 @@ export interface GenerationEntry {
   version: 1; id: string; projectId: string; kind: GenerationKind; createdAt: string; updatedAt: string
   revision: number; draft: EntryDraft; alternatives: Partial<Record<Provider, EntryDraft>>
   requestId?: string; deletedAt?: string
+  promptImport?: { batchId: string; fingerprint: string; index: number; total: number }
 }
 export type GenerationStatus = 'pending' | 'paused' | 'submitting' | 'running' | 'saving' | 'succeeded' | 'failed' | 'unknown' | 'cancelled' | 'abandoned'
 export interface RequestBinding {
@@ -116,6 +117,9 @@ export interface WorkbenchSnapshot {
   warnings: string[]; testMode: boolean
 }
 export interface GenerationSelection { projectId: string; submissionId: string; entries: Array<{ id: string; revision: number }> }
+export interface PromptImportIdentity { projectId: string; kind: GenerationKind; batchId: string }
+export interface PromptImportInput extends PromptImportIdentity { drafts: EntryDraft[] }
+export interface PromptImportResult extends PromptImportIdentity { status: 'missing' | 'created'; entryIds: string[] }
 export interface WorkbenchAPI {
   bootstrap(): Promise<WorkbenchSnapshot>
   createGenerationProject(): Promise<GenerationProject>
@@ -123,6 +127,9 @@ export interface WorkbenchAPI {
   generationProjectImpact(id: string): Promise<DeletionImpact>
   deleteGenerationProject(id: string): Promise<void>
   addEntry(projectId: string, kind: GenerationKind, copyId?: string): Promise<GenerationEntry>
+  createPromptEntries(input: PromptImportInput): Promise<PromptImportResult>
+  promptImportStatus(identity: PromptImportIdentity): Promise<PromptImportResult>
+  savePromptTemplate(kind: GenerationKind): Promise<string | null>
   updateEntry(id: string, revision: number, draft: EntryDraft, alternatives: GenerationEntry['alternatives']): Promise<GenerationEntry>
   deleteEntry(id: string): Promise<void>
   submitEntries(selection: GenerationSelection): Promise<void>

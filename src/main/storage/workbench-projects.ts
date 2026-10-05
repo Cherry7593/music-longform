@@ -1,12 +1,17 @@
-import { randomUUID } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
 import { AppError } from '../providers/http'
 import { WorkbenchDB, type Change } from './workbench-db'
-import { alternativesSchema, compositionDraftSchema, entryDraftSchema, initialComposition, initialEntry, nameSchema, newProjectName } from '../../shared/workbench-schemas'
-import { GENERATION_ACTIVE, RENDER_RESERVED, type CompositionDraft, type CompositionProject, type DeletionImpact, type EntryDraft, type GenerationEntry, type GenerationKind, type GenerationProject, type GenerationRequest } from '../../shared/workbench-types'
+import { alternativesSchema, compositionDraftSchema, entryDraftSchema, initialComposition, initialEntry, nameSchema, newProjectName, promptImportIdentitySchema, promptImportInputSchema } from '../../shared/workbench-schemas'
+import { GENERATION_ACTIVE, RENDER_RESERVED, type CompositionDraft, type CompositionProject, type DeletionImpact, type EntryDraft, type GenerationEntry, type GenerationKind, type GenerationProject, type GenerationRequest, type PromptImportIdentity, type PromptImportInput, type PromptImportResult } from '../../shared/workbench-types'
 
 const now = () => new Date().toISOString()
 export function requestProtected(request: GenerationRequest): boolean {
   return GENERATION_ACTIVE.has(request.status) || request.status === 'paused' || request.status === 'unknown' || (request.status === 'failed' && Boolean(request.recoverable))
+}
+function canonical(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(canonical)
+  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).filter(([, item]) => item !== undefined).sort(([a], [b]) => a.localeCompare(b)).map(([key, item]) => [key, canonical(item)]))
+  return value
 }
 export class GenerationProjects {
   constructor(readonly db: WorkbenchDB) { }
@@ -52,6 +57,44 @@ export class GenerationProjects {
       return [{ table: 'entries', id, value: entry }, { table: 'generation', id: projectId, value: project }]
     })
     return this.db.get('entries', id)
+  }
+  private imported(identity: PromptImportIdentity, fingerprint?: string): PromptImportResult {
+    const found = this.db.list('entries').filter(entry => entry.promptImport?.batchId === identity.batchId).sort((a, b) => a.promptImport!.index - b.promptImport!.index)
+    if (!found.length) return { ...identity, status: 'missing', entryIds: [] }
+    const first = found[0].promptImport!
+    if (first.total !== found.length || found.some((entry, index) => entry.projectId !== identity.projectId || entry.kind !== identity.kind || entry.promptImport!.index !== index || entry.promptImport!.total !== first.total || entry.promptImport!.fingerprint !== first.fingerprint)) throw new AppError('导入批次记录不完整或归属不同，请保留现场并核对；不会重复创建。')
+    if (fingerprint && first.fingerprint !== fingerprint) throw new AppError('同一导入批次的内容已改变，请先核对原批次；不会重复创建。')
+    return { ...identity, status: 'created', entryIds: found.map(entry => entry.id) }
+  }
+  async promptImportStatus(input: PromptImportIdentity): Promise<PromptImportResult> {
+    const identity = promptImportIdentitySchema.parse(input)
+    let result: PromptImportResult | undefined
+    // Serialize behind any prior save and replay an existing redo intent before answering.
+    await this.db.transact(() => { this.get(identity.projectId); result = this.imported(identity); return [] })
+    return result!
+  }
+  async createPromptEntries(input: PromptImportInput): Promise<PromptImportResult> {
+    const value = promptImportInputSchema.parse(input)
+    const identity: PromptImportIdentity = { projectId: value.projectId, kind: value.kind, batchId: value.batchId }
+    const fingerprint = createHash('sha256').update(JSON.stringify(canonical(value))).digest('hex')
+    let result: PromptImportResult | undefined
+    await this.db.transact(() => {
+      const project = this.get(value.projectId), previous = this.imported(identity, fingerprint)
+      if (previous.status === 'created') { result = previous; return [] }
+      if (project.page !== value.kind) throw new AppError('生成页面类型已切换，未创建条目；请回到原项目和类型后核对。')
+      if (project.entryIds.length + value.drafts.length > 20000) throw new AppError('本批将超过项目 20000 条目容量，未创建任何条目；请减少本批数量。')
+      for (const draft of value.drafts) if (draft.provider) {
+        const config = this.db.has('apis', draft.provider) ? this.db.get('apis', draft.provider) : undefined
+        if (!config || config.deletedAt || config.kind !== value.kind) throw new AppError('本批所选 API 未添加、已删除或类型不同；请重新配置。没有 API 时可以留空保存草稿。')
+      }
+      const stamp = now(), entries: GenerationEntry[] = value.drafts.map((draft, index) => ({ version: 1, id: randomUUID(), projectId: value.projectId, kind: value.kind, createdAt: stamp, updatedAt: stamp, revision: 0,
+        draft: { ...draft, ...(!draft.title?.trim() ? { title: undefined } : {}), ...(!draft.lyrics?.trim() ? { lyrics: undefined } : {}) }, alternatives: {},
+        promptImport: { batchId: value.batchId, fingerprint, index, total: value.drafts.length } }))
+      project.entryIds.push(...entries.map(entry => entry.id)); project.updatedAt = stamp
+      result = { ...identity, status: 'created', entryIds: entries.map(entry => entry.id) }
+      return [...entries.map(entry => ({ table: 'entries' as const, id: entry.id, value: entry })), { table: 'generation', id: project.id, value: project }]
+    })
+    return result!
   }
   async updateEntry(id: string, revision: number, draft: EntryDraft, alternatives: GenerationEntry['alternatives']): Promise<GenerationEntry> {
     const input = entryDraftSchema.parse(draft), variants = alternativesSchema.parse(alternatives)
