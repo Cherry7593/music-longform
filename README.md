@@ -4,7 +4,7 @@ Windows 本地工作台：**独立生成项目、条目式音乐/图片生成、
 
 ## 下载与运行
 
-从 [v4.0.1 Release](https://github.com/Cherry7593/music-longform/releases/tag/v4.0.1) 下载 Windows x64 便携 EXE 与同名 `.sha256` 校验文件，直接运行，无需安装 Node.js。仓库为私有仓库，下载需要登录有访问权限的 GitHub 账号。源码下载包不包含 EXE，构建输出 `dist/` 不提交进源码历史。
+从 [v4.0.1 Release](https://github.com/Cherry7593/music-longform/releases/tag/v4.0.1) 下载 `music-longform-4.0.1-Windows-x64.exe` 和同名 `.exe.sha256` 校验文件，直接运行，无需安装 Node.js。Release 使用英文附件名以兼容 GitHub 的文件名规范，内容与本地中文名成品完全相同。仓库为私有仓库，下载需要登录有访问权限的 GitHub 账号；源码下载包不包含 EXE，构建输出 `dist/` 不提交进源码历史。
 
 本地对应文件：`dist/油管视频生成-4.0.1-Windows-x64.exe`，107,986,149 bytes。程序未签名，音频校验和本地视频合成需要已有 FFmpeg / FFprobe；不捆绑、下载或安装工具、模型、CUDA、驱动。
 
@@ -13,7 +13,7 @@ SHA-256
 06D5E7AE1A26BFAA41235DB3589F69ABF9D7629BCE6743BF8A438E4E38805B80
 ```
 
-PowerShell 校验：`Get-FileHash -Algorithm SHA256 '.\油管视频生成-4.0.1-Windows-x64.exe'`。请与随包校验文件及上面的值一致。
+PowerShell 校验：`Get-FileHash -Algorithm SHA256 '.\music-longform-4.0.1-Windows-x64.exe'`。请与随包校验文件及上面的值一致。
 
 ### 版本区分
 
