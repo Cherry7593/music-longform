@@ -8,16 +8,17 @@ import type { AudioAsset, Project, Settings } from '../../src/shared/types'
 import { atomicBuffer, atomicJson, readJson, SerialQueue } from '../../src/main/storage/atomic'
 import * as atomic from '../../src/main/storage/atomic'
 import { projectSchema } from '../../src/main/storage/validation'
-import { ProjectStore } from '../../src/main/storage/projects'
+import { ProjectStore } from '../fixtures/v31/main/storage/projects'
 import { SecretStore } from '../../src/main/storage/secrets'
-import { SettingsStore } from '../../src/main/storage/settings'
+import { SettingsStore } from '../fixtures/v31/main/storage/settings'
+import { defaultAceStepSettings } from '../../src/main/storage/migrations'
 
 // Real disk operations remain in use; configurable exports allow failure injection under ESM.
 vi.mock('node:fs/promises', async importOriginal => ({ ...await importOriginal<typeof import('node:fs/promises')>() }))
 
 let root: string
 let data: string
-const defaults = (): Settings => ({ version: 3, projectRoot: join(root, '中文 项目'), musicDefaults: structuredClone(DEFAULT_MUSIC), imageDefaults: structuredClone(DEFAULT_IMAGE) })
+const defaults = (): Settings => ({ version: 4, aceStep: defaultAceStepSettings(), projectRoot: join(root, '中文 项目'), musicDefaults: structuredClone(DEFAULT_MUSIC), imageDefaults: structuredClone(DEFAULT_IMAGE) })
 const encryption = () => ({
   isEncryptionAvailable: vi.fn(() => true),
   // Reversible fake for injection tests, NOT a cryptographic implementation.
@@ -25,7 +26,7 @@ const encryption = () => ({
   decryptString: vi.fn((value: Buffer) => Buffer.from(value.map((byte) => byte ^ 0xa5)).toString('utf8'))
 })
 const audio = (id = randomUUID()): AudioAsset => ({
-  id, jobId: randomUUID(), taskId: '123', remoteId: '456', title: '曲目', fileName: `audio/${id}.mp3`,
+  id, jobId: randomUUID(), taskId: '123', remoteId: '456', provider: 'mureka', title: '曲目', fileName: `audio/${id}.mp3`,
   durationMs: 123456, createdAt: new Date().toISOString(), model: 'mureka-9.5', prompt: '钢琴', mode: 'instrumental', kept: false
 })
 
@@ -83,7 +84,7 @@ describe('SecretStore', () => {
     await store.init()
     expect(store.has('siliconflow')).toBe(false)
     expect(() => store.get('siliconflow')).toThrow('尚未配置')
-    expect(JSON.parse(await readFile(join(data, 'secrets.json'), 'utf8'))).toEqual({ version: 2, keys: {} })
+    expect(JSON.parse(await readFile(join(data, 'secrets.json'), 'utf8'))).toEqual({ version: 3, keys: {} })
     const musicKey = 'sk-unit-secret-no-real-key'; const imageKey = 'sk-siliconflow-unit-key'
     await Promise.all([store.set('mureka', ` ${musicKey} `), store.set('siliconflow', imageKey)])
     expect(store.has('mureka')).toBe(true)
@@ -93,7 +94,7 @@ describe('SecretStore', () => {
     expect(raw).not.toContain(musicKey)
     expect(raw).not.toContain(imageKey)
     const disk = JSON.parse(raw) as { version: number; keys: Record<string, string> }
-    expect(disk.version).toBe(2)
+    expect(disk.version).toBe(3)
     expect(Object.keys(disk.keys).sort()).toEqual(['mureka', 'siliconflow'])
     expect(Buffer.from(disk.keys.mureka, 'base64')).toEqual(cipher.encryptString(musicKey))
     expect(Buffer.from(disk.keys.siliconflow, 'base64')).toEqual(cipher.encryptString(imageKey))
@@ -106,7 +107,7 @@ describe('SecretStore', () => {
     expect(reopened.has('siliconflow')).toBe(false)
     expect(() => reopened.get('siliconflow')).toThrow('尚未配置')
     expect(reopened.has('mureka')).toBe(true)
-    expect(JSON.parse(await readFile(join(data, 'secrets.json'), 'utf8'))).toEqual({ version: 2, keys: { mureka: disk.keys.mureka } })
+    expect(JSON.parse(await readFile(join(data, 'secrets.json'), 'utf8'))).toEqual({ version: 3, keys: { mureka: disk.keys.mureka } })
     const cleared = new SecretStore(data, cipher); await cleared.init()
     expect(cleared.has('siliconflow')).toBe(false)
     expect(cleared.get('mureka')).toBe(musicKey)
@@ -131,7 +132,7 @@ describe('SecretStore', () => {
     expect(() => store.get('siliconflow')).toThrow('尚未配置')
     expect(cipher.decryptString).not.toHaveBeenCalled()
     const active = await readFile(file, 'utf8')
-    expect(JSON.parse(active)).toEqual({ version: 2, keys: { mureka: oldKeys.mureka } })
+    expect(JSON.parse(active)).toEqual({ version: 3, keys: { mureka: oldKeys.mureka } })
     expect(Buffer.from(JSON.parse(active).keys.mureka, 'base64')).toEqual(Buffer.from(oldKeys.mureka, 'base64'))
     expect(active).not.toContain('openai')
     expect(active).not.toContain(oldKeys.openai)
@@ -196,7 +197,7 @@ describe('SecretStore', () => {
     expect(store.has('mureka')).toBe(provider === 'mureka')
     expect(store.has('siliconflow')).toBe(false)
     expect(cipher.decryptString).not.toHaveBeenCalled()
-    expect(JSON.parse(await readFile(join(data, 'secrets.json'), 'utf8'))).toEqual({ version: 2, keys: provider === 'mureka' ? { mureka: ciphertext } : {} })
+    expect(JSON.parse(await readFile(join(data, 'secrets.json'), 'utf8'))).toEqual({ version: 3, keys: provider === 'mureka' ? { mureka: ciphertext } : {} })
   })
 
   it.each(['backup', 'write'] as const)('retains the V1 secret file and unpublished memory on migration %s failure', async failure => {
@@ -346,7 +347,7 @@ describe('ProjectStore', () => {
     await writeFile(join(project.directory, asset.fileName), 'local image bytes')
     const reopened = new ProjectStore(data); await reopened.init()
     expect(await reopened.get(project.id)).toEqual(saved)
-    expect(saved.version).toBe(3)
+    expect(saved.version).toBe(4)
     expect(saved.images).toEqual([asset])
     expect(saved.imageJobs).toEqual([job])
     expect(saved.imageJobs[0].snapshot).not.toHaveProperty('quality')

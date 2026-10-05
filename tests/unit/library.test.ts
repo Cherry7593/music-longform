@@ -7,7 +7,7 @@ import { DEFAULT_IMAGE, DEFAULT_MUSIC, DEFAULT_VIDEO } from '../../src/shared/sc
 import type { ImageAsset, Project } from '../../src/shared/types'
 import { AppError } from '../../src/main/providers/http'
 import * as atomic from '../../src/main/storage/atomic'
-import { LibraryStore, type LibraryStoreOptions } from '../../src/main/storage/library'
+import { LibraryStore, type LibraryStoreOptions } from '../fixtures/v31/main/storage/library'
 import { existingAssetPath } from '../../src/main/storage/paths'
 import { LIBRARY_LIMITS } from '../../src/main/storage/library-validation'
 import * as ffmpeg from '../../src/main/video/ffmpeg'
@@ -26,7 +26,7 @@ async function store(): Promise<LibraryStore> { const result = new LibraryStore(
 async function projectImage(bytes?: Buffer): Promise<{ project: Project; asset: ImageAsset; file: string }> {
   const id = randomUUID(); const assetId = randomUUID(); const now = new Date().toISOString()
   const project: Project = {
-    version: 3, id, name: '历史 来源', directory: join(root, id), createdAt: now, updatedAt: now,
+    version: 4, id, name: '历史 来源', directory: join(root, id), createdAt: now, updatedAt: now,
     music: structuredClone(DEFAULT_MUSIC), image: structuredClone(DEFAULT_IMAGE), video: structuredClone(DEFAULT_VIDEO),
     musicJobs: [], batches: [], imageJobs: [], audio: [], images: [], videoJobs: []
   }
@@ -242,7 +242,7 @@ describe('project sources and refresh', () => {
 
   it('registers unvalidated audio with source provenance when tools are absent; does not block images', async () => {
     const { project } = await projectImage(await picture()); const id = randomUUID()
-    project.audio.push({ id, jobId: randomUUID(), taskId: 'task', remoteId: 'remote', title: '音乐', fileName: `audio/${id}.wav`, durationMs: 999999, createdAt: new Date().toISOString(), model: 'old-model', prompt: '原始音频提示词', mode: 'instrumental', kept: true })
+    project.audio.push({ id, provider: 'mureka', jobId: randomUUID(), taskId: 'task', remoteId: 'remote', title: '音乐', fileName: `audio/${id}.wav`, durationMs: 999999, createdAt: new Date().toISOString(), model: 'old-model', prompt: '原始音频提示词', mode: 'instrumental', kept: true })
     await mkdir(join(project.directory, 'audio'))
     await writeFile(join(project.directory, `audio/${id}.wav`), Buffer.concat([Buffer.from('RIFF0000WAVE'), Buffer.alloc(64)]))
     const library = await store(); const audio = await library.findProjectAsset(project.id, id)

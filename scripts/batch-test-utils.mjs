@@ -10,12 +10,12 @@ export async function loadBatchEngine(directory) {
   const sharpEntry = createRequire(import.meta.url).resolve('sharp')
   await build({ stdin: { contents: `
     export * from './src/main/video/ffmpeg';
-    export {LibraryStore} from './src/main/storage/library';
-    export {VideoBatchStore} from './src/main/storage/video-batches';
-    export {ExportReceiptStore} from './src/main/storage/export-receipts';
-    export {BatchJobManager} from './src/main/video/batch-jobs';
-    export {RenderScheduler} from './src/main/video/scheduler';
-    export {decorateLibrary} from './src/main/library/usage';
+    export {LibraryStore} from './tests/fixtures/v31/main/storage/library';
+    export {VideoBatchStore} from './tests/fixtures/v31/main/storage/video-batches';
+    export {ExportReceiptStore} from './tests/fixtures/v31/main/storage/export-receipts';
+    export {BatchJobManager} from './tests/fixtures/v31/main/video/batch-jobs';
+    export {RenderScheduler} from './tests/fixtures/v31/main/video/scheduler';
+    export {decorateLibrary} from './tests/fixtures/v31/main/library/usage';
     export {DEFAULT_BATCH_OPTIONS} from './src/shared/batch-schemas';
     export {calculateTimeline} from './src/shared/video-timeline';
     export {batchDraft} from './src/shared/batch-planner';

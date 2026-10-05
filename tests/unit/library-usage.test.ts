@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { randomUUID } from 'node:crypto'
-import { decorateLibrary } from '../../src/main/library/usage'
+import { decorateLibrary } from '../fixtures/v31/main/library/usage'
 import type { ExportReceipt, LibraryItem } from '../../src/shared/library-types'
 import type { Project, VideoJob } from '../../src/shared/types'
 import { DEFAULT_IMAGE, DEFAULT_MUSIC, DEFAULT_VIDEO } from '../../src/shared/schemas'
@@ -8,7 +8,7 @@ function fixture() {
   const projectId = randomUUID(); const originalIds = Array.from({ length: 4 }, () => randomUUID()); const time = new Date().toISOString()
   const items: LibraryItem[] = originalIds.map((assetId, i) => ({ id: randomUUID(), kind: i === 3 ? 'image' : 'audio', name: `素材 ${i}`, createdAt: time,
     available: true, origins: [{ type: 'project', name: '历史项目', projectId, assetId }], durationSeconds: i === 3 ? undefined : 100 }))
-  const project: Project = { version: 3, id: projectId, name: '历史项目', directory: 'C:\\fixture', createdAt: time, updatedAt: time,
+  const project: Project = { version: 4, id: projectId, name: '历史项目', directory: 'C:\\fixture', createdAt: time, updatedAt: time,
     music: DEFAULT_MUSIC, image: DEFAULT_IMAGE, musicJobs: [], batches: [], imageJobs: [], audio: [], images: [], videoJobs: [], video: DEFAULT_VIDEO }
   const job: VideoJob = { id: randomUUID(), kind: 'video', status: 'succeeded', createdAt: time, finishedAt: time,
     fileName: `videos/${randomUUID()}.mp4`, durationSeconds: 60, snapshot: { ...DEFAULT_VIDEO, audioIds: originalIds.slice(0, 3), imageId: originalIds[3], durationMode: 'target', targetSeconds: 60 } }

@@ -1,13 +1,13 @@
 import { describe, expect, it, vi } from 'vitest'
 import { randomUUID } from 'node:crypto'
-import { JobManager, type JobStore } from '../../src/main/jobs'
+import { JobManager, type JobStore } from '../fixtures/v31/main/jobs'
 import { AppError } from '../../src/main/providers/http'
 import { DEFAULT_IMAGE, DEFAULT_MUSIC, DEFAULT_VIDEO } from '../../src/shared/schemas'
 import type { Project, RemoteMusicTask, ImageResult, MusicJob } from '../../src/shared/types'
 
 function fixture() {
   const project: Project = {
-    version: 3, id: randomUUID(), name: '测试项目', directory: 'unused', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
+    version: 4, id: randomUUID(), name: '测试项目', directory: 'unused', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
     music: { ...structuredClone(DEFAULT_MUSIC), prompt: '舒缓钢琴', count: 3 }, image: { ...DEFAULT_IMAGE, prompt: '宁静的山川' },
     musicJobs: [], batches: [], imageJobs: [], audio: [], images: [], video: structuredClone(DEFAULT_VIDEO), videoJobs: []
   }
@@ -17,7 +17,7 @@ function fixture() {
     mutate: async (_id, fn) => { const next = structuredClone(saved); fn(next); saved = next; return structuredClone(next) }
   }
   const success = (id = 'task1'): RemoteMusicTask => ({ id, model: 'mureka-9.5', status: 'succeeded', choices: [{ id: `song-${id}`, url: 'https://example.com/music.mp3', duration: 120000 }] })
-  const music = { create: vi.fn(async () => success(randomUUID())), query: vi.fn(async () => success()), check: vi.fn() }
+  const music = { create: vi.fn(async () => success(randomUUID())), query: vi.fn(async (_mode: string, taskId: string) => success(taskId)), check: vi.fn() }
   const images = { generate: vi.fn(async (): Promise<ImageResult> => ({ url: 'https://cdn.example.com/picture', model: 'Qwen/Qwen-Image' })), check: vi.fn() }
   const download = vi.fn(async (_url: string, _directory: string, id: string) => ({ fileName: `audio/${id}.mp3` }))
   const saveImage = vi.fn(async (_url: string, _directory: string, id: string) => ({ fileName: `images/${id}.webp`, width: 1664, height: 928, format: 'webp' as const }))
@@ -27,7 +27,7 @@ function fixture() {
   return { project, store, music, images, download, saveImage, manager, keys, success, onError }
 }
 function pendingJob(batchId: string, status: MusicJob['status'] = 'pending', taskId?: string): MusicJob {
-  return { id: randomUUID(), batchId, index: 1, createdAt: new Date().toISOString(), status, taskId, snapshot: { ...DEFAULT_MUSIC, prompt: '钢琴' } }
+  return { id: randomUUID(), batchId, index: 1, createdAt: new Date().toISOString(), status, taskId, binding: { provider: 'mureka', adapterVersion: 1 }, snapshot: { ...DEFAULT_MUSIC, prompt: '钢琴' } }
 }
 
 describe('music queue and no duplicate billing', () => {

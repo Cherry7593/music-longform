@@ -1,13 +1,97 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>油管视频生成 V3.0 · 界面预览</title>
-<style>body{margin:0;padding:32px;background:#f5f6f8;color:#20242b;font:16px/1.7 "Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1366px;margin:auto}h1{font-size:24px}h2{font-size:20px;margin-top:32px}p{color:#69717d;max-width:75ch}img{display:block;width:100%;border:1px solid #e5e8ed;border-radius:8px}nav{display:flex;gap:18px;flex-wrap:wrap}a{color:#285fbb}</style></head>
-<body><main><h1>油管视频生成 V3.0</h1><p>实际 Electron 页面与打包应用截图。音乐为人工测试音轨，图片为本地测试图，不代表 AI 生成质量。60 首音乐和 3 张图片实测生成三个 60 分 43 秒视频。</p>
-<nav aria-label="预览目录"><a href="#music">音乐素材库</a><a href="#images">图片素材库</a><a href="#plan">批量规划</a><a href="#queue">成片记录</a><a href="#generation">素材生成</a></nav>
-<h2 id="music">总素材库：音乐分类、使用记录与跨页选择</h2><img src="screenshots/v3-library-music.png" alt="60首音乐素材分页显示，成功成片后自动标记已使用">
-<h2 id="images">图片素材库：分类勾选与预览</h2><img src="screenshots/v3-library-images.png" alt="三张不同格式图片的网格预览与使用状态">
-<h2 id="plan">自动分组：整首播放、同批不重复、达到最短时长</h2><img src="screenshots/v3-batch-plan.png" alt="60首音乐分为三个视频，预览每组时长，支持移动和排序曲目">
-<h2 id="queue">批量队列与成功成片</h2><img src="screenshots/v3-batch-history.png" alt="三条实际一小时视频的批次成功记录">
-<h2 id="generation">素材生成：Mureka 音乐、硅基流动图片</h2><img src="screenshots/v3-generator.png" alt="无需手动创建项目的独立音乐和图片生成会话">
-<h2>API 配置保持独立</h2><img src="screenshots/v3-settings.png" alt="Mureka和硅基流动独立配置，截图无真实密钥">
-<h2>打包应用中的批量成片播放</h2><img src="screenshots/v3-player.png" alt="打包版真实导入FLAC后合成的65秒1080p视频播放">
-</main></body></html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>油管视频生成 V4.0 · 真实桌面截图</title>
+  <style>
+    :root{color-scheme:light;font:16px/1.7 "Segoe UI","Microsoft YaHei UI",sans-serif;color:#20242b;background:#f5f6f8}
+    *{box-sizing:border-box}body{margin:0}main{max-width:1428px;margin:auto;padding:32px}
+    h1{font-size:24px;line-height:1.4;margin:8px 0 16px}h2{font-size:20px;margin:0 0 8px}
+    p{max-width:86ch;margin:12px 0;color:#555f6e}a{color:#315f98;text-underline-offset:3px}
+    .eyebrow,figcaption,.meta{font-size:14px;color:#626d7c}.toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:24px 0}
+    select{font:inherit;min-height:44px;border:1px solid #cbd2da;border-radius:6px;background:white;color:inherit;padding:8px 12px;max-width:100%}
+    nav{display:flex;gap:10px 20px;flex-wrap:wrap;margin:12px 0 24px}nav a{padding:8px 0}
+    a:focus-visible,select:focus-visible{outline:3px solid #426b9e;outline-offset:4px}
+    figure{margin:0 0 32px;padding:20px;background:white;border:1px solid #e5e8ed;border-radius:8px;scroll-margin-top:24px}
+    .image-link{display:block;margin:14px 0 8px}img{display:block;width:100%;height:auto;border:1px solid #e5e8ed;border-radius:4px;background:#fafbfc}
+    figcaption{overflow-wrap:anywhere}.note{border-left:3px solid #426b9e;padding-left:16px}
+    footer{border-top:1px solid #dce1e7;padding-top:16px}.toolbar p{margin:0}
+    @media(max-width:700px){main{padding:20px 12px}figure{padding:12px}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">WINDOWS DESKTOP · 实际 4.0.0 打包应用</div>
+  <h1>双项目 · 条目式生成 · 统一素材库</h1>
+  <p>四个入口：素材生成、批量合成、素材库、设置。以下是通过原生窗口检查的同一批 <strong>47 张截图</strong>，不是重绘的演示界面。点击图片可看原始尺寸。</p>
+  <p class="note">内容来自隔离的人工测试素材与合成配置；长错误是测试数据。截图过程中没有提交生成或合成，没有付费，也没有验证 ACE 神经推理。功能与真实编码结果另见验收文档。</p>
+  <div class="toolbar">
+    <label for="resolution">原生窗口外框</label>
+    <select id="resolution"><option value="1366x768">1366 × 768</option><option value="1920x1080">1920 × 1080</option></select>
+    <p id="dimensions" class="meta" role="status"></p>
+  </div>
+  <nav aria-label="截图目录"><a href="#generation-compact-list">生成条目</a><a href="#generation-image-entry">图片生成</a><a href="#composition-audio-selector">合成页内选材</a><a href="#library-music">统一素材库</a><a href="#settings-added-apis">已添加 API</a><a href="#settings-render-resources">并行资源</a></nav>
+  <div id="gallery"></div>
+  <noscript><p>请启用本地 JavaScript 以展示截图索引；所有原始 PNG 均在同目录的 screenshots 文件夹，后缀为 20261005-062259-4e0cca。</p></noscript>
+  <footer>
+    <p class="meta">DPI 96；白主区域、浅灰侧栏、正文与控件16px、元数据≥14px。原生尺寸、滚动、无横向溢出、焦点陷阱、Escape 和焦点归还均通过。PNG 保存客户区，不包含 Windows 外框。</p>
+    <p class="meta">截图命名时间为机器本地 2026-10-05（UTC+08:00）。权威记录：v4-visual-reports/run-3aub726f/report.json。</p>
+    <p><a href="verification-v4.md">V4 验收记录</a> · <a href="composition-performance-v4.md">全链路性能</a> · <a href="ui-preview-v3.1.html">保留的 V3.1 原图集</a></p>
+  </footer>
+</main>
+<script>
+  const suffix = '20261005-062259-4e0cca';
+  const states = [
+    ['generation-compact-list', '紧凑生成条目与独立项目', '音乐与图片分开，条目按需展开；没有重复次数输入。'],
+    ['generation-mureka-entry', 'Mureka 条目', '每个条目独立保存 API、模型、提示词与参数。'],
+    ['generation-kie-entry', 'Kie.ai 条目', '按实际能力显示风格、独立歌词和高级参数。'],
+    ['generation-reapi-entry', 'reAPI 条目', '描述与自填歌词模式分开，不静默清空文本。'],
+    ['generation-sunor-entry', 'Sunor 条目', '仅展示该来源支持的参数；不宣称它是 Suno 官方 API。'],
+    ['generation-acestep-entry', 'ACE-Step 条目', '客户端连接本地 REST，不管理服务进程或部署模型。'],
+    ['local-generation-confirmation-not-submitted', '一次确认本地生成快照', '检查本地资源风险后取消；截图检查没有实际提交。'],
+    ['long-stored-error', '可滚动的持久长错误', '人工错误夹具；不以裁切隐藏重要信息。'],
+    ['long-draft-validation-error', '保留长输入并明确校验', '草稿可存；不截断原文，不把无效输入发给提供方。'],
+    ['generation-image-entry', '独立图片条目', '已添加的适用图片 API；默认横图1664×928。'],
+    ['composition-audio-selector', '合成项目直接选择音乐', '页内搜索、选择、试听，不需要先去素材库勾选。'],
+    ['composition-image-selector', '合成项目直接选择图片', '一张图片对应一条视频；项目草稿独立保存。'],
+    ['composition-plan', '整首分组与合成计划', '所有所选音乐同批恰好分配一次，修改草稿使旧计划失效。'],
+    ['composition-confirmation-not-submitted', '确认不可变合成快照', '截图检查取消确认；实际编码另由打包和性能测试执行。'],
+    ['composition-empty-executions', '独立执行历史空态', '新项目不继承其它项目的任务。'],
+    ['library-music', '音乐资产与独立使用记录', '资产生命周期独立于项目，可试听、搜索、另存或确认删除。'],
+    ['library-images', '图片资产', '原始PNG/JPEG/WebP字节保留；界面通过资产ID引用。'],
+    ['image-preview', '图片预览', '复用真实媒体协议，对话框支持Escape和焦点归还。'],
+    ['library-video-empty', '视频分类空态', '本原生截图夹具未执行新合成；实际新旧视频入库已另行验证。'],
+    ['settings-empty-apis', '新安装为空的 API 列表', '不自动添加默认厂商或把无凭据的厂商冒充已连接。', '1366x768'],
+    ['settings-added-apis', '显式已添加 API 列表', '本图为合成配置；同一厂商仅一个配置，连接检查只读。'],
+    ['settings-local-editor', '本地地址与可选 Key', '无Key的ACE仍是已添加配置；不跨地址复用凭据。'],
+    ['settings-render-resources', '受控并行与每任务线程上限', '所有合成项目共用资源池，目标并行不等于无条件强开。'],
+    ['settings-storage', '存储与数据位置', '不自动搬库；备份需要应用数据与全部媒体根。']
+  ];
+  const selector = document.querySelector('#resolution');
+  function render() {
+    const resolution = selector.value;
+    const selected = states.filter(state => !state[3] || state[3] === resolution);
+    document.querySelector('#dimensions').textContent = resolution === '1366x768'
+      ? '客户区1350 × 729 · 24张 · DPI 96'
+      : '客户区1904 × 1041 · 23张 · DPI 96';
+    const figures = selected.map(([state, title, description]) => {
+      const figure = document.createElement('figure'); figure.id = state;
+      const heading = document.createElement('h2'); heading.textContent = title;
+      const caption = document.createElement('figcaption'); caption.textContent = description;
+      const link = document.createElement('a'); link.className = 'image-link';
+      link.href = `screenshots/v4-${state}-${resolution}-${suffix}.png`;
+      link.setAttribute('aria-label', `${title}：查看原始截图`);
+      const image = document.createElement('img'); image.src = link.href; image.alt = title;
+      image.loading = 'lazy'; image.decoding = 'async';
+      image.width = resolution === '1366x768' ? 1350 : 1904;
+      image.height = resolution === '1366x768' ? 729 : 1041;
+      link.append(image); figure.append(heading, caption, link); return figure;
+    });
+    document.querySelector('#gallery').replaceChildren(...figures);
+  }
+  selector.addEventListener('change', render);
+  render();
+</script>
+</body>
+</html>

@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { BrowserWindow, IpcMainInvokeEvent } from 'electron'
 import { randomUUID } from 'node:crypto'
-import { registerIPC } from '../../src/main/ipc'
+import { registerIPC } from '../fixtures/v31/main/ipc'
 import { AppError } from '../../src/main/providers/http'
 import { DEFAULT_IMAGE, DEFAULT_MUSIC } from '../../src/shared/schemas'
 import type { Provider, Settings } from '../../src/shared/types'
+import { defaultAceStepSettings } from '../../src/main/storage/migrations'
 
 const handlers = vi.hoisted(() => new Map<string, (event: unknown, ...args: unknown[]) => Promise<{ ok: boolean; value?: unknown; error?: string }>>())
 vi.mock('electron', () => ({
@@ -20,7 +21,7 @@ function fixture(imageConfigured = false) {
   const contents = { mainFrame: frame }
   const window = { webContents: contents } as unknown as BrowserWindow
   const event = { sender: contents, senderFrame: frame } as unknown as IpcMainInvokeEvent
-  const settings: Settings = { version: 3, projectRoot: 'C:\\projects', musicDefaults: structuredClone(DEFAULT_MUSIC), imageDefaults: structuredClone(DEFAULT_IMAGE) }
+  const settings: Settings = { version: 4, aceStep: defaultAceStepSettings(), projectRoot: 'C:\\projects', musicDefaults: structuredClone(DEFAULT_MUSIC), imageDefaults: structuredClone(DEFAULT_IMAGE) }
   const keys: Partial<Record<Provider, string>> = { mureka: musicKey, ...(imageConfigured ? { siliconflow: imageKey } : {}) }
   const deps = {
     projects: { list: vi.fn(async () => []), get: vi.fn(async () => ({})), patch: vi.fn(), warnings: [] },
@@ -51,11 +52,11 @@ describe('IPC boundary', () => {
   it('exposes only current credential presence in settings and bootstrap, never secret material', async () => {
     const f = fixture()
     const result = await f.call('canvas:settings:get')
-    expect(result).toEqual({ ok: true, value: { ...f.deps.settings.get(), keys: { mureka: true, siliconflow: false }, encryptionAvailable: true } })
+    expect(result).toEqual({ ok: true, value: { ...f.deps.settings.get(), keys: { mureka: true, 'mureka-cn': false, siliconflow: false, kie: false, reapi: false, sunor: false, acestep: false }, encryptionAvailable: true } })
     const bootstrap = await f.call('canvas:bootstrap')
     expect(bootstrap.ok).toBe(true)
     expect(bootstrap.value).toMatchObject({ settings: result.value })
-    expect(f.deps.secrets.has.mock.calls.map(([provider]) => provider)).toEqual(['mureka', 'siliconflow', 'mureka', 'siliconflow'])
+    expect(f.deps.secrets.has.mock.calls.map(([provider]) => provider)).toEqual(['mureka', 'siliconflow', 'kie', 'reapi', 'sunor', 'acestep', 'mureka', 'siliconflow', 'kie', 'reapi', 'sunor', 'acestep'])
     expect(f.deps.secrets.get).not.toHaveBeenCalled()
     expect(JSON.stringify([result, bootstrap])).not.toContain(musicKey)
     expect(JSON.stringify([result, bootstrap])).not.toContain(imageKey)
@@ -68,7 +69,7 @@ describe('IPC boundary', () => {
     const saved = await f.call('canvas:keys:set', 'siliconflow', imageKey)
     expect(saved.ok).toBe(true)
     expect(saved.value).toMatchObject({ keys: { mureka: true, siliconflow: true } })
-    expect(f.deps.secrets.set).toHaveBeenCalledExactlyOnceWith('siliconflow', imageKey)
+    expect(f.deps.secrets.set).toHaveBeenCalledExactlyOnceWith('siliconflow', imageKey, undefined)
     expect(JSON.stringify(saved)).not.toContain(imageKey)
     const cleared = await f.call('canvas:keys:clear', 'siliconflow')
     expect(cleared.ok).toBe(true)

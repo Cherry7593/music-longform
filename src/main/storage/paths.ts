@@ -15,7 +15,7 @@ export function assertAssetId(id: string): void {
 
 export function validAssetName(fileName: string, kind: AssetKind, id: string): boolean {
   if (!idSchema.safeParse(id).success) return false
-  if (kind === 'audio') return fileName === `audio/${id}.mp3` || fileName === `audio/${id}.wav`
+  if (kind === 'audio') return ['mp3', 'wav', 'flac', 'm4a'].some(extension => fileName === `audio/${id}.${extension}`)
   if (kind === 'image') return ['png', 'jpg', 'webp'].some(extension => fileName === `images/${id}.${extension}`)
   if (kind === 'video') return fileName === `videos/${id}.mp4`
   return kind === 'preview' && fileName === `previews/${id}.wav`

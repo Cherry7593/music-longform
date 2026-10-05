@@ -1,13 +1,7 @@
 import type { LibraryAPI } from './library-types'
-export type Provider = 'mureka' | 'siliconflow'
-export type MusicMode = 'instrumental' | 'song'
-export interface MusicDraft {
-  prompt: string
-  mode: MusicMode
-  model: string
-  count: number
-  styles: string[]
-}
+import type { MusicDraft, MusicMode, MusicProviderId, MusicBinding, MusicOutput, AceStepSettings, AceStepConfiguration, AceStepStatus } from './music-types'
+export type { MusicDraft, MusicMode, MusicProviderId } from './music-types'
+export type Provider = MusicProviderId | 'siliconflow'
 export interface ImageDraft {
   prompt: string
   model: string
@@ -28,6 +22,9 @@ export interface MusicJob {
   createdAt: string
   status: JobStatus
   snapshot: MusicDraft
+  binding: MusicBinding
+  outputs?: MusicOutput[]
+  detail?: string
   taskId?: string
   actualModel?: string
   error?: string
@@ -54,7 +51,11 @@ export interface AudioAsset {
   id: string
   jobId: string
   taskId: string
-  remoteId: string
+  remoteId?: string
+  provider: MusicProviderId
+  resultId?: string
+  originalFileName?: string
+  originalSha256?: string
   title: string
   fileName: string
   durationMs: number
@@ -77,7 +78,7 @@ export interface ImageAsset {
   format: ImageFormat
 }
 export interface Project {
-  version: 3
+  version: 4
   id: string
   name: string
   directory: string
@@ -102,7 +103,8 @@ export interface ProjectSummary {
   imageCount: number
 }
 export interface Settings {
-  version: 3
+  version: 4
+  aceStep: AceStepSettings
   projectRoot: string
   musicDefaults: MusicDraft
   imageDefaults: ImageDraft
@@ -138,6 +140,8 @@ export interface CanvasAPI extends LibraryAPI {
   setKey(provider: Provider, key: string): Promise<PublicSettings>
   clearKey(provider: Provider): Promise<PublicSettings>
   checkKey(provider: Provider): Promise<CredentialCheck>
+  configureAceStep(value: AceStepConfiguration): Promise<PublicSettings>
+  getAceStepModels(): Promise<AceStepStatus>
   startMusic(projectId: string): Promise<Project>
   stopMusic(projectId: string, batchId: string): Promise<Project>
   continueMusic(projectId: string, batchId: string): Promise<Project>
@@ -164,6 +168,8 @@ export interface RemoteMusicTask {
   model?: string
   status: 'preparing' | 'queued' | 'running' | 'streaming' | 'succeeded' | 'failed' | 'timeouted' | 'cancelled'
   failed_reason?: string
+  /** Application-authored waiting description, never untrusted provider text. */
+  detail?: string
   choices?: RemoteChoice[]
 }
 export interface ImageResult { url: string; model: string }
@@ -173,7 +179,7 @@ export interface MusicProvider {
   check(key: string): Promise<CredentialCheck>
 }
 export interface ImageProvider {
-  generate(draft: ImageDraft, key: string): Promise<ImageResult>
+  generate(draft: ImageDraft, key: string, signal?: AbortSignal): Promise<ImageResult>
   check(key: string): Promise<CredentialCheck>
 }
 export function assetURL(projectId: string, kind: AssetKind, assetId: string): string {

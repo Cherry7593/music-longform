@@ -3,6 +3,9 @@ import type { ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 
+let openDialogs = 0
+let originalInert = false
+
 interface DialogProps {
   title: string
   description?: string
@@ -22,6 +25,8 @@ export function Dialog({ title, description, className = '', children, onClose, 
   useLayoutEffect(() => { callback.current = onClose; blocked.current = busy }, [onClose, busy])
   useLayoutEffect(() => {
     const previous = previousFocus.current
+    const root = document.getElementById('root')
+    if (root) { if (openDialogs === 0) originalInert = root.inert; openDialogs++; root.inert = true }
     const element = panel.current
     element?.focus({ preventScroll: true })
     const keydown = (event: KeyboardEvent): void => {
@@ -46,6 +51,7 @@ export function Dialog({ title, description, className = '', children, onClose, 
     }
     document.addEventListener('keydown', keydown, true)
     return () => {
+      if (root && --openDialogs === 0) root.inert = originalInert
       document.removeEventListener('keydown', keydown, true)
       requestAnimationFrame(() => {
         if (document.querySelector('[data-canvas-dialog]')) return

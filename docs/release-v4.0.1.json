@@ -1,0 +1,200 @@
+{
+  "version": "4.0.1",
+  "passed": true,
+  "artifact": {
+    "file": "dist/油管视频生成-4.0.1-Windows-x64.exe",
+    "bytes": 107986149,
+    "sha256": "06D5E7AE1A26BFAA41235DB3589F69ABF9D7629BCE6743BF8A438E4E38805B80",
+    "productVersion": "4.0.1",
+    "signature": "NotSigned"
+  },
+  "checksumMatches": true,
+  "originalV400Unchanged": {
+    "file": "dist/油管视频生成-4.0.0-Windows-x64.exe",
+    "bytes": 107985607,
+    "sha256": "3E130BABD3EBBF56E57CA416E2467B987144AE7FA9DED80BF46373E7959B4690"
+  },
+  "buildFiles": [
+    {
+      "file": "out/main/chunks/testing-B867jA34.js",
+      "sha256": "B84181CC3E154FB33ED017159B8270FCD94BA2E7723A1BF6279E7F8CBC114112"
+    },
+    {
+      "file": "out/main/index.js",
+      "sha256": "9592E49461994BF07E2106C6FA6E232A0D3E6FC281E86BA5FE5E27A0C62D6B04"
+    },
+    {
+      "file": "out/preload/index.js",
+      "sha256": "A91EC2827871804999C018F58CE3514319099EC75C9424BB2802C4258165F40F"
+    },
+    {
+      "file": "out/renderer/assets/index-Bj7xVccN.css",
+      "sha256": "C8F55C48AC3127CE7FD09863C3124F0C9C7CBE58FAE2E716D8E954D2B4A47FA4"
+    },
+    {
+      "file": "out/renderer/assets/index-jRUqZpG0.js",
+      "sha256": "D7CD4CC57F7920B03582170AABCC2F7C4ACE2505AEE12C3076A1FBC657A52669"
+    },
+    {
+      "file": "out/renderer/index.html",
+      "sha256": "606A5434A51D2FBA12D4A267337AD1677ED32F10C97F231DDFA8F05518805A35"
+    }
+  ],
+  "unchangedVideoFiles": [
+    "src/main/video/composition-queue.ts",
+    "src/main/video/resource-pool.ts",
+    "src/main/video/pipeline.ts",
+    "src/main/video/encoders.ts",
+    "src/main/video/encoder-device.ts"
+  ],
+  "sourceHashes": [
+    {
+      "file": "src/main/providers/mureka.ts",
+      "sha256": "B58767AF2FB9E8C61A4D195C23D56A8738D49017484ECE7B34D086D2D95DDEB3"
+    },
+    {
+      "file": "src/main/providers/music-registry.ts",
+      "sha256": "7A3449072E9EBD0EA892AAB62D825098E27208F848FA8ECC9B2A019FC1E6C186"
+    },
+    {
+      "file": "src/main/providers/http.ts",
+      "sha256": "DC3B23FDBB98C965844F2C20AE97BE9DCDC2A70CDF08906EFAC9A063B6ADC621"
+    },
+    {
+      "file": "src/main/providers/music-contract.ts",
+      "sha256": "22807A512DBDEBD30E192FAF0A8AE22535A5866F69940B91BC7180F0E0F8D859"
+    },
+    {
+      "file": "src/main/storage/secrets.ts",
+      "sha256": "D4A5C6E9CA67011AA8127F3F590FA810543290A62CF7BA9F4D7AF65DE15807B8"
+    },
+    {
+      "file": "src/main/storage/api-configurations.ts",
+      "sha256": "2E607E2625694F00D7EC5FF31921C6E85474D8E75FD064B45C4C27F5656A724A"
+    },
+    {
+      "file": "src/main/generation-jobs.ts",
+      "sha256": "58C9D74FA4AA99FB318EE4E7CDE712535EA24474BD14966FA4FA75799F1CC379"
+    },
+    {
+      "file": "src/shared/music-types.ts",
+      "sha256": "6A68F275D0C77202D87B697D92202A49E9130B50780D4453DC282102F619759C"
+    },
+    {
+      "file": "src/shared/music-schemas.ts",
+      "sha256": "372EB44BF88EA58B38ABE35571121CC87722207B240BBA1FF0FF30276D22B1A1"
+    },
+    {
+      "file": "src/shared/music-capabilities.ts",
+      "sha256": "F14F075A341DF286FAD89E293FA8032C59E2CD4C8DFEEC6DC94266F8CC126B1B"
+    },
+    {
+      "file": "src/shared/schemas.ts",
+      "sha256": "3CDD88699F924C1482FEE4419F998065B9739E55845E1C797CB7C50C52877AC8"
+    },
+    {
+      "file": "src/shared/workbench-types.ts",
+      "sha256": "F1B8D8C69ED90538E00FA53272FBF9579FA1716C21EC4C6EE7B33920A45560BC"
+    },
+    {
+      "file": "src/shared/workbench-schemas.ts",
+      "sha256": "DB597290E6B4BCC2AB6F6C5364F57D733F82BDF072B942183425CACCB3D053AA"
+    },
+    {
+      "file": "src/shared/types.ts",
+      "sha256": "AC5D2DE930619140C0493FC9A8FE2CA1A72387FB12FD09A18BE7C5B576B3DA4C"
+    },
+    {
+      "file": "src/shared/branding.ts",
+      "sha256": "18B470275D95489863C33FD394195B53F5E31760516922DB9A0CBD9C45D76608"
+    },
+    {
+      "file": "src/renderer/selection.ts",
+      "sha256": "78A2A974DAB0DD131747C124B64859A42E5886B88FDD049DFFECB767F7E4CE7A"
+    },
+    {
+      "file": "src/renderer/components/EntryEditor.tsx",
+      "sha256": "205067FADDD47B502F46CB9C8D945B294B128A65A71E5979973DA2FA6D453648"
+    },
+    {
+      "file": "src/renderer/components/SettingsWorkspace.tsx",
+      "sha256": "2A8F7A0B252A779DF43604D1D3383A5A3DA0E9814385C6C25437B7983431BD27"
+    },
+    {
+      "file": "src/renderer/components/AssetSelector.tsx",
+      "sha256": "E96A01CAB5AB38066D43AC862AC0B728BB0E61E8F351BB953C8CA541DF46BF5C"
+    },
+    {
+      "file": "src/renderer/components/CompositionWorkspace.tsx",
+      "sha256": "03BDE3A821AD322516DAFD5BF2EEF6C54BF79B39E22C669C3A0FB294F268CD59"
+    },
+    {
+      "file": "src/renderer/components/LibraryWorkspace.tsx",
+      "sha256": "26E7855DB6ACCF47C848D50F3591F5FDB0C3AD8856FD6ABC1D992C692D172168"
+    },
+    {
+      "file": "src/renderer/components/GenerationWorkspace.tsx",
+      "sha256": "FF2043C988A038115F2424869DEF9017164FD4F56105D7D9FD19E78E7F696F00"
+    }
+  ],
+  "verification": {
+    "typecheck": "passed",
+    "lint": "passed",
+    "unitTests": 307,
+    "unitFiles": 11,
+    "newMurekaCases": 24,
+    "newSelectionCases": 33,
+    "targetedRealElectron": [
+      "source IDs/rename/same-name/deleted/multi-origin/legacy/import; cross-page stable unique selection, usage intersection, unavailable deselection, replacement isolation and Cancel unchanged",
+      "Apply persists only current project/type; 25 images cross-page; 101-image overflow refuses atomically without truncation; clear is dialog-type-only",
+      "library keeps name search, selects all matching pages, intersects usage/type and deselects newly unavailable items without clearing other type",
+      "generation pending only, cross-page, no submitted entries, A/B and music/image selections isolated and repeated select-all unique",
+      "two actual encrypted site configs coexist, menu uniqueness and endpoints, domestic short key, unchanged international ciphertext, independent entry models/drafts; no paid requests",
+      "development real launch 1: site configs and current project selections retained, no generation/render",
+      "development real launch 2: site configs and current project selections retained, no generation/render"
+    ],
+    "actualPortableLaunches": 2,
+    "paidCalls": 0,
+    "videoCompositions": 0
+  },
+  "evidence": {
+    "fixture": "v401-ui-1dc46e26d0714266b940f55bf6061521",
+    "uiReport": "ui-check/report.json",
+    "portableReport": "portable-check/report.json",
+    "logs": [
+      "v401-unit-final.log",
+      "v401-typecheck-final.log",
+      "v401-lint-final.log",
+      "v401-ui.log",
+      "v401-dist.log",
+      "v401-portable.log"
+    ],
+    "officialEvidence": [
+      {
+        "file": "v401-get-v1-account-billing.html",
+        "sha256": "380451D62DD2B79711ED43C5F32882EFE02B11D346AA0CD868CC9AA542D1F72F"
+      },
+      {
+        "file": "v401-get-v1-instrumental-query-{task_id}.html",
+        "sha256": "8E73E78A78CC29CA2F55F444D70BBB0A5136908C75C3B0B4470C8CA4A4BE96EC"
+      },
+      {
+        "file": "v401-get-v1-song-query-{task_id}.html",
+        "sha256": "6C11AE8B66D8D84509B1E8EFEF56225BA583A0F8BFF0415367A1EC0DE044FB20"
+      },
+      {
+        "file": "v401-post-v1-instrumental-generate.html",
+        "sha256": "DDB88C69E54E6FCBB8CB62E5FDF93F096B4F93A75A18C533E08B7D114D78D8DD"
+      },
+      {
+        "file": "v401-post-v1-song-easy-generate.html",
+        "sha256": "C1B58649FE96BD40C0BE121944027859C5869C84FF997BAA1CB5C7EE0C760F47"
+      }
+    ]
+  },
+  "boundaries": [
+    "No real account generation, cloud billing/permissions/quality or actual ACE inference verified.",
+    "No hour rendering/performance matrix/full screenshot collection; prior V4 figures were not rerun.",
+    "Unsigned Windows portable; final package built once; no GitHub push."
+  ]
+}

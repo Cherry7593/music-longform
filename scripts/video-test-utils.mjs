@@ -9,7 +9,7 @@ import sharp from 'sharp'
 export const scratchRoot = process.env.PI_SCRATCH_DIR || os.tmpdir()
 export async function loadVideoEngine(directory) {
   const output = path.join(directory, 'engine.cjs')
-  await build({ stdin: { contents: "export * from './src/main/video/ffmpeg'; export {renderMedia} from './src/main/video/pipeline'; export {VideoJobManager} from './src/main/video/jobs';", resolveDir: path.resolve('.') }, outfile: output, bundle: true, platform: 'node', format: 'cjs', target: 'node24', logLevel: 'silent' })
+  await build({ stdin: { contents: "export * from './src/main/video/ffmpeg'; export {renderMedia} from './src/main/video/pipeline'; export {VideoJobManager} from './tests/fixtures/v31/main/video/jobs';", resolveDir: path.resolve('.') }, outfile: output, bundle: true, platform: 'node', format: 'cjs', target: 'node24', logLevel: 'silent' })
   return createRequire(import.meta.url)(output)
 }
 export async function makeVideoFixture(options = {}) {

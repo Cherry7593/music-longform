@@ -28,8 +28,9 @@ export async function commitMedia(temporary: string, work: string, output: strin
   const info = await lstat(temporary)
   if (!info.isFile() || info.isSymbolicLink() || relative(temporary, await realpath(temporary)) !== '') throw new AppError('导出结果不是安全的本地文件')
   if (relative(dirname(work), dirname(output)) !== '') throw new AppError('导出目标不在同一素材目录')
-  try { await link(temporary, output) } catch {
-    throw new AppError('无法安全提交成片。请确认保存磁盘支持硬链接（例如 NTFS），且目标文件未被占用；原素材未改动。')
+  try { await link(temporary, output) } catch (cause) {
+    const code = cause && typeof cause === 'object' && 'code' in cause && typeof cause.code === 'string' ? cause.code : undefined
+    throw Object.assign(new AppError('无法安全发布成片。请检查保存权限、磁盘空间、同卷硬链接支持及目标文件是否存在；原素材未改动。'), { code })
   }
   // The output link is already complete; unlink failures can be handled by task cleanup.
   await unlink(temporary).catch(() => undefined)

@@ -4,11 +4,11 @@ import * as fs from 'node:fs/promises'
 import { mkdtemp, mkdir, readFile, writeFile, readdir, rm } from 'node:fs/promises'
 import path from 'node:path'
 import { DEFAULT_VIDEO } from '../../src/shared/schemas'
-import type { MusicDraft } from '../../src/shared/types'
-import { migrateProject, migrateSettings } from '../../src/main/storage/migrations'
+import type { LegacyMusicDraft } from '../../src/shared/music-types'
+import { migrateProject, migrateSettings, defaultAceStepSettings } from '../../src/main/storage/migrations'
 import { dataCandidates, resolveDataDirectory } from '../../src/main/storage/data-directory'
-import { ProjectStore } from '../../src/main/storage/projects'
-import { SettingsStore } from '../../src/main/storage/settings'
+import { ProjectStore } from '../fixtures/v31/main/storage/projects'
+import { SettingsStore } from '../fixtures/v31/main/storage/settings'
 import * as atomic from '../../src/main/storage/atomic'
 
 // Real disk operations remain in use; configurable exports allow failure injection under ESM.
@@ -24,7 +24,7 @@ beforeEach(async () => {
   root = await mkdtemp(path.join(process.env.PI_SCRATCH_DIR, 'yt-v21-迁移 '))
 })
 afterEach(async () => { vi.restoreAllMocks(); if (root) await rm(root, { recursive: true, force: true }) })
-function legacyMusic(): MusicDraft { return { prompt: '保留 Mureka 音乐描述', mode: 'instrumental', model: 'mureka-9.5', count: 2, styles: ['jazz', 'lo-fi'] } }
+function legacyMusic(): LegacyMusicDraft { return { prompt: '保留 Mureka 音乐描述', mode: 'instrumental', model: 'mureka-9.5', count: 2, styles: ['jazz', 'lo-fi'] } }
 function legacySettings(version: 1 | 2 = 1) {
   return {
     version, projectRoot: path.join(root, '保留 项目'), musicDefaults: legacyMusic(), imageDefaults: { ...legacyImage }, lastProjectId: randomUUID(),
@@ -85,7 +85,10 @@ function legacyV2Project(directory: string) {
 }
 function expectedUpgrade(raw: ReturnType<typeof legacyProject> | ReturnType<typeof legacyV2Project>) {
   return {
-    video: structuredClone(DEFAULT_VIDEO), videoJobs: [], ...raw, version: 3,
+    video: structuredClone(DEFAULT_VIDEO), videoJobs: [], ...raw, version: 4,
+    music: { ...raw.music, provider: 'mureka' },
+    musicJobs: raw.musicJobs.map(job => ({ ...job, snapshot: { ...job.snapshot, provider: 'mureka' }, binding: { provider: 'mureka', adapterVersion: 1 } })),
+    audio: raw.audio.map(asset => ({ ...asset, provider: 'mureka' })),
     image: { prompt: raw.image.prompt, model: 'Qwen/Qwen-Image', size: '1664x928' },
     images: raw.images.map(asset => ({ ...asset, provider: 'openai', format: 'png' })),
     imageJobs: raw.imageJobs.map(job => ({
@@ -106,13 +109,13 @@ async function expectBackup(file: string, version: number, original: Buffer, cou
   const names = await backups(file, version)
   expect(names).toHaveLength(count)
   for (const name of names) {
-    expect(name).toMatch(/\.v[12]-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.bak$/)
+    expect(name).toMatch(/\.v[123]-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.bak$/)
     expect(await readFile(path.join(path.dirname(file), name))).toEqual(original)
   }
 }
 
-describe.each([1, 2] as const)('V%i to V3 migration', version => {
-  it('preserves complete music, assets, selections and video history; annotates only legacy images', async () => {
+describe.each([1, 2] as const)('V%i to V4 migration', version => {
+  it('preserves complete music, assets, selections and video history while adding explicit provider identity', async () => {
     const raw = version === 1 ? legacyProject(root) : legacyV2Project(root)
     const untouched = structuredClone(raw)
     const file = path.join(root, 'project.json')
@@ -140,7 +143,7 @@ describe.each([1, 2] as const)('V%i to V3 migration', version => {
     const file = path.join(root, 'settings.json')
     const original = await save(file, raw)
     const result = await migrateSettings(file, raw)
-    expect(result).toEqual({ ...raw, version: 3, imageDefaults: { prompt: raw.imageDefaults.prompt, model: 'Qwen/Qwen-Image', size: '1664x928' } })
+    expect(result).toEqual({ ...raw, version: 4, aceStep: defaultAceStepSettings(), musicDefaults: { ...raw.musicDefaults, provider: 'mureka' }, imageDefaults: { prompt: raw.imageDefaults.prompt, model: 'Qwen/Qwen-Image', size: '1664x928' } })
     expect(raw).toEqual(untouched)
     await expectBackup(file, version, original)
     const current = await readFile(file)
@@ -185,7 +188,7 @@ describe('migration storage safety', () => {
       const store = new SettingsStore(profile, path.join(root, 'unused')); await store.init()
       expect(await projects.get(project.id)).toEqual(expectedUpgrade(project))
       expect(projects.warnings).toEqual([])
-      expect(store.get()).toMatchObject({ version: 3, projectRoot: settings.projectRoot, ffmpegPath: settings.ffmpegPath, lastProjectId: settings.lastProjectId, musicDefaults: settings.musicDefaults })
+      expect(store.get()).toMatchObject({ version: 4, projectRoot: settings.projectRoot, ffmpegPath: settings.ffmpegPath, lastProjectId: settings.lastProjectId, musicDefaults: { ...settings.musicDefaults, provider: 'mureka' } })
       expect(await readFile(path.join(profile, 'projects.json'))).toEqual(index)
       expect(await readFile(path.join(profile, 'secrets.json'))).toEqual(secrets)
       for (const file of files) expect(await readFile(path.join(directory, file), 'utf8')).toBe(`original ${file}`)

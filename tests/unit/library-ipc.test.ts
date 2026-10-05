@@ -1,9 +1,10 @@
+import { defaultAceStepSettings } from '../../src/main/storage/migrations'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { randomUUID } from 'node:crypto'
 import { copyFile } from 'node:fs/promises'
 import { dialog, type BrowserWindow, type IpcMainInvokeEvent } from 'electron'
-import { registerIPC } from '../../src/main/ipc'
-import { LocalLibraryWork } from '../../src/main/library/ipc'
+import { registerIPC } from '../fixtures/v31/main/ipc'
+import { LocalLibraryWork } from '../fixtures/v31/main/library/ipc'
 import { DEFAULT_IMAGE, DEFAULT_MUSIC } from '../../src/shared/schemas'
 import { DEFAULT_BATCH_OPTIONS } from '../../src/shared/batch-schemas'
 
@@ -18,7 +19,7 @@ function fixture() {
   const config: { version: 1; root: string; generationProjectId?: string } = { version: 1, root: 'C:\\fixture-library' }
   const created = { id: randomUUID(), name: '素材生成' }
   const projects = { list: vi.fn(async () => []), all: vi.fn(async () => []), get: vi.fn(async () => created), create: vi.fn(async () => created), patch: vi.fn(async () => created), warnings: [] }
-  const settings = { get: () => ({ version: 3, projectRoot: 'C:\\fixture-projects', musicDefaults: DEFAULT_MUSIC, imageDefaults: DEFAULT_IMAGE }), update: vi.fn() }
+  const settings = { get: () => ({ version: 4, aceStep: defaultAceStepSettings(), projectRoot: 'C:\\fixture-projects', musicDefaults: DEFAULT_MUSIC, imageDefaults: DEFAULT_IMAGE }), update: vi.fn() }
   const library = { getConfig: () => config, all: vi.fn(async () => []), refresh: vi.fn(), configureRoot: vi.fn(async () => config), warnings: [],
     importFiles: vi.fn(async () => ({ entries: [], cancelled: false })), setGenerationProject: vi.fn(async (id: string) => { config.generationProjectId = id }),
     get: vi.fn(), pathForAsset: vi.fn() }

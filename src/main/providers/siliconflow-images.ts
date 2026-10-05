@@ -8,12 +8,12 @@ const imageResponseSchema = z.object({ images: z.array(z.object({ url: z.url().m
 export class SiliconFlowImagesProvider implements ImageProvider {
   constructor(private readonly fetcher: typeof fetch = fetch) {}
 
-  async generate(draft: ImageDraft, key: string): Promise<ImageResult> {
+  async generate(draft: ImageDraft, key: string, signal?: AbortSignal): Promise<ImageResult> {
     const parsed = imageDraftSchema.safeParse(draft)
     if (!parsed.success || !parsed.data.prompt.trim()) throw new AppError('请填写画面描述，并检查模型和尺寸。')
     const input = parsed.data
     const value = await requestJson(this.fetcher, 'https://api.siliconflow.cn/v1/images/generations', {
-      method: 'POST', key, timeoutMs: 300_000,
+      method: 'POST', key, timeoutMs: 300_000, signal,
       // One image; preserve the provider's default watermark. Never add OpenAI or batch fields.
       body: { model: input.model, prompt: input.prompt.trim(), image_size: input.size, num_inference_steps: 50, cfg: 4 }
     })

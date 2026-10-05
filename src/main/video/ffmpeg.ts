@@ -4,9 +4,12 @@ import path from 'node:path'
 import { StringDecoder } from 'node:string_decoder'
 import type { VideoToolsStatus } from '../../shared/types'
 import { AppError } from '../providers/http'
+import type { VideoDiagnostic } from '../../shared/video-diagnostics'
+import { redactDiagnostic, withDiagnostic } from './render-diagnostics'
 
 export interface VideoTools { ffmpeg: string; ffprobe: string }
 export class CancelledError extends AppError {
+  diagnostic: VideoDiagnostic = { stage: 'tools', category: 'cancelled', message: '视频任务已取消。', suggestion: '需要时可重新提交；其它任务未受影响。' }
   constructor() { super('视频任务已取消。'); this.name = 'CancelledError' }
 }
 
@@ -26,7 +29,7 @@ export async function assertLocalMediaFile(file: string): Promise<void> {
   try {
     if (!(await stat(file)).isFile()) throw new Error('not a file')
     if (!localAbsolute(await realpath(file))) throw new Error('not local')
-  } catch { throw new AppError('媒体文件不存在、不是普通文件或无法读取。') }
+  } catch (error) { throw withDiagnostic(error, { stage: 'probe', category: 'unreadable', message: '媒体文件不存在、不是普通文件或无法读取。' }) }
 }
 
 async function executablePath(file: string, expected?: 'ffmpeg' | 'ffprobe'): Promise<string> {
@@ -38,16 +41,29 @@ async function executablePath(file: string, expected?: 'ffmpeg' | 'ffprobe'): Pr
     const resolved = await realpath(file)
     if (!localAbsolute(resolved) || !name.test(path.basename(resolved)) || !(await stat(resolved)).isFile()) throw new Error('invalid executable')
     return resolved
-  } catch { throw new AppError('FFmpeg / FFprobe 可执行文件不存在或不是有效的普通文件。') }
+  } catch (error) { throw withDiagnostic(error, { stage: 'tools', message: 'FFmpeg / FFprobe 可执行文件不存在或不是有效的普通文件。' }) }
+}
+
+/** Resolve the same trusted local tool pair without launching subprocesses. */
+export async function resolveToolPaths(candidate: string): Promise<VideoTools> {
+  const ffmpeg = await executablePath(candidate, 'ffmpeg')
+  const ffprobe = await executablePath(path.join(path.dirname(ffmpeg), /\.exe$/i.test(ffmpeg) ? 'ffprobe.exe' : 'ffprobe'), 'ffprobe')
+  return { ffmpeg, ffprobe }
 }
 
 /** Trusted main-process callers only. This is deliberately NOT an IPC command/argument API. */
-export async function runTool(executable: string, args: string[], options: {
+export interface ToolOptions {
   signal?: AbortSignal
   timeoutMs?: number
   onProgress?: (seconds: number) => void
   maxOutputBytes?: number
-} = {}): Promise<{ stdout: string; stderr: string }> {
+  diagnostic?: Partial<VideoDiagnostic>
+}
+export async function runTool(executable: string, args: string[], options: ToolOptions = {}): Promise<{ stdout: string; stderr: string }> {
+  try { return await executeTool(executable, args, options) }
+  catch (error) { throw withDiagnostic(error, options.diagnostic ?? {}) }
+}
+async function executeTool(executable: string, args: string[], options: ToolOptions): Promise<{ stdout: string; stderr: string }> {
   if (options.signal?.aborted) throw new CancelledError()
   const tool = await executablePath(executable)
   const timeout = options.timeoutMs ?? MAX_TIMEOUT
@@ -66,9 +82,23 @@ export async function runTool(executable: string, args: string[], options: {
     let pending = ''
     let lastProgress = -1
     let stopped: AppError | undefined
-    let spawnFailed = false
+    let spawnError: NodeJS.ErrnoException | undefined
     let closed = false
     const decoder = new StringDecoder('utf8')
+    const stderrDecoder = new StringDecoder('utf8')
+    let stderrLine = '', oversizedLine = false
+    const captureStderr = (text: string, final = false): void => {
+      const lines = text.split('\n')
+      for (let i = 0; i < lines.length; i++) {
+        if (!oversizedLine) stderrLine += lines[i]
+        if (stderrLine.length > 1024 * 1024) { stderrLine = ''; oversizedLine = true }
+        if (i < lines.length - 1 || final) {
+          const safe = oversizedLine ? '[oversized diagnostic line redacted]' : redactDiagnostic(stderrLine, MAX_CAPTURE)
+          stderr = tail(stderr, Buffer.from(safe + (i < lines.length - 1 ? '\n' : '')))
+          stderrLine = ''; oversizedLine = false
+        }
+      }
+    }
     const tail = (previous: Buffer, chunk: Buffer): Buffer => {
       if (chunk.length >= maximum) return Buffer.from(chunk.subarray(chunk.length - maximum))
       return Buffer.concat([previous.subarray(Math.max(0, previous.length + chunk.length - maximum)), chunk])
@@ -87,7 +117,7 @@ export async function runTool(executable: string, args: string[], options: {
     let child: ReturnType<typeof spawn>
     try {
       child = spawn(tool, args, { shell: false, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] })
-    } catch { reject(new AppError('无法启动本地 FFmpeg / FFprobe，请检查可执行文件和权限。')); return }
+    } catch (error) { reject(withDiagnostic(error, { ...options.diagnostic, message: '无法启动本地 FFmpeg / FFprobe，请检查可执行文件和权限。' })); return }
     const stop = (error: AppError): void => {
       if (closed || stopped) return
       stopped = error
@@ -106,19 +136,18 @@ export async function runTool(executable: string, args: string[], options: {
       pending = (lines.pop() ?? '').slice(-4096)
       for (const line of lines) progressLine(line)
     })
-    child.stderr?.on('data', (chunk: Buffer) => { stderr = tail(stderr, chunk) })
-    child.on('error', () => { spawnFailed = true })
+    child.stderr?.on('data', (chunk: Buffer) => { captureStderr(stderrDecoder.write(chunk)) })
+    child.on('error', (error: NodeJS.ErrnoException) => { spawnError = error })
     child.once('close', code => {
       closed = true
       clearTimeout(timer)
       options.signal?.removeEventListener('abort', abort)
       progressLine(pending + decoder.end())
-      if (stopped) { reject(stopped); return }
-      if (spawnFailed || code !== 0) {
-        const error = new AppError(spawnFailed ? '无法启动本地 FFmpeg / FFprobe，请检查安装和权限。' : 'FFmpeg / FFprobe 处理失败，请检查素材是否损坏以及工具是否支持所需格式。')
-        // Diagnostics remain local; safeError/IPC expose only the authored message.
-        error.cause = { code, stderr: stderr.toString('utf8') }
-        reject(error)
+      captureStderr(stderrDecoder.end(), true)
+      const evidence = { ...options.diagnostic, exitCode: code ?? undefined, osCode: spawnError?.code, stderr: stderr.toString('utf8') }
+      if (stopped) { reject(withDiagnostic(stopped, evidence)); return }
+      if (spawnError || code !== 0) {
+        reject(withDiagnostic(spawnError ?? new AppError('FFmpeg / FFprobe 处理失败；请查看本次结构化诊断，原因未确定。'), evidence))
       } else resolve({ stdout: stdout.toString('utf8'), stderr: stderr.toString('utf8') })
     })
     if (options.signal?.aborted) abort()
@@ -139,8 +168,7 @@ export async function discoverTools(customPath?: string): Promise<VideoToolsStat
   let message = '未找到 FFmpeg。请安装本地 FFmpeg，或在设置中选择 ffmpeg.exe（同目录须有 ffprobe.exe）。'
   for (const candidate of [...new Set(candidates)]) {
     try {
-      const ffmpeg = await executablePath(candidate, 'ffmpeg')
-      const ffprobe = await executablePath(path.join(path.dirname(ffmpeg), /\.exe$/i.test(ffmpeg) ? 'ffprobe.exe' : 'ffprobe'), 'ffprobe')
+      const { ffmpeg, ffprobe } = await resolveToolPaths(candidate)
       const options = { timeoutMs: 15000, maxOutputBytes: 2 * 1024 * 1024 }
       const version = await runTool(ffmpeg, ['-hide_banner', '-version'], options)
       const probeVersion = await runTool(ffprobe, ['-hide_banner', '-version'], options)
@@ -160,7 +188,7 @@ export async function discoverTools(customPath?: string): Promise<VideoToolsStat
 
 export async function requireTools(customPath?: string): Promise<VideoTools> {
   const status = await discoverTools(customPath)
-  if (!status.available || !status.ffmpeg || !status.ffprobe) throw new AppError(status.message)
+  if (!status.available || !status.ffmpeg || !status.ffprobe) throw withDiagnostic(new AppError(status.message), { stage: 'tools' })
   return { ffmpeg: status.ffmpeg, ffprobe: status.ffprobe }
 }
 
@@ -189,12 +217,13 @@ function duration(value: unknown): number | undefined {
   return number
 }
 
-export async function probeMedia(tools: VideoTools, file: string, signal?: AbortSignal, countFrames = false): Promise<ProbeInfo> {
+export async function probeMedia(tools: VideoTools, file: string, signal?: AbortSignal, countFrames = false, threads?: number): Promise<ProbeInfo> {
   if (signal?.aborted) throw new CancelledError()
+  if (threads !== undefined && (!Number.isInteger(threads) || threads < 1 || threads > 16)) throw withDiagnostic(new AppError('媒体探测线程参数无效。'), { stage: 'probe' })
   await assertLocalMediaFile(file)
   const result = await runTool(tools.ffprobe, [
-    '-v', 'error', '-protocol_whitelist', 'file,pipe', ...(countFrames ? ['-count_frames'] : []), '-show_streams', '-show_format', '-of', 'json', file
-  ], { signal, timeoutMs: 60000, maxOutputBytes: 4 * 1024 * 1024 })
+    '-v', 'error', ...(threads === undefined ? [] : ['-threads', String(threads)]), '-protocol_whitelist', 'file,pipe', ...(countFrames ? ['-count_frames'] : []), '-show_streams', '-show_format', '-of', 'json', file
+  ], { signal, timeoutMs: countFrames ? MAX_TIMEOUT : 60000, maxOutputBytes: 4 * 1024 * 1024, diagnostic: { stage: 'probe' } })
   try {
     const data: unknown = JSON.parse(result.stdout)
     if (!record(data) || !Array.isArray(data.streams) || !data.streams.length || data.streams.length > 256) throw new Error('missing streams')
@@ -227,5 +256,5 @@ export async function probeMedia(tools: VideoTools, file: string, signal?: Abort
     const durationSeconds = audioDuration && audioDuration > 0 ? audioDuration : formatDuration ?? 0
     if (audio && durationSeconds <= 0) throw new Error('no audio duration')
     return { durationSeconds, streams }
-  } catch { throw new AppError('FFprobe 返回了无效的媒体信息、尺寸或时长，无法安全处理该素材。') }
+  } catch { throw withDiagnostic(new AppError('FFprobe 返回了无效的媒体信息、尺寸或时长，无法安全处理该素材。'), { stage: 'probe', category: 'incompatible' }) }
 }

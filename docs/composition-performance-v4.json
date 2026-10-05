@@ -1,0 +1,1974 @@
+{
+  "version": 1,
+  "createdAt": "2026-10-04T23:08:48.792Z",
+  "root": "$BENCHMARK_ROOT",
+  "quick": false,
+  "passed": true,
+  "machine": {
+    "cpu": "12th Gen Intel(R) Core(TM) i5-12500H",
+    "logicalCpus": 16,
+    "totalMemoryBytes": 16869548032
+  },
+  "tools": {
+    "ffmpeg": "$FFMPEG_BIN\\ffmpeg.exe",
+    "ffprobe": "$FFMPEG_BIN\\ffprobe.exe"
+  },
+  "parameters": {
+    "minimumSeconds": 3600,
+    "transition": "crossfade",
+    "transitionSeconds": 3,
+    "fadeInSeconds": 2,
+    "fadeOutSeconds": 2,
+    "normalize": false,
+    "fit": "contain",
+    "audioIds": [],
+    "imageIds": []
+  },
+  "encoder": "auto",
+  "threads": 2,
+  "baseline": {
+    "preset": "ultrafast",
+    "tune": "stillimage",
+    "threads": 4,
+    "pipeline": "tests/fixtures/video-pipeline-v31.ts"
+  },
+  "codeHashes": {
+    "src/main/video/composition-queue.ts": "2dd8304856a8578157d21819e8735b7350bbc850def8ad7d1c38a7a9ddb84351",
+    "src/main/video/resource-pool.ts": "0f0a5218bb2de822ec4718ecddd41b195319800d33865d594f35d7ec64e3558d",
+    "src/main/video/pipeline.ts": "6b76a4a0217fa78ab2054cb06476c9b050ec4fb3ff9bbc67f138fbdca459c812",
+    "src/main/video/encoders.ts": "09154fcedeaf474b8966f834fba2d5d2f4f6080935e148e7e59db0e0555cfbcb",
+    "src/main/video/encoder-device.ts": "ee36a97d53676aca72e53dd157fc3c3287c286d00b049d03c606b6ef102676d5",
+    "src/main/library/assets-v4-media.ts": "0f23e0c6cc048cf1b5a62b2206a72e307cf24de0c49360b97e6783b90501c190",
+    "src/main/storage/assets-v2.ts": "76e9c24ad8b0988579b6ed33cf04c17b57507d23738be0e27fa0e1e94a2c3b1f",
+    "tests/fixtures/video-pipeline-v31.ts": "05f17b14e288c0a73d7ade07e66f80e2173699ece4306e237fd38f8815a17174",
+    "tests/fixtures/v31/main/video/batch-jobs.ts": "77cdbcf03bca12fcc0bc0e6657511a6b79caf8e7f2933a6fbb87f6ba97d7f288"
+  },
+  "sources": [
+    {
+      "index": 0,
+      "imagePath": "$BENCHMARK_ROOT\\sources\\image-0.png",
+      "imageSha256": "b841fb3fe85ef5ba7b0509f7322c9b85a93d9d0a47cadea4efe5fe1846bc455b",
+      "tracks": [
+        {
+          "path": "$BENCHMARK_ROOT\\sources\\song-0-0.flac",
+          "durationSeconds": 1805,
+          "sha256": "3e6f2fcdd04370fb5cd0d81e0bbb1ddc3d6002f52efd03026a5118ee7173d535"
+        },
+        {
+          "path": "$BENCHMARK_ROOT\\sources\\song-0-1.flac",
+          "durationSeconds": 1805,
+          "sha256": "9f1f45a5bd6ab21512ebb38e8eac9033ded2b9edc0b0927a6e080e051c287f70"
+        }
+      ],
+      "frequencies": [
+        220,
+        330
+      ]
+    },
+    {
+      "index": 1,
+      "imagePath": "$BENCHMARK_ROOT\\sources\\image-1.png",
+      "imageSha256": "78861d5fc4b151d25fa13c80bc559adf982eb308c5d9d814f7a4e2057bcfda1f",
+      "tracks": [
+        {
+          "path": "$BENCHMARK_ROOT\\sources\\song-1-0.flac",
+          "durationSeconds": 1805,
+          "sha256": "34dd6ffb1cfe9760c1eeaa9ccbede085e37175b11461de0fbb37cf227e95b60a"
+        },
+        {
+          "path": "$BENCHMARK_ROOT\\sources\\song-1-1.flac",
+          "durationSeconds": 1805,
+          "sha256": "df8265708b253c89e0c7dec9e020bfe7c853360df73592ca64a8f0fecd242ebc"
+        }
+      ],
+      "frequencies": [
+        440,
+        550
+      ]
+    },
+    {
+      "index": 2,
+      "imagePath": "$BENCHMARK_ROOT\\sources\\image-2.png",
+      "imageSha256": "50eededc919779e7d8c44b4cc1113c0df4e52323c2ec94cba8e3cb54ecb2b3ce",
+      "tracks": [
+        {
+          "path": "$BENCHMARK_ROOT\\sources\\song-2-0.flac",
+          "durationSeconds": 1805,
+          "sha256": "4220bd85c2cfe0ca8123c1e75842e6a8eacc52d197ea64339df6118055952527"
+        },
+        {
+          "path": "$BENCHMARK_ROOT\\sources\\song-2-1.flac",
+          "durationSeconds": 1805,
+          "sha256": "ec5b22a9f069a6ebd059a1dc1cfeb92d6154e2613ebdfe1f4b7cbde3dfb288c1"
+        }
+      ],
+      "frequencies": [
+        660,
+        770
+      ]
+    }
+  ],
+  "experiments": [
+    {
+      "suite": "single",
+      "mode": "baseline",
+      "cache": "cold",
+      "setupMs": 4116.6535,
+      "startedAt": "2026-10-04T23:09:03.912Z",
+      "jobs": [
+        {
+          "id": "f9466d9c-3bd5-4466-b6f9-256b6b5a844b",
+          "index": 0,
+          "queueMs": 4460.101200000001,
+          "runningMs": 265982.8016,
+          "latencyFromConfirmationMs": 270442.9028,
+          "pipelineMs": 256818.54699999996,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 315.4367999999995
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 4258.736299999997
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 3570.6967000000004
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 4663.772600000004
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 204829.65089999998
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 48258.49160000007
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 85.85129999998026
+            }
+          ],
+          "encoder": "cpu/libx264",
+          "staticVideo": false,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 220,
+                "own": 0.1249318459917522,
+                "other": 0.0011519387018195184
+              },
+              {
+                "at": 2704.5,
+                "frequency": 330,
+                "own": 0.12496471626303829,
+                "other": 0.001728916996580015
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0.09678819444444445,
+              0.09678819444444445
+            ],
+            "bytes": 104494590,
+            "sha256": "81d80314f5e0dfbebcbeae042a5a41f771511fee69d96dbbb8ef3fb217b45807",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 887.1109999999753
+        }
+      ],
+      "planMs": 4434.357600000001,
+      "confirmationMs": 4456.9797,
+      "usageCount": 3,
+      "endToEndMs": 275108.01369999995,
+      "submissionToCompleteMs": 270673.6527,
+      "resources": {
+        "method": "750ms+query Get-Process on held Node/FFmpeg/FFprobe PIDs; 750ms owned .work/static-cache scan",
+        "samples": 324,
+        "diskSamples": 365,
+        "sampledTempDiskPeakBytes": 4260912344,
+        "observedToolPidCount": 16,
+        "sampledProcessTreeRssPeakBytes": 1146671104,
+        "minimumFreeMemoryBytes": 2158325760,
+        "sampledCpuSeconds": 49.578125,
+        "errors": []
+      },
+      "pipelineProcessOverlap": {
+        "overlapMs": 0,
+        "peak": 1
+      },
+      "taskOverlap": {
+        "overlapMs": 0,
+        "peak": 1
+      },
+      "passed": true
+    },
+    {
+      "suite": "single",
+      "mode": "baseline",
+      "cache": "warm",
+      "setupMs": 4116.6535,
+      "startedAt": "2026-10-04T23:13:40.871Z",
+      "jobs": [
+        {
+          "id": "cb4dbdff-6d7e-4795-8895-e8d42cda9502",
+          "index": 0,
+          "queueMs": 4793.661599999992,
+          "runningMs": 273710.734,
+          "latencyFromConfirmationMs": 278504.3956,
+          "pipelineMs": 264064.55569999997,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 292.6786999999895
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 4585.661100000027
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 3861.669399999955
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 5020.144700000063
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 210346.0151999999
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 49519.545300000114
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 84.94959999993443
+            }
+          ],
+          "encoder": "cpu/libx264",
+          "staticVideo": false,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 220,
+                "own": 0.1249318459917522,
+                "other": 0.0011519387018195184
+              },
+              {
+                "at": 2704.5,
+                "frequency": 330,
+                "own": 0.12496471626303829,
+                "other": 0.001728916996580015
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0.09678819444444445,
+              0.09678819444444445
+            ],
+            "bytes": 104494590,
+            "sha256": "81d80314f5e0dfbebcbeae042a5a41f771511fee69d96dbbb8ef3fb217b45807",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 910.3209999999963
+        }
+      ],
+      "planMs": 4705.243099999963,
+      "confirmationMs": 4789.3758999999845,
+      "usageCount": 6,
+      "endToEndMs": 283380.5641,
+      "submissionToCompleteMs": 278675.31820000004,
+      "resources": {
+        "method": "750ms+query Get-Process on held Node/FFmpeg/FFprobe PIDs; 750ms owned .work/static-cache scan",
+        "samples": 334,
+        "diskSamples": 376,
+        "sampledTempDiskPeakBytes": 4260912344,
+        "observedToolPidCount": 13,
+        "sampledProcessTreeRssPeakBytes": 1257574400,
+        "minimumFreeMemoryBytes": 2157436928,
+        "sampledCpuSeconds": 46.109375,
+        "errors": []
+      },
+      "pipelineProcessOverlap": {
+        "overlapMs": 0,
+        "peak": 1
+      },
+      "taskOverlap": {
+        "overlapMs": 0,
+        "peak": 1
+      },
+      "passed": true
+    },
+    {
+      "suite": "single",
+      "mode": "serial",
+      "cache": "cold",
+      "setupMs": 4812.997600000002,
+      "startedAt": "2026-10-04T23:18:31.504Z",
+      "jobs": [
+        {
+          "id": "eefae22c-dfcd-47bc-8059-b6b9c9d99ea4",
+          "index": 0,
+          "queueMs": 121.88979999988806,
+          "runningMs": 228095.89250000007,
+          "latencyFromConfirmationMs": 228217.78229999996,
+          "pipelineMs": 151292.91340000008,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 5060.60420000006
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 333.4633000000613
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 65251.06130000006
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 0.1389000000199303
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 5126.0610999999335
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 76198.32150000008
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 76138.0771
+            }
+          ],
+          "encoder": "qsv",
+          "staticVideo": true,
+          "cacheHit": false,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 220,
+                "own": 0.1249318459917522,
+                "other": 0.0011519387018195184
+              },
+              {
+                "at": 2704.5,
+                "frequency": 330,
+                "own": 0.12496471626303829,
+                "other": 0.001728916996580015
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0,
+              0
+            ],
+            "bytes": 132877866,
+            "sha256": "5464f1041581aff69b10a238b55a231ad359ef49684e7c310c7c265d06db52d9",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 868.2640000000829
+        }
+      ],
+      "planMs": 4361.092300000018,
+      "confirmationMs": 28.696499999961816,
+      "usageCount": 3,
+      "endToEndMs": 232732.5982,
+      "submissionToCompleteMs": 228371.50229999993,
+      "resources": {
+        "method": "750ms+query Get-Process on held Node/FFmpeg/FFprobe PIDs; 750ms owned .work/static-cache scan",
+        "samples": 282,
+        "diskSamples": 309,
+        "sampledTempDiskPeakBytes": 1517979552,
+        "observedToolPidCount": 9,
+        "sampledProcessTreeRssPeakBytes": 201015296,
+        "minimumFreeMemoryBytes": 3280809984,
+        "sampledCpuSeconds": 0.703125,
+        "errors": []
+      },
+      "pipelineProcessOverlap": {
+        "overlapMs": 0,
+        "peak": 1
+      },
+      "taskOverlap": {
+        "overlapMs": 0,
+        "peak": 1
+      },
+      "passed": true
+    },
+    {
+      "suite": "single",
+      "mode": "serial",
+      "cache": "warm",
+      "setupMs": 4812.997600000002,
+      "startedAt": "2026-10-04T23:22:26.144Z",
+      "jobs": [
+        {
+          "id": "70b9bf47-0598-4309-bf22-dba9427605b9",
+          "index": 0,
+          "queueMs": 92.23170000000391,
+          "runningMs": 220953.10029999993,
+          "latencyFromConfirmationMs": 221045.33199999994,
+          "pipelineMs": 144303.98229999992,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 2133.747599999886
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 350.21569999994244
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 62591.772
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 0.06869999994523823
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 5006.046299999929
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 74874.33519999997
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 76004.93339999998
+            }
+          ],
+          "encoder": "qsv",
+          "staticVideo": true,
+          "cacheHit": true,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 220,
+                "own": 0.1249318459917522,
+                "other": 0.0011519387018195184
+              },
+              {
+                "at": 2704.5,
+                "frequency": 330,
+                "own": 0.12496471626303829,
+                "other": 0.001728916996580015
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0,
+              0
+            ],
+            "bytes": 132877866,
+            "sha256": "5464f1041581aff69b10a238b55a231ad359ef49684e7c310c7c265d06db52d9",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 896.6008999999613
+        }
+      ],
+      "planMs": 18.15590000001248,
+      "confirmationMs": 25.839799999957904,
+      "usageCount": 6,
+      "endToEndMs": 221215.94019999995,
+      "submissionToCompleteMs": 221197.78189999994,
+      "resources": {
+        "method": "750ms+query Get-Process on held Node/FFmpeg/FFprobe PIDs; 750ms owned .work/static-cache scan",
+        "samples": 268,
+        "diskSamples": 294,
+        "sampledTempDiskPeakBytes": 1517979552,
+        "observedToolPidCount": 4,
+        "sampledProcessTreeRssPeakBytes": 206925824,
+        "minimumFreeMemoryBytes": 3187228672,
+        "sampledCpuSeconds": 1.125,
+        "errors": []
+      },
+      "pipelineProcessOverlap": {
+        "overlapMs": 0,
+        "peak": 1
+      },
+      "taskOverlap": {
+        "overlapMs": 0,
+        "peak": 1
+      },
+      "passed": true
+    },
+    {
+      "suite": "batch",
+      "mode": "baseline",
+      "cache": "cold",
+      "setupMs": 12633.335299999919,
+      "startedAt": "2026-10-04T23:26:21.778Z",
+      "jobs": [
+        {
+          "id": "a13be7da-efea-4ea4-8b39-0a400c874ab0",
+          "index": 0,
+          "queueMs": 13622.225800000131,
+          "runningMs": 273174.9021999999,
+          "latencyFromConfirmationMs": 286797.128,
+          "pipelineMs": 263579.11120000016,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 304.27309999987483
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 4568.067099999869
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 3859.9455999999773
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 4952.850399999879
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 210183.7773999998
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 49215.68799999985
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 90.23300000000745
+            }
+          ],
+          "encoder": "cpu/libx264",
+          "staticVideo": false,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 220,
+                "own": 0.1249318459917522,
+                "other": 0.0011519387018195184
+              },
+              {
+                "at": 2704.5,
+                "frequency": 330,
+                "own": 0.12496471626303829,
+                "other": 0.001728916996580015
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0.09678819444444445,
+              0.09678819444444445
+            ],
+            "bytes": 104494590,
+            "sha256": "81d80314f5e0dfbebcbeae042a5a41f771511fee69d96dbbb8ef3fb217b45807",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 1054.6737000001594
+        },
+        {
+          "id": "e8b71e32-36c3-4497-8ae2-772ed9395080",
+          "index": 1,
+          "queueMs": 286979.9131,
+          "runningMs": 278251.2655,
+          "latencyFromConfirmationMs": 565231.1786,
+          "pipelineMs": 268613.88320000004,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 327.0885000000708
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 4647.129600000102
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 3919.5777000002563
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 5121.602700000396
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 214413.1044999999
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 49735.3683999998
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 87.32400000002235
+            }
+          ],
+          "encoder": "cpu/libx264",
+          "staticVideo": false,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 440,
+                "own": 0.12491081335332808,
+                "other": 0.001281987428531044
+              },
+              {
+                "at": 2704.5,
+                "frequency": 550,
+                "own": 0.12492706161612221,
+                "other": 0.0016045714402801226
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0.05536265432098766,
+              0.05536265432098766
+            ],
+            "bytes": 104755731,
+            "sha256": "9160a0b68646a5a262ab3f3212d6fac2415beb3d948a422c64680344673e2fdd",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 1053.374199999962
+        },
+        {
+          "id": "5cec9c1f-f762-40d0-8945-654eeb714d5e",
+          "index": 2,
+          "queueMs": 565401.5787,
+          "runningMs": 279709.0800000001,
+          "latencyFromConfirmationMs": 845110.6587,
+          "pipelineMs": 269891.60679999995,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 326.9570999999996
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 4695.990500000073
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 4054.774799999781
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 7229.287999999942
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 212013.36559999967
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 51294.80700000003
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 93.82499999995343
+            }
+          ],
+          "encoder": "cpu/libx264",
+          "staticVideo": false,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 660,
+                "own": 0.12486456536428663,
+                "other": 0.0013334623454391921
+              },
+              {
+                "at": 2704.5,
+                "frequency": 770,
+                "own": 0.12492126503196949,
+                "other": 0.0015455001221008405
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0.07045717592592593,
+              0.07045717592592593
+            ],
+            "bytes": 104775403,
+            "sha256": "9075ee37bf645743a47c4d46c47b305c6be35c49a19531a019ef2a54d14ea7fb",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 890.6025000000373
+        }
+      ],
+      "planMs": 13671.57529999991,
+      "confirmationMs": 13617.989100000123,
+      "usageCount": 9,
+      "endToEndMs": 858957.3362999998,
+      "submissionToCompleteMs": 845285.7592,
+      "resources": {
+        "method": "750ms+query Get-Process on held Node/FFmpeg/FFprobe PIDs; 750ms owned .work/static-cache scan",
+        "samples": 1011,
+        "diskSamples": 1135,
+        "sampledTempDiskPeakBytes": 4261193157,
+        "observedToolPidCount": 42,
+        "sampledProcessTreeRssPeakBytes": 1157132288,
+        "minimumFreeMemoryBytes": 2124685312,
+        "sampledCpuSeconds": 158.21875,
+        "errors": []
+      },
+      "pipelineProcessOverlap": {
+        "overlapMs": 0,
+        "peak": 1
+      },
+      "taskOverlap": {
+        "overlapMs": 0,
+        "peak": 1
+      },
+      "passed": true
+    },
+    {
+      "suite": "batch",
+      "mode": "baseline",
+      "cache": "warm",
+      "setupMs": 12633.335299999919,
+      "startedAt": "2026-10-04T23:40:44.824Z",
+      "jobs": [
+        {
+          "id": "ff074ff3-37c2-4e0d-8811-720eda591eef",
+          "index": 0,
+          "queueMs": 13825.6679,
+          "runningMs": 278092.64769999986,
+          "latencyFromConfirmationMs": 291918.31559999986,
+          "pipelineMs": 268314.3831999998,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 302.9779999998864
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 4592.663999999873
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 3971.365199999418
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 5082.703799999785
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 214128.40859999973
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 49930.26820000028
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 84.19540000008419
+            }
+          ],
+          "encoder": "cpu/libx264",
+          "staticVideo": false,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 220,
+                "own": 0.1249318459917522,
+                "other": 0.0011519387018195184
+              },
+              {
+                "at": 2704.5,
+                "frequency": 330,
+                "own": 0.12496471626303829,
+                "other": 0.001728916996580015
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0.09678819444444445,
+              0.09678819444444445
+            ],
+            "bytes": 104494590,
+            "sha256": "81d80314f5e0dfbebcbeae042a5a41f771511fee69d96dbbb8ef3fb217b45807",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 1032.491099999752
+        },
+        {
+          "id": "8c98a58c-ff23-4e7e-a57e-439268533847",
+          "index": 1,
+          "queueMs": 292057.1342000002,
+          "runningMs": 279034.0253999997,
+          "latencyFromConfirmationMs": 571091.1595999999,
+          "pipelineMs": 269066.64580000006,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 316.7825000002049
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 4809.908199999016
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 4022.878700000234
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 5182.395800000522
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 214789.90990000032
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 49822.03119999962
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 90.05159999988973
+            }
+          ],
+          "encoder": "cpu/libx264",
+          "staticVideo": false,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 440,
+                "own": 0.12491081335332808,
+                "other": 0.001281987428531044
+              },
+              {
+                "at": 2704.5,
+                "frequency": 550,
+                "own": 0.12492706161612221,
+                "other": 0.0016045714402801226
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0.05536265432098766,
+              0.05536265432098766
+            ],
+            "bytes": 104755731,
+            "sha256": "9160a0b68646a5a262ab3f3212d6fac2415beb3d948a422c64680344673e2fdd",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 1442.0883000004105
+        },
+        {
+          "id": "5f747e4b-5549-4aff-bd1e-af0556251be8",
+          "index": 2,
+          "queueMs": 571258.5764000001,
+          "runningMs": 280553.1488999999,
+          "latencyFromConfirmationMs": 851811.7253,
+          "pipelineMs": 270294.2853000001,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 343.17359999986365
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 5148.705599999987
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 4019.317000000272
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 5182.967100000009
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 214322.4465999999
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 51447.19890000019
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 89.27340000029653
+            }
+          ],
+          "encoder": "cpu/libx264",
+          "staticVideo": false,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 660,
+                "own": 0.12486456536428663,
+                "other": 0.0013334623454391921
+              },
+              {
+                "at": 2704.5,
+                "frequency": 770,
+                "own": 0.12492126503196949,
+                "other": 0.0015455001221008405
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0.07045717592592593,
+              0.07045717592592593
+            ],
+            "bytes": 104775403,
+            "sha256": "9075ee37bf645743a47c4d46c47b305c6be35c49a19531a019ef2a54d14ea7fb",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 891.0885999999009
+        }
+      ],
+      "planMs": 14314.627499999944,
+      "confirmationMs": 13822.809600000037,
+      "usageCount": 18,
+      "endToEndMs": 866309.7323999999,
+      "submissionToCompleteMs": 851995.1017999998,
+      "resources": {
+        "method": "750ms+query Get-Process on held Node/FFmpeg/FFprobe PIDs; 750ms owned .work/static-cache scan",
+        "samples": 1018,
+        "diskSamples": 1146,
+        "sampledTempDiskPeakBytes": 4261193157,
+        "observedToolPidCount": 45,
+        "sampledProcessTreeRssPeakBytes": 1268899840,
+        "minimumFreeMemoryBytes": 1996066816,
+        "sampledCpuSeconds": 166.125,
+        "errors": []
+      },
+      "pipelineProcessOverlap": {
+        "overlapMs": 0,
+        "peak": 1
+      },
+      "taskOverlap": {
+        "overlapMs": 0,
+        "peak": 1
+      },
+      "passed": true
+    },
+    {
+      "suite": "batch",
+      "mode": "serial",
+      "cache": "cold",
+      "setupMs": 13686.676700000186,
+      "startedAt": "2026-10-04T23:55:29.159Z",
+      "jobs": [
+        {
+          "id": "29162a7f-23bd-49e1-b83c-649cbe0de8a4",
+          "index": 0,
+          "queueMs": 136.78049999987707,
+          "runningMs": 229212.1882000002,
+          "latencyFromConfirmationMs": 229348.96870000008,
+          "pipelineMs": 151282.8358,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 5001.801299999934
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 352.7186999996193
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 65511.4534
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 0.0913999998010695
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 5109.386299999896
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 75985.15259999968
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 77261.81119999988
+            }
+          ],
+          "encoder": "qsv",
+          "staticVideo": true,
+          "cacheHit": false,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 220,
+                "own": 0.1249318459917522,
+                "other": 0.0011519387018195184
+              },
+              {
+                "at": 2704.5,
+                "frequency": 330,
+                "own": 0.12496471626303829,
+                "other": 0.001728916996580015
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0,
+              0
+            ],
+            "bytes": 132877866,
+            "sha256": "5464f1041581aff69b10a238b55a231ad359ef49684e7c310c7c265d06db52d9",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 919.2121000001207
+        },
+        {
+          "id": "877cf0ae-3304-4a8d-bdca-09c7c60333fa",
+          "index": 1,
+          "queueMs": 229494.39870000025,
+          "runningMs": 227441.98539999966,
+          "latencyFromConfirmationMs": 456936.3840999999,
+          "pipelineMs": 150438.46780000022,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 2175.2365999999456
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 354.73950000014156
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 67415.27590000024
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 0.10870000021532178
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 5050.519699999597
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 76135.12150000036
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 76327.52309999987
+            }
+          ],
+          "encoder": "qsv",
+          "staticVideo": true,
+          "cacheHit": false,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 440,
+                "own": 0.12491081335332808,
+                "other": 0.001281987428531044
+              },
+              {
+                "at": 2704.5,
+                "frequency": 550,
+                "own": 0.12492706161612221,
+                "other": 0.0016045714402801226
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0,
+              0
+            ],
+            "bytes": 137754138,
+            "sha256": "57b14f7c9f857bb7e51b57ac3cb27f4ce32af64bd620523a3f175df37c6f7624",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 873.4487999998964
+        },
+        {
+          "id": "c3e21d25-7219-4d60-85ad-830971936d1d",
+          "index": 2,
+          "queueMs": 457091.8073,
+          "runningMs": 227568.47129999986,
+          "latencyFromConfirmationMs": 684660.2785999998,
+          "pipelineMs": 150982.48369999975,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 4485.924999999814
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 354.90219999989495
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 65831.43460000027
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 0.05749999964609742
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 4933.242099999916
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 76050.39930000016
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 75933.33839999977
+            }
+          ],
+          "encoder": "qsv",
+          "staticVideo": true,
+          "cacheHit": false,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 660,
+                "own": 0.12486456536428663,
+                "other": 0.0013334623454391921
+              },
+              {
+                "at": 2704.5,
+                "frequency": 770,
+                "own": 0.12492126503196949,
+                "other": 0.0015455001221008405
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0,
+              0
+            ],
+            "bytes": 132419446,
+            "sha256": "676522c01bc401de481c4eabf204296ed5a9b3dff3cd8b1bad3d0f64b5436592",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 856.2020000000484
+        }
+      ],
+      "planMs": 12578.278400000185,
+      "confirmationMs": 49.53140000021085,
+      "usageCount": 9,
+      "endToEndMs": 697371.9382000002,
+      "submissionToCompleteMs": 684793.6572000002,
+      "resources": {
+        "method": "750ms+query Get-Process on held Node/FFmpeg/FFprobe PIDs; 750ms owned .work/static-cache scan",
+        "samples": 845,
+        "diskSamples": 922,
+        "sampledTempDiskPeakBytes": 1522870277,
+        "observedToolPidCount": 24,
+        "sampledProcessTreeRssPeakBytes": 207732736,
+        "minimumFreeMemoryBytes": 3055591424,
+        "sampledCpuSeconds": 2.953125,
+        "errors": []
+      },
+      "pipelineProcessOverlap": {
+        "overlapMs": 0,
+        "peak": 1
+      },
+      "taskOverlap": {
+        "overlapMs": 0,
+        "peak": 1
+      },
+      "passed": true
+    },
+    {
+      "suite": "batch",
+      "mode": "serial",
+      "cache": "warm",
+      "setupMs": 13686.676700000186,
+      "startedAt": "2026-10-05T00:07:11.164Z",
+      "jobs": [
+        {
+          "id": "df13a157-51e1-4071-9adc-20e0b9b6b0c9",
+          "index": 0,
+          "queueMs": 135.89690000005066,
+          "runningMs": 221715.4336000001,
+          "latencyFromConfirmationMs": 221851.33050000016,
+          "pipelineMs": 145143.85349999974,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 2144.8732000002638
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 353.5276000001468
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 62360.11720000021
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 0.06600000010803342
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 5413.435700000264
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 75535.17230000021
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 75917.43729999987
+            }
+          ],
+          "encoder": "qsv",
+          "staticVideo": true,
+          "cacheHit": true,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 220,
+                "own": 0.1249318459917522,
+                "other": 0.0011519387018195184
+              },
+              {
+                "at": 2704.5,
+                "frequency": 330,
+                "own": 0.12496471626303829,
+                "other": 0.001728916996580015
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0,
+              0
+            ],
+            "bytes": 132877866,
+            "sha256": "5464f1041581aff69b10a238b55a231ad359ef49684e7c310c7c265d06db52d9",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 890.6219999999739
+        },
+        {
+          "id": "7fac5795-03a9-4eae-aed1-b747290c7d9a",
+          "index": 1,
+          "queueMs": 447379.6616000002,
+          "runningMs": 224433.16079999972,
+          "latencyFromConfirmationMs": 671812.8224,
+          "pipelineMs": 147454.5282999999,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 2119.347099999897
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 349.3802999998443
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 65208.73109999951
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 0.08470000000670552
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 4951.833300000057
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 75512.70740000019
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 76311.98839999968
+            }
+          ],
+          "encoder": "qsv",
+          "staticVideo": true,
+          "cacheHit": true,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 440,
+                "own": 0.12491081335332808,
+                "other": 0.001281987428531044
+              },
+              {
+                "at": 2704.5,
+                "frequency": 550,
+                "own": 0.12492706161612221,
+                "other": 0.0016045714402801226
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0,
+              0
+            ],
+            "bytes": 137754138,
+            "sha256": "57b14f7c9f857bb7e51b57ac3cb27f4ce32af64bd620523a3f175df37c6f7624",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 847.4594999998808
+        },
+        {
+          "id": "d05d6d5c-d07d-43a5-9683-eb77403acd09",
+          "index": 2,
+          "queueMs": 221998.76970000006,
+          "runningMs": 225231.1483,
+          "latencyFromConfirmationMs": 447229.91800000006,
+          "pipelineMs": 148608.07699999958,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 4582.699100000784
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 365.26070000045
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 63556.149599999655
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 0.17450000019744039
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 5031.908800000325
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 75760.64480000036
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 75951.59660000028
+            }
+          ],
+          "encoder": "qsv",
+          "staticVideo": true,
+          "cacheHit": true,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 660,
+                "own": 0.12486456536428663,
+                "other": 0.0013334623454391921
+              },
+              {
+                "at": 2704.5,
+                "frequency": 770,
+                "own": 0.12492126503196949,
+                "other": 0.0015455001221008405
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0,
+              0
+            ],
+            "bytes": 132419446,
+            "sha256": "676522c01bc401de481c4eabf204296ed5a9b3dff3cd8b1bad3d0f64b5436592",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 856.470600000117
+        }
+      ],
+      "planMs": 35.52449999982491,
+      "confirmationMs": 56.39859999995679,
+      "usageCount": 18,
+      "endToEndMs": 671984.2823000001,
+      "submissionToCompleteMs": 671948.7526000002,
+      "resources": {
+        "method": "750ms+query Get-Process on held Node/FFmpeg/FFprobe PIDs; 750ms owned .work/static-cache scan",
+        "samples": 814,
+        "diskSamples": 889,
+        "sampledTempDiskPeakBytes": 1522883251,
+        "observedToolPidCount": 14,
+        "sampledProcessTreeRssPeakBytes": 213188608,
+        "minimumFreeMemoryBytes": 3050328064,
+        "sampledCpuSeconds": 2.703125,
+        "errors": []
+      },
+      "pipelineProcessOverlap": {
+        "overlapMs": 0,
+        "peak": 1
+      },
+      "taskOverlap": {
+        "overlapMs": 0,
+        "peak": 1
+      },
+      "passed": true
+    },
+    {
+      "suite": "batch",
+      "mode": "parallel",
+      "cache": "cold",
+      "setupMs": 13165.594699999783,
+      "startedAt": "2026-10-05T00:18:40.738Z",
+      "jobs": [
+        {
+          "id": "825c823b-8261-452d-8700-8703b8bd5b36",
+          "index": 0,
+          "queueMs": 129.96980000007898,
+          "runningMs": 266539.4372999994,
+          "latencyFromConfirmationMs": 266669.4070999995,
+          "pipelineMs": 187547.13599999994,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 4744.947800000198
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 343.8428999995813
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 75139.61400000006
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 0.13219999987632036
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 5658.968600000255
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 102296.79030000046
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 78364.00119999982
+            }
+          ],
+          "encoder": "qsv",
+          "staticVideo": true,
+          "cacheHit": false,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 220,
+                "own": 0.1249318459917522,
+                "other": 0.0011519387018195184
+              },
+              {
+                "at": 2704.5,
+                "frequency": 330,
+                "own": 0.12496471626303829,
+                "other": 0.001728916996580015
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0,
+              0
+            ],
+            "bytes": 132877866,
+            "sha256": "5464f1041581aff69b10a238b55a231ad359ef49684e7c310c7c265d06db52d9",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 840.2048000004143
+        },
+        {
+          "id": "2b35cba2-aa2a-4ecc-9611-68c062b5c4c5",
+          "index": 1,
+          "queueMs": 1179.0844000000507,
+          "runningMs": 355481.59609999973,
+          "latencyFromConfirmationMs": 356660.6804999998,
+          "pipelineMs": 192826.36450000014,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 4806.402199999429
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 404.74490000028163
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 78977.68790000025
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 0.03780000004917383
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 5658.938500000164
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 103715.18759999983
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 161963.0781999994
+            }
+          ],
+          "encoder": "qsv",
+          "staticVideo": true,
+          "cacheHit": false,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 440,
+                "own": 0.12491081335332808,
+                "other": 0.001281987428531044
+              },
+              {
+                "at": 2704.5,
+                "frequency": 550,
+                "own": 0.12492706161612221,
+                "other": 0.0016045714402801226
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0,
+              0
+            ],
+            "bytes": 137754138,
+            "sha256": "57b14f7c9f857bb7e51b57ac3cb27f4ce32af64bd620523a3f175df37c6f7624",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 885.6861000005156
+        },
+        {
+          "id": "c1b11874-a408-4a6e-bdc3-8d643071db2b",
+          "index": 2,
+          "queueMs": 266845.0985999992,
+          "runningMs": 245357.02040000074,
+          "latencyFromConfirmationMs": 512202.11899999995,
+          "pipelineMs": 168365.9456000002,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 2671.82840000093
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 623.8653000006452
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 83614.17389999982
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 0.1081999996677041
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 5894.801300000399
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 76384.19819999952
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 76187.80640000012
+            }
+          ],
+          "encoder": "qsv",
+          "staticVideo": true,
+          "cacheHit": false,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 660,
+                "own": 0.12486456536428663,
+                "other": 0.0013334623454391921
+              },
+              {
+                "at": 2704.5,
+                "frequency": 770,
+                "own": 0.12492126503196949,
+                "other": 0.0015455001221008405
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0,
+              0
+            ],
+            "bytes": 132419446,
+            "sha256": "676522c01bc401de481c4eabf204296ed5a9b3dff3cd8b1bad3d0f64b5436592",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 840.4147000005469
+        }
+      ],
+      "planMs": 12059.701799999923,
+      "confirmationMs": 53.68489999976009,
+      "usageCount": 9,
+      "endToEndMs": 524399.7393000005,
+      "submissionToCompleteMs": 512340.03560000006,
+      "resources": {
+        "method": "750ms+query Get-Process on held Node/FFmpeg/FFprobe PIDs; 750ms owned .work/static-cache scan",
+        "samples": 620,
+        "diskSamples": 695,
+        "sampledTempDiskPeakBytes": 3040836728,
+        "observedToolPidCount": 23,
+        "sampledProcessTreeRssPeakBytes": 307519488,
+        "minimumFreeMemoryBytes": 3035455488,
+        "sampledCpuSeconds": 1.984375,
+        "errors": []
+      },
+      "pipelineProcessOverlap": {
+        "overlapMs": 184449.78269999847,
+        "peak": 2
+      },
+      "taskOverlap": {
+        "overlapMs": 355305.9046,
+        "peak": 2
+      },
+      "passed": true
+    },
+    {
+      "suite": "batch",
+      "mode": "parallel",
+      "cache": "warm",
+      "setupMs": 13165.594699999783,
+      "startedAt": "2026-10-05T00:27:30.140Z",
+      "jobs": [
+        {
+          "id": "2cc795ad-60a1-4d56-92e6-5918fb0324c7",
+          "index": 0,
+          "queueMs": 123.59539999999106,
+          "runningMs": 267232.6206,
+          "latencyFromConfirmationMs": 267356.216,
+          "pipelineMs": 188519.94489999954,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 4788.950799998827
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 345.17089999932796
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 74586.37449999992
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 0.10850000008940697
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 5779.693200000562
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 103664.78799999971
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 78073.91179999989
+            }
+          ],
+          "encoder": "qsv",
+          "staticVideo": true,
+          "cacheHit": true,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 220,
+                "own": 0.1249318459917522,
+                "other": 0.0011519387018195184
+              },
+              {
+                "at": 2704.5,
+                "frequency": 330,
+                "own": 0.12496471626303829,
+                "other": 0.001728916996580015
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0,
+              0
+            ],
+            "bytes": 132877866,
+            "sha256": "5464f1041581aff69b10a238b55a231ad359ef49684e7c310c7c265d06db52d9",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 850.5710000004619
+        },
+        {
+          "id": "f8bb434e-e708-4d23-9d67-8913346598b3",
+          "index": 1,
+          "queueMs": 1141.158300000243,
+          "runningMs": 356806.4219000004,
+          "latencyFromConfirmationMs": 357947.58020000067,
+          "pipelineMs": 193560.22739999928,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 4764.414400000125
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 425.69379999954253
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 78430.90840000007
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 0.09129999950528145
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 5824.243999999948
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 104816.03150000144
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 162554.64130000025
+            }
+          ],
+          "encoder": "qsv",
+          "staticVideo": true,
+          "cacheHit": true,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 440,
+                "own": 0.12491081335332808,
+                "other": 0.001281987428531044
+              },
+              {
+                "at": 2704.5,
+                "frequency": 550,
+                "own": 0.12492706161612221,
+                "other": 0.0016045714402801226
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0,
+              0
+            ],
+            "bytes": 137754138,
+            "sha256": "57b14f7c9f857bb7e51b57ac3cb27f4ce32af64bd620523a3f175df37c6f7624",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 858.1935000000522
+        },
+        {
+          "id": "ccf7122c-b347-41dd-9a1b-396f64b11378",
+          "index": 2,
+          "queueMs": 267504.6445000004,
+          "runningMs": 243925.90649999958,
+          "latencyFromConfirmationMs": 511430.551,
+          "pipelineMs": 166922.01129999943,
+          "stages": [
+            {
+              "stage": "tools",
+              "elapsedMs": 2639.226200000383
+            },
+            {
+              "stage": "probe",
+              "elapsedMs": 569.2503000004217
+            },
+            {
+              "stage": "encode",
+              "elapsedMs": 81831.63040000014
+            },
+            {
+              "stage": "audio",
+              "elapsedMs": 0.13630000036209822
+            },
+            {
+              "stage": "mix",
+              "elapsedMs": 6113.256599999964
+            },
+            {
+              "stage": "validate",
+              "elapsedMs": 76615.70540000033
+            },
+            {
+              "stage": "publish",
+              "elapsedMs": 76177.26010000054
+            }
+          ],
+          "encoder": "qsv",
+          "staticVideo": true,
+          "cacheHit": true,
+          "attempts": 1,
+          "verification": {
+            "durationSeconds": 3607,
+            "order": [
+              {
+                "at": 902.5,
+                "frequency": 660,
+                "own": 0.12486456536428663,
+                "other": 0.0013334623454391921
+              },
+              {
+                "at": 2704.5,
+                "frequency": 770,
+                "own": 0.12492126503196949,
+                "other": 0.0015455001221008405
+              }
+            ],
+            "frameDifferences": [
+              0,
+              0,
+              0
+            ],
+            "bytes": 132419446,
+            "sha256": "676522c01bc401de481c4eabf204296ed5a9b3dff3cd8b1bad3d0f64b5436592",
+            "productionFullDecode": true
+          },
+          "externalVerificationMs": 846.1963999997824
+        }
+      ],
+      "planMs": 29.530300000682473,
+      "confirmationMs": 45.223100000061095,
+      "usageCount": 18,
+      "endToEndMs": 511604.60030000005,
+      "submissionToCompleteMs": 511575.06909999996,
+      "resources": {
+        "method": "750ms+query Get-Process on held Node/FFmpeg/FFprobe PIDs; 750ms owned .work/static-cache scan",
+        "samples": 603,
+        "diskSamples": 678,
+        "sampledTempDiskPeakBytes": 3040849702,
+        "observedToolPidCount": 14,
+        "sampledProcessTreeRssPeakBytes": 288653312,
+        "minimumFreeMemoryBytes": 2951237632,
+        "sampledCpuSeconds": 2.546875,
+        "errors": []
+      },
+      "pipelineProcessOverlap": {
+        "overlapMs": 185426.2563000014,
+        "peak": 2
+      },
+      "taskOverlap": {
+        "overlapMs": 356657.99340000004,
+        "peak": 2
+      },
+      "passed": true
+    }
+  ],
+  "boundaries": [
+    "Import and setup excluded, planning through publication and usage included.",
+    "Baseline V3.1 has no video asset registration; V4 includes actual full video registration/decode.",
+    "Cold/warm mean application validation/static caches; OS/driver caches are not reset.",
+    "Additional independent output verification follows the timed end-to-end interval.",
+    "RSS/temp-disk peaks are sampled lower bounds; shared working-set pages may be double-counted; short-lived processes may be missed.",
+    "Per-job latency includes waiting from confirmation; running time begins at actual analyzing state. No GUI paint latency is included."
+  ],
+  "harnessHashes": {
+    "scripts/composition-performance.mjs": "bbb0ebae640feff7a5cdd3134389e227d0847c57437eb754275b36f4dde3a3e1",
+    "scripts/video-performance-monitor.ps1": "b4616746f845734fd50537e7cc1de77a28e870709dbf66e3c82035716e402563"
+  },
+  "finishedAt": "2026-10-05T00:36:06.245Z",
+  "evidence": {
+    "sourceReport": "composition-performance-v4-b34UWK/report.json",
+    "rawSha256": "e7a6a7b2211b289b0135c758ef4f040f948bc28eadfe7f5f51baa81aa5909e7e",
+    "normalizedOnlyAbsolutePaths": true,
+    "currentCodeAndHarnessHashesMatch": true,
+    "capturedTools": {
+      "ffmpeg": {
+        "version": "ffmpeg version 9.0-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+        "bytes": 222248960,
+        "sha256": "05f4251bce9293c2ab492cb17ca7724a0ffd0d06c881ba2ee83b82a89c2fc740",
+        "note": "Read-only version/hash capture after final timing, not part of measured interval"
+      },
+      "ffprobe": {
+        "version": "ffprobe version 9.0-full_build-www.gyan.dev Copyright (c) 2007-2026 the FFmpeg developers",
+        "bytes": 222044160,
+        "sha256": "51e0780cd881f83749b029ed716cbb841c2eac6289f418050f2f2961b158896b",
+        "note": "Read-only version/hash capture after final timing, not part of measured interval"
+      }
+    }
+  }
+}

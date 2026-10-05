@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>油管视频生成 V3.1 · 界面预览</title>
+<style>body{margin:0;padding:32px;background:#f5f6f8;color:#20242b;font:16px/1.7 "Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1366px;margin:auto}h1{font-size:24px}h2{font-size:20px;margin-top:32px}p{color:#69717d;max-width:80ch}img{display:block;width:100%;border:1px solid #e5e8ed;border-radius:8px}nav{display:flex;gap:18px;flex-wrap:wrap}a{color:#285fbb}figure{margin:24px 0}figcaption{font-size:14px;color:#69717d;margin-top:8px}</style></head>
+<body><main><h1>油管视频生成 V3.1</h1><p>实际 Electron 窗口截图，已检查 1366×768 与 1920×1080。音乐新增 Kie.ai、reAPI、Sunor、ACE-Step；Mureka、硅基流动图片和整首批量合成保留。画面中的素材为人工测试内容，不代表 AI 生成质量；真实 ACE-Step 神经推理尚未实测。</p>
+<nav aria-label="预览目录"><a href="#generation">多平台音乐</a><a href="#local">ACE-Step</a><a href="#settings">独立配置</a><a href="#library">总素材库</a><a href="#plan">批量规划</a></nav>
+<h2 id="generation">两栏生成器：平台模型、风格描述与独立歌词</h2><figure><img src="screenshots/v3.1-generator.png" alt="Kie.ai 自定义音乐表单与保持独立的硅基流动图片区"><figcaption>按提供方显示实际支持的字段；生成次数不是保证返回的歌曲数。</figcaption></figure>
+<h2 id="local">ACE-Step：基础模式、模型刷新与 LM 能力提示</h2><figure><img src="screenshots/v3.1-acestep.png" alt="ACE-Step 本地基础模式、只读模型刷新和未就绪的 LM 增强选项"><figcaption>不代部署，不将只读检查说成实际模型出曲。</figcaption></figure>
+<h2>本地生成单独确认算力占用</h2><img src="screenshots/v3.1-local-confirmation.png" alt="ACE-Step 本地资源确认框，不显示虚假的云端费用">
+<h2 id="settings">独立云端 Key，加密保存</h2><img src="screenshots/v3.1-settings-cloud.png" alt="五家音乐与硅基流动图片分别配置，截图无真实密钥">
+<h2>本地根地址、可选 Key 与等待上限</h2><img src="screenshots/v3.1-settings-local.png" alt="可滚动设置中的 ACE-Step 地址与等待时间，连接检查只读">
+<h2>长输入明确报错，不静默截断</h2><img src="screenshots/v3.1-validation.png" alt="超出平台字数限制时保留原输入、阻止生成并提示修正">
+<h2 id="library">全局音乐库与使用记录</h2><img src="screenshots/v3.1-library-music.png" alt="60首人工音频分页显示，支持跨页选择和使用记录">
+<h2>图片分类、勾选与预览</h2><img src="screenshots/v3.1-library-images.png" alt="三张本地测试图片的网格预览">
+<h2 id="plan">整首规划：全部且仅分配一次</h2><img src="screenshots/v3.1-batch-plan.png" alt="一张图片一条视频，按整首真实时长分组，低于最短时长不能提交">
+<h2>打包版：本地 HTTP 音频到 1080p 成片</h2><img src="screenshots/v3.1-player.png" alt="打包版经认证接口接收人工 FLAC 后生成的 65 秒 1080p 视频播放"><p>真实 TCP、真实解码、整首合成、播放、另存为及重启使用记录均通过；音频为人工夹具，不是神经模型推理实测。</p>
+<p>V3.0 的三条 60:43 长视频验收和旧截图均保留；V3.1 使用短批量回归，不将旧长测冒充本版重新执行。</p>
+</main></body></html>

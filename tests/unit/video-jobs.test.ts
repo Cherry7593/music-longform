@@ -2,11 +2,11 @@ import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 import { randomUUID } from 'node:crypto'
 import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
-import { VideoJobManager } from '../../src/main/video/jobs'
+import { VideoJobManager } from '../fixtures/v31/main/video/jobs'
 import { CancelledError, type ProbeInfo } from '../../src/main/video/ffmpeg'
 import type { RenderRequest } from '../../src/main/video/pipeline'
-import { ProjectStore } from '../../src/main/storage/projects'
-import { SettingsStore } from '../../src/main/storage/settings'
+import { ProjectStore } from '../fixtures/v31/main/storage/projects'
+import { SettingsStore } from '../fixtures/v31/main/storage/settings'
 import { DEFAULT_VIDEO } from '../../src/shared/schemas'
 import { calculateTimeline } from '../../src/shared/video-timeline'
 import { AppError } from '../../src/main/providers/http'
@@ -24,7 +24,7 @@ async function fixture() {
   let p = await store.create(settings.get())
   const audioId = randomUUID(); const second = randomUUID(); const imageId = randomUUID()
   p = await store.mutate(p.id, p => {
-    for (const id of [audioId, second]) p.audio.push({ id, jobId: randomUUID(), remoteId: '123', taskId: '123', title: '曲目', fileName: `audio/${id}.wav`, createdAt: new Date().toISOString(), durationMs: 999000, prompt: 'test', model: 'test', mode: 'instrumental', kept: true })
+    for (const id of [audioId, second]) p.audio.push({ id, provider: 'mureka', jobId: randomUUID(), remoteId: '123', taskId: '123', title: '曲目', fileName: `audio/${id}.wav`, createdAt: new Date().toISOString(), durationMs: 999000, prompt: 'test', model: 'test', mode: 'instrumental', kept: true })
     p.images.push({ id: imageId, jobId: randomUUID(), fileName: `images/${imageId}.png`, createdAt: new Date().toISOString(), prompt: 'test', model: 'test', quality: 'medium', size: '1024x1024', provider: 'openai', format: 'png' })
     p.video = { ...DEFAULT_VIDEO, initialized: true, audioIds: [audioId, second], imageId, durationMode: 'all' }
   })

@@ -35,3 +35,16 @@ __pycache__/
 id_rsa
 id_ed25519
 id_ed25519_*
+
+# V4 runtime stores and managed media (never publish user data).
+/workbench/
+/assets-v2/
+/publications-v2/
+/diagnostics/
+/migration-v4/
+/.render-cache/
+/.generated-audio/
+/audio-originals/
+/audio/
+/images/
+/videos/

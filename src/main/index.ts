@@ -2,144 +2,100 @@ import { app, BrowserWindow, dialog, Menu, protocol, safeStorage, session } from
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdir } from 'node:fs/promises'
-import { SettingsStore } from './storage/settings'
-import { ProjectStore } from './storage/projects'
 import { SecretStore } from './storage/secrets'
 import { resolveDataDirectory } from './storage/data-directory'
 import { MurekaProvider } from './providers/mureka'
+import { MusicRegistry } from './providers/music-registry'
 import { SiliconFlowImagesProvider } from './providers/siliconflow-images'
-import { JobManager } from './jobs'
-import { VideoJobManager } from './video/jobs'
-import { registerIPC } from './ipc'
 import { mediaResponse } from './media-protocol'
-import { safeError } from './providers/http'
+import { AppError, safeError } from './providers/http'
 import { APP_NAME } from '../shared/branding'
-import { LibraryStore } from './storage/library'
-import { VideoBatchStore } from './storage/video-batches'
-import { ExportReceiptStore } from './storage/export-receipts'
-import { BatchJobManager } from './video/batch-jobs'
-import { RenderScheduler } from './video/scheduler'
-import { projectPublication } from './library/usage'
-import { LocalLibraryWork } from './library/ipc'
+import { WorkbenchDB } from './storage/workbench-db'
+import { AssetStore } from './storage/assets-v2'
+import { inspectV4Migration, migrateV4 } from './storage/migration-v4'
+import { WorkbenchService } from './workbench-service'
+import { registerWorkbenchIPC } from './workbench-ipc'
 
 const legacyDefault = app.getPath('userData')
-const explicitDirectory = app.commandLine.hasSwitch('user-data-dir') ? app.commandLine.getSwitchValue('user-data-dir') : undefined
+const explicit = app.commandLine.hasSwitch('user-data-dir') ? app.commandLine.getSwitchValue('user-data-dir') : undefined
 app.setName(APP_NAME)
 const testMode = !app.isPackaged && process.env.MUSIC_CANVAS_E2E === '1'
 let testDirectory: string | undefined
 if (testMode) {
   if (!process.env.MUSIC_CANVAS_TEST_DIR || !path.isAbsolute(process.env.MUSIC_CANVAS_TEST_DIR)) throw new Error('测试必须使用独立绝对路径')
-  testDirectory = path.join(process.env.MUSIC_CANVAS_TEST_DIR, 'appdata')
-  app.setPath('userData', testDirectory)
+  testDirectory = path.join(process.env.MUSIC_CANVAS_TEST_DIR, 'appdata'); app.setPath('userData', testDirectory)
 }
 protocol.registerSchemesAsPrivileged([{ scheme: 'canvas-media', privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true } }])
 let window: BrowserWindow | null = null
-let jobs: JobManager | undefined
-let video: VideoJobManager | undefined
-let batchJobs: BatchJobManager | undefined
-const libraryWork = new LocalLibraryWork()
-let allowClose = false
-let closePrompt = false
-const busy = (): boolean => !!(jobs?.busy || video?.busy || batchJobs?.busy || libraryWork.busy)
+let service: WorkbenchService | undefined
+let allowClose = false, closePrompt = false
 async function requestClose(quit: boolean): Promise<void> {
   if (closePrompt) return
   closePrompt = true
   try {
     if (!testMode) {
-      const options: Electron.MessageBoxOptions = {
-        type: 'warning', title: '仍有任务在处理', message: '关闭将停止本地视频处理；服务商已接收的生成请求仍可能计费。',
-        detail: '本地合成会停止，批量队列下次需手动继续，成功成片和原素材保留。正在导入的本地文件会完成保存后关闭。音乐任务可恢复查询，图片请求中断后可能无法恢复。',
-        buttons: ['继续等待', '取消本地任务并关闭'], defaultId: 0, cancelId: 0
-      }
-      const result = window ? await dialog.showMessageBox(window, options) : await dialog.showMessageBox(options)
-      if (result.response !== 1) return
+      const options: Electron.MessageBoxOptions = { type: 'warning', title: '仍有任务在处理', message: '关闭将停止本机视频任务，保留项目、素材和执行记录。',
+        detail: '已受理的生成请求仍可能计费或占用本地推理资源。本软件不会停止 ACE-Step 服务；未完成视频下次需手动继续。正在保存的本地文件会完成事务后退出。',
+        buttons: ['继续等待', '取消本地任务并关闭'], defaultId: 0, cancelId: 0 }
+      const answer = window ? await dialog.showMessageBox(window, options) : await dialog.showMessageBox(options)
+      if (answer.response !== 1) return
     }
-    jobs?.shutdown()
-    await video?.shutdown()
-    await batchJobs?.shutdown()
-    await libraryWork.shutdown()
-    allowClose = true
+    await service?.shutdown(); allowClose = true
     if (quit) app.quit(); else window?.close()
   } finally { closePrompt = false }
 }
 app.on('second-instance', () => { if (window?.isMinimized()) window.restore(); window?.focus() })
 void app.whenReady().then(async () => {
-  const dataDir = await resolveDataDirectory({ appData: app.getPath('appData'), explicit: testDirectory ?? explicitDirectory, legacyDefault }, async paths => {
-    const answer = await dialog.showMessageBox({
-      title: '选择已有数据', type: 'question', message: '找到多份历史数据，请选择要继续使用的一份。不会合并、搬移或覆盖。',
-      detail: paths.map((p, i) => `${i + 1}. ${p}`).join('\n'), buttons: [...paths.map((p, i) => `${i + 1}. ${path.basename(p)}`), '取消启动'],
-      cancelId: paths.length, defaultId: 0
-    })
+  const dataDir = await resolveDataDirectory({ appData: app.getPath('appData'), explicit: testDirectory ?? explicit, legacyDefault }, async paths => {
+    const answer = await dialog.showMessageBox({ title: '选择已有数据', type: 'question', message: '找到多份历史数据，请选择要继续使用的一份。不会合并或覆盖。',
+      detail: paths.map((directory, index) => `${index + 1}. ${directory}`).join('\n'), buttons: [...paths.map((directory, index) => `${index + 1}. ${path.basename(directory)}`), '取消启动'], cancelId: paths.length, defaultId: 0 })
     return paths[answer.response] ?? null
   })
   if (!dataDir) { app.quit(); return }
-  await mkdir(dataDir, { recursive: true })
-  app.setPath('userData', dataDir)
+  await mkdir(dataDir, { recursive: true }); app.setPath('userData', dataDir)
   if (!app.requestSingleInstanceLock()) { app.quit(); return }
-  const root = testMode ? path.join(process.env.MUSIC_CANVAS_TEST_DIR!, '项目 素材') : path.join(app.getPath('documents'), APP_NAME)
-  const settings = new SettingsStore(dataDir, root)
-  const secrets = new SecretStore(dataDir, safeStorage)
-  const projects = new ProjectStore(dataDir)
-  await settings.init(); await secrets.init(); await projects.init()
-  const library = new LibraryStore({ dataDir, defaultRoot: path.join(settings.get().projectRoot, '总素材库'), projects, getFFmpegPath: () => settings.get().ffmpegPath })
-  await library.init()
-  const batches = new VideoBatchStore(dataDir, () => library.getConfig().root)
-  const receipts = new ExportReceiptStore(dataDir)
-  await batches.init(); await receipts.init(); await receipts.recover()
-  const scheduler = new RenderScheduler()
+  const defaultMediaRoot = testMode ? path.join(process.env.MUSIC_CANVAS_TEST_DIR!, '素材库') : path.join(app.getPath('documents'), APP_NAME, '素材库')
+  const inspected = await inspectV4Migration(dataDir, defaultMediaRoot)
+  const db = new WorkbenchDB(dataDir); await db.init()
+  const secrets = new SecretStore(dataDir, safeStorage); await secrets.init()
+  const assets = new AssetStore({ dataDir, root: inspected.mediaRoot, getFFmpegPath: () => db.has('settings', 'current') ? db.get('settings', 'current').ffmpegPath : inspected.legacySettings?.ffmpegPath })
+  await assets.init()
+  const migration = await migrateV4({ dataDir, db, assets, secrets, defaultMediaRoot })
   const mocks = testMode ? await import('./testing') : null
   const music = mocks ? new mocks.TestMusicProvider() : new MurekaProvider()
   const images = mocks ? new mocks.TestImageProvider() : new SiliconFlowImagesProvider()
-  const onError = (message: string): void => { if (!testMode && !allowClose) dialog.showErrorBox('任务需要处理', message) }
-  jobs = new JobManager({ projects, keys: secrets, music, images, ...(mocks ? { download: mocks.testDownload, downloadImage: mocks.testDownloadImage, pollIntervalMs: 100 } : {}), onError })
-  video = new VideoJobManager({ projects, settings, onError, scheduler, publication: projectPublication(library, receipts) })
-  batchJobs = new BatchJobManager({ library, batches, receipts, scheduler, getFFmpegPath: () => settings.get().ffmpegPath, onError })
-  await video.recover(); await batchJobs.recover()
-  await jobs.recover()
-  protocol.handle('canvas-media', request => mediaResponse(request, projects, { library, batches }))
-  session.defaultSession.setPermissionRequestHandler((_wc, _permission, callback) => callback(false))
+  const registry = new MusicRegistry(music, mocks?.testMusicFetch ?? fetch)
+  service = new WorkbenchService({ dataDir, db, assets, secrets, registry, images, testMode, warnings: [...inspected.warnings, ...migration.warnings],
+    ...(mocks ? { saveAudio: mocks.testSaveGeneratedAudio, saveImage: mocks.testDownloadImage, pollMs: 100 } : {}) })
+  await service.init()
+  // Legacy project/batch URL forms have no runtime resolver; migrated assets use their global ID.
+  protocol.handle('canvas-media', request => mediaResponse(request, { pathForAsset: async () => { throw new AppError('请使用已迁移的全局资产标识') } },
+    { library: assets, batches: { pathForAsset: async () => { throw new AppError('请使用视频库资产标识') } } }))
+  session.defaultSession.setPermissionRequestHandler((_contents, _permission, callback) => callback(false))
   session.defaultSession.setPermissionCheckHandler(() => false)
-  window = new BrowserWindow({
-    width: 1440, height: 940, minWidth: 960, minHeight: 640,
-    title: APP_NAME, backgroundColor: '#f7f8fa', show: false, autoHideMenuBar: true,
+  window = new BrowserWindow({ width: 1440, height: 940, minWidth: 960, minHeight: 640, title: APP_NAME, backgroundColor: '#f5f6f8', show: false, autoHideMenuBar: true,
     ...(app.isPackaged ? { icon: path.join(process.resourcesPath, 'icon.ico') } : {}),
-    webPreferences: { preload: path.join(__dirname, '../preload/index.js'), contextIsolation: true, sandbox: true, nodeIntegration: false, webSecurity: true, spellcheck: false }
-  })
+    webPreferences: { preload: path.join(__dirname, '../preload/index.js'), contextIsolation: true, sandbox: true, nodeIntegration: false, webSecurity: true, spellcheck: false } })
   Menu.setApplicationMenu(null)
   const rendererURL = !app.isPackaged && process.env.ELECTRON_RENDERER_URL ? process.env.ELECTRON_RENDERER_URL : pathToFileURL(path.join(__dirname, '../renderer/index.html')).toString()
-  registerIPC(window, rendererURL, { projects, settings, secrets, jobs, video, music, images, testMode,
-    libraryServices: { library, projects, settings, batches, receipts, batchJobs, work: libraryWork } })
-  const libraryChanged = (): void => { if (window && !window.isDestroyed()) window.webContents.send('canvas:library-changed') }
-  library.onChanged = libraryChanged
-  receipts.onChanged = libraryChanged
-  batches.onChanged = batch => { if (window && !window.isDestroyed()) window.webContents.send('canvas:batch-changed', batch); libraryChanged() }
-  projects.onChanged = p => {
-    if (window && !window.isDestroyed()) window.webContents.send('canvas:project-changed', p)
-    void libraryWork.run(() => library.syncProject(p)).then(libraryChanged).catch(() => {
-      const message = '生成成功的素材已保留，入库待恢复；请刷新素材库，不要重新生成。'
-      if (!library.warnings.includes(message)) library.warnings.push(message)
-      libraryChanged()
-    })
+  registerWorkbenchIPC(window, rendererURL, service)
+  let notification: ReturnType<typeof setTimeout> | undefined
+  service.onChanged = () => {
+    if (notification) return
+    notification = setTimeout(() => { notification = undefined; if (window && !window.isDestroyed()) window.webContents.send('canvas:workbench:changed') }, 100)
   }
   window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
   window.webContents.on('will-navigate', event => event.preventDefault())
   window.webContents.on('will-attach-webview', event => event.preventDefault())
   window.on('ready-to-show', () => window?.show())
   window.on('close', event => {
-    if (allowClose || !busy()) return
-    event.preventDefault()
-    void requestClose(false).catch(error => onError(safeError(error)))
+    if (allowClose || !service?.busy) return
+    event.preventDefault(); void requestClose(false).catch(error => dialog.showErrorBox('关闭失败', safeError(error)))
   })
-  window.on('closed', () => { window = null })
+  window.on('closed', () => { window = null; if (notification) clearTimeout(notification) })
   await window.loadURL(rendererURL)
-  void libraryWork.run(() => library.refresh()).then(libraryChanged).catch(() => {
-    const message = '部分历史素材入库待恢复，请刷新素材库；原项目和文件未改动。'
-    if (!library.warnings.includes(message)) library.warnings.push(message)
-    libraryChanged()
-  })
 }).catch(error => { dialog.showErrorBox(`${APP_NAME}无法启动`, safeError(error)); app.exit(1) })
 app.on('before-quit', event => {
-  if (!allowClose && busy()) { event.preventDefault(); void requestClose(true).catch(error => dialog.showErrorBox('关闭失败', safeError(error))) }
-  else jobs?.shutdown()
+  if (!allowClose && service?.busy) { event.preventDefault(); void requestClose(true).catch(error => dialog.showErrorBox('关闭失败', safeError(error))) }
 })
-app.on('window-all-closed', () => { jobs?.shutdown(); void Promise.all([video?.shutdown(), batchJobs?.shutdown(), libraryWork.shutdown()]).finally(() => app.quit()) })
+app.on('window-all-closed', () => { void service?.shutdown().finally(() => { allowClose = true; app.quit() }); if (!service) app.quit() })

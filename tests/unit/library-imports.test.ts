@@ -4,7 +4,7 @@ import { mkdir, mkdtemp, open, readFile, readdir, rm, symlink, writeFile } from 
 import { basename, join } from 'node:path'
 import sharp from 'sharp'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { LibraryStore } from '../../src/main/storage/library'
+import { LibraryStore } from '../fixtures/v31/main/storage/library'
 import { LIBRARY_LIMITS } from '../../src/main/storage/library-validation'
 import { fingerprintFile, stageImport, validateMedia } from '../../src/main/library/imports'
 import { AppError } from '../../src/main/providers/http'

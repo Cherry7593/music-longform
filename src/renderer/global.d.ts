@@ -1,6 +1,4 @@
-import type { CanvasAPI } from '../shared/types'
+import type { WorkbenchAPI } from '../shared/workbench-types'
 
-declare global {
-  interface Window { canvas: CanvasAPI }
-}
+declare global { interface Window { canvas: WorkbenchAPI } }
 export {}

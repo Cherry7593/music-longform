@@ -3,7 +3,8 @@ import { isAbsolute, join, resolve } from 'node:path'
 import { APP_NAME, LEGACY_APP_NAMES } from '../../shared/branding'
 import { AppError } from '../providers/http'
 import { isMissing, readJson } from './atomic'
-import { projectIndexSchema, settingsSchema, settingsV1Schema, settingsV2Schema } from './validation'
+import { projectIndexSchema, settingsSchema, settingsV1Schema, settingsV2Schema, settingsV3Schema } from './validation'
+import { workbenchSettingsSchema } from '../../shared/workbench-schemas'
 
 interface DirectoryOptions { appData: string; explicit?: string; legacyDefault?: string }
 /** Read-only detection: never creates a directory, merges data, or changes ciphertext. */
@@ -11,13 +12,15 @@ export async function dataCandidates(options: DirectoryOptions): Promise<string[
   const paths = [...new Set([APP_NAME, ...LEGACY_APP_NAMES].map(name => join(options.appData, name)).concat(options.legacyDefault ?? []))]
   const present: string[] = []
   for (const path of paths) {
-    let hasData = false
+    let hasData = false, modern = false
     for (const file of ['settings.json', 'projects.json', 'secrets.json']) {
+      if (file === 'projects.json' && modern) continue // Migration archives are no longer runtime project storage.
       const full = join(path, file)
       try {
         if (!(await lstat(full)).isFile()) throw new AppError(`历史数据文件不可读取：${full}。未建立空账户替代旧数据。`)
         const raw = await readJson(full, file === 'projects.json' ? 4 * 1024 * 1024 : 256 * 1024)
-        if (file === 'settings.json' && !settingsSchema.safeParse(raw).success && !settingsV1Schema.safeParse(raw).success && !settingsV2Schema.safeParse(raw).success) throw new Error('invalid settings')
+        if (file === 'settings.json' && !workbenchSettingsSchema.safeParse(raw).success && !settingsSchema.safeParse(raw).success && !settingsV1Schema.safeParse(raw).success && !settingsV2Schema.safeParse(raw).success && !settingsV3Schema.safeParse(raw).success) throw new Error('invalid settings')
+        if (file === 'settings.json' && workbenchSettingsSchema.safeParse(raw).success) modern = true
         if (file === 'projects.json' && !projectIndexSchema.safeParse(raw).success) throw new Error('invalid index')
         if (file === 'secrets.json' && (!raw || typeof raw !== 'object' || Array.isArray(raw))) throw new Error('invalid secrets')
         hasData = true

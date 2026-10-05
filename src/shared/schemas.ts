@@ -1,25 +1,15 @@
 import { z } from 'zod'
-import type { ImageDraft, MusicDraft, VideoDraft } from './types'
-
-export const INSTRUMENTAL_MODELS = ['auto', 'mureka-7.6', 'mureka-8', 'mureka-9', 'mureka-9.5'] as const
-export const SONG_MODELS = ['auto', 'mureka-7.6', 'mureka-o2', 'mureka-8', 'mureka-9', 'mureka-9.5'] as const
+import type { ImageDraft, MusicDraft, Provider, VideoDraft } from './types'
+import { localKeySchema, musicDraftSchema } from './music-schemas'
+import { defaultMusicDraft } from './music-capabilities'
+export { musicDraftSchema } from './music-schemas'
+export { INSTRUMENTAL_MODELS, SONG_MODELS, MUSIC_STYLES } from './music-capabilities'
 export const IMAGE_MODELS = ['Qwen/Qwen-Image'] as const
 export const IMAGE_SIZES = ['1664x928', '1328x1328', '928x1664'] as const
-export const MUSIC_STYLES = ['pop', 'rock', 'jazz', 'r&b', 'edm', 'ambient', 'folk', 'latin', 'k-pop', 'j-pop', 'house', 'gospel', 'lo-fi'] as const
-export const DEFAULT_MUSIC: MusicDraft = { prompt: '', mode: 'instrumental', model: 'auto', count: 1, styles: [] }
+export const DEFAULT_MUSIC: MusicDraft = defaultMusicDraft()
 export const DEFAULT_IMAGE: ImageDraft = { prompt: '', model: 'Qwen/Qwen-Image', size: '1664x928' }
 export const idSchema = z.string().uuid()
-export const providerSchema = z.enum(['mureka', 'siliconflow'])
-export const musicDraftSchema = z.object({
-  prompt: z.string().max(2000, '音乐提示词最多 2000 个字符'),
-  mode: z.enum(['instrumental', 'song']),
-  model: z.enum(SONG_MODELS),
-  count: z.number().int().min(1).max(20),
-  styles: z.array(z.enum(MUSIC_STYLES)).max(13)
-}).strict().superRefine((value, ctx) => {
-  if (value.mode === 'instrumental' && value.prompt.length > 1024) ctx.addIssue({ code: 'custom', path: ['prompt'], message: '纯音乐提示词最多 1024 个字符' })
-  if (value.mode === 'instrumental' && !INSTRUMENTAL_MODELS.includes(value.model as typeof INSTRUMENTAL_MODELS[number])) ctx.addIssue({ code: 'custom', path: ['model'], message: '纯音乐模式不支持这个模型' })
-})
+export const providerSchema = z.enum(['mureka', 'mureka-cn', 'siliconflow', 'kie', 'reapi', 'sunor', 'acestep'])
 export const imageDraftSchema = z.object({
   prompt: z.string().max(32000, '图片提示词过长'),
   model: z.enum(IMAGE_MODELS),
@@ -56,4 +46,6 @@ export const settingsPatchSchema = z.object({
   lastProjectId: idSchema
 }).partial().strict()
 export const keySchema = z.string().trim().min(8, '密钥过短').max(4096).regex(/^[\x21-\x7E]+$/, '密钥不能包含空白或非 ASCII 字符')
+/** Domestic Mureka documents an opaque Bearer key, not an eight-character minimum or prefix. */
+export const providerKeySchema = (provider: Provider) => provider === 'acestep' || provider === 'mureka-cn' ? localKeySchema : keySchema
 export const activeMusicStatuses = new Set(['submitting', 'preparing', 'queued', 'running', 'streaming', 'downloading'])

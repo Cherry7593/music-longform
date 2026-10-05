@@ -1,0 +1,444 @@
+{
+  "version": "4.0.0",
+  "completed": true,
+  "portable": {
+    "file": "dist/油管视频生成-4.0.0-Windows-x64.exe",
+    "bytes": 107985607,
+    "sha256": "3E130BABD3EBBF56E57CA416E2467B987144AE7FA9DED80BF46373E7959B4690"
+  },
+  "checksumFile": "dist/油管视频生成-4.0.0-Windows-x64.exe.sha256",
+  "checksumMatches": true,
+  "signatures": [
+    {
+      "file": "./dist/油管视频生成-4.0.0-Windows-x64.exe",
+      "status": "NotSigned",
+      "certificateSubject": null
+    },
+    {
+      "file": "./dist/win-unpacked/油管视频生成.exe",
+      "status": "NotSigned",
+      "certificateSubject": null
+    }
+  ],
+  "tests": {
+    "unit": 724,
+    "integration": 70,
+    "electron": 13,
+    "cliGroups": 10,
+    "packagedAudioAndVideoSeconds": 65,
+    "portableLaunches": 2
+  },
+  "benchmark": {
+    "root": "composition-performance-v4-b34UWK",
+    "experiments": 10,
+    "outputs": 22,
+    "codeHashesMatch": true,
+    "rawReportSha256": "e7a6a7b2211b289b0135c758ef4f040f948bc28eadfe7f5f51baa81aa5909e7e",
+    "dataFile": "docs/composition-performance-v4.json",
+    "summaryFile": "docs/composition-performance-v4.md"
+  },
+  "oldExecutablesUnchanged": [
+    {
+      "name": "Music-Canvas-1.0.0-Windows-x64.exe",
+      "bytes": 101799292,
+      "sha256": "4B0E2DDCA78E22126AF9D34826CF3A1CD64934A9F9D21C374412A8E516314560"
+    },
+    {
+      "name": "油管视频生成-2.0.0-Windows-x64.exe",
+      "bytes": 101823303,
+      "sha256": "F6DBA918B862BC85A5A5923A3EEDB8CBA945A8454008517E6957496D69E540D3"
+    },
+    {
+      "name": "油管视频生成-2.1.0-Windows-x64.exe",
+      "bytes": 107929467,
+      "sha256": "D2A51EB9148659F204FE8DBDDD26AF0D5FBDD819E6CBD8BCBD26E88125B28775"
+    },
+    {
+      "name": "油管视频生成-3.0.0-Windows-x64.exe",
+      "bytes": 107960118,
+      "sha256": "107E9DBBC4A1847B99B9F1EC4700CB5D94157B617683266B6CCF403B64BF4923"
+    },
+    {
+      "name": "油管视频生成-3.1.0-Windows-x64.exe",
+      "bytes": 107980747,
+      "sha256": "C747A030508A11EA7CBF0580826EDED7CBEC2D3173364928F4FC07DEC0F2A46A"
+    }
+  ],
+  "packagedBuildFiles": [
+    {
+      "file": "out/main/chunks/testing-B867jA34.js",
+      "sha256": "B84181CC3E154FB33ED017159B8270FCD94BA2E7723A1BF6279E7F8CBC114112"
+    },
+    {
+      "file": "out/main/index.js",
+      "sha256": "DF83F712062DC3E01E8D2FA52C0697C53E30AB8EAB3D2E667C18666AF501EE19"
+    },
+    {
+      "file": "out/preload/index.js",
+      "sha256": "A91EC2827871804999C018F58CE3514319099EC75C9424BB2802C4258165F40F"
+    },
+    {
+      "file": "out/renderer/assets/index-Bj7xVccN.css",
+      "sha256": "C8F55C48AC3127CE7FD09863C3124F0C9C7CBE58FAE2E716D8E954D2B4A47FA4"
+    },
+    {
+      "file": "out/renderer/assets/index-fWMapaLq.js",
+      "sha256": "715FD4A6E4684B19E7D5C0425AC2958CDBA2A3D563F3BBE2F71957E46E3C6FB4"
+    },
+    {
+      "file": "out/renderer/index.html",
+      "sha256": "F8D807DF97761FA68D057B1F195A4AA5769388CC9461B5B841F4476F58EDB604"
+    }
+  ],
+  "finalScreenshots": [
+    {
+      "file": "docs/screenshots/v4-settings-empty-apis-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "EFAB93145E917058EBBCEE77DECD1501C0BB1E1055FADEB97EFA96FC9E12DCCD"
+    },
+    {
+      "file": "docs/screenshots/v4-library-music-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "6116B0B64BB23BA872D23FF682A140FCFFA3D54A46EAB1A83654700F08387630"
+    },
+    {
+      "file": "docs/screenshots/v4-library-images-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "5C7BE611ECCC6A6B4D12A095DA25AF1EA394149A868228989DEA30F6F70BA16B"
+    },
+    {
+      "file": "docs/screenshots/v4-image-preview-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "C9CA27B80EC16AD73059FEC49A085C29676FC60A81A1DD87E6A7243EE4AB410E"
+    },
+    {
+      "file": "docs/screenshots/v4-library-video-empty-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "2DBD3F9289E76B008F8E11FFDF4258B75B99193B9B543A198C3DFCCBCDB28BAD"
+    },
+    {
+      "file": "docs/screenshots/v4-composition-audio-selector-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "A16F2933D29F2ED2C7C230E96A17B040DBF9EDC5AD18A92AC907BEEED72F5276"
+    },
+    {
+      "file": "docs/screenshots/v4-composition-image-selector-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "0BFB30B5B7411B98B2353E6BD14F71DB85C747E647517D7626A071B617E8FEC6"
+    },
+    {
+      "file": "docs/screenshots/v4-composition-plan-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "592FB9E0901DCD981E8726938E82AA33509964E8DE31F326EFD6CA769A449915"
+    },
+    {
+      "file": "docs/screenshots/v4-composition-confirmation-not-submitted-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "46E457802F64DB366DFB1A1F53A7E4BDFAAA967143BC8F740DD224D356747A93"
+    },
+    {
+      "file": "docs/screenshots/v4-composition-empty-executions-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "C1DC435DBEBA4DDAA457B191C8B9588DBED30016CA1DB8963D47E5EDE4845983"
+    },
+    {
+      "file": "docs/screenshots/v4-generation-compact-list-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "B5AB5F7E6A0C3FD3BC57751813DFC806B283D422790273E40A99A15779FC494C"
+    },
+    {
+      "file": "docs/screenshots/v4-long-stored-error-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "2BBDD87AB13DECE4B5951BB59ABC4309ED5DEEDE383D2B66103CEBA208E2E7F7"
+    },
+    {
+      "file": "docs/screenshots/v4-generation-mureka-entry-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "606EF33C47D68890BB435854AB41C8548BDCF8202E7C3475A3D0E134FCC3DB37"
+    },
+    {
+      "file": "docs/screenshots/v4-generation-kie-entry-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "7ABF9AF3E60368240AA8C98327A8B1B684D771FA1E2BB0A9C6811A2B842BB973"
+    },
+    {
+      "file": "docs/screenshots/v4-generation-reapi-entry-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "84F7FE566D3B14564DC1B8DFC9CDF49AAA02B38B228F747A6BACBED07561CDEC"
+    },
+    {
+      "file": "docs/screenshots/v4-generation-sunor-entry-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "6CC40C20E028B3AB29C5F8BA31D6987D51C4358CDB9A52B15B501953D13D6E6D"
+    },
+    {
+      "file": "docs/screenshots/v4-generation-acestep-entry-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "71637978223C8D7516693A8B5016C42C8070575C35C212A0A76697A98F4F6500"
+    },
+    {
+      "file": "docs/screenshots/v4-local-generation-confirmation-not-submitted-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "DC529056BEAB09FC4CAC14091D9A4D7ED75D7DE3F3E1548D438D72C720A3E258"
+    },
+    {
+      "file": "docs/screenshots/v4-long-draft-validation-error-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "B979BA3162FA82A426B102F4F5F1193F1592E7FED297E1AB1591D85C8081B70A"
+    },
+    {
+      "file": "docs/screenshots/v4-generation-image-entry-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "1F93C49CF890C7D3AE153562A08F80D493EFB0D0B9E971D47FB565B37F856081"
+    },
+    {
+      "file": "docs/screenshots/v4-settings-added-apis-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "F10B516BCFB755D5E2DD267DD771EA4D022BFE518115E4F39E5AD820DF725487"
+    },
+    {
+      "file": "docs/screenshots/v4-settings-local-editor-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "DDC7A106AEBDD7DF1213452E37F6920E1743BEC9E5EE86B9EEE0CA7A608896CA"
+    },
+    {
+      "file": "docs/screenshots/v4-settings-render-resources-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "6A033BDE327C1190B3B590C1137222933DB05CE959F036440F63501121DF91AA"
+    },
+    {
+      "file": "docs/screenshots/v4-settings-storage-1366x768-20261005-062259-4e0cca.png",
+      "width": 1350,
+      "height": 729,
+      "sha256": "27635408CE7825476F251F82A7874B24A3EFFB5ECAB7B6FCCA7C6C08CFF70C3C"
+    },
+    {
+      "file": "docs/screenshots/v4-library-music-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "D7C49A6A188B62EB48998503BD44B382AB57B0484E1894EC4B4DD4C781BD4074"
+    },
+    {
+      "file": "docs/screenshots/v4-library-images-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "6FB4B71FD4123578E4B9DA36108DF1623D57575F1CF5883874266AACFD97FE21"
+    },
+    {
+      "file": "docs/screenshots/v4-image-preview-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "FFF68FCB4B30AFA01254E5C79F54F3A179AE8543861F83A3ECD1F8A07FA918F7"
+    },
+    {
+      "file": "docs/screenshots/v4-library-video-empty-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "CBA63A741263B6A4CCEA87243E44BA430AD69AD02EEC47729697B426CEF2F950"
+    },
+    {
+      "file": "docs/screenshots/v4-composition-audio-selector-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "F1AF2A15AC9427D6BEDF13DE42E3BAD70711D4B6B333E9BE2ED91FD2CD545F81"
+    },
+    {
+      "file": "docs/screenshots/v4-composition-image-selector-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "6F1E1AAE829AD2AFE07BE442CE16FE2BF45DE4E8021BAA0643E6D67316CBD4C1"
+    },
+    {
+      "file": "docs/screenshots/v4-composition-plan-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "361DD25BACA6586C2ED3B9C1D4DCE2109ED348E7D45B800C2697A083985AE630"
+    },
+    {
+      "file": "docs/screenshots/v4-composition-confirmation-not-submitted-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "9D40E8716A5DEF4D86C335AA249DFE71C9C270428B1EB16B1B5CC0FE61E67677"
+    },
+    {
+      "file": "docs/screenshots/v4-composition-empty-executions-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "D0C7F469258505D8258357CFED3A52E1409492F229E3553F6340623A46A765B0"
+    },
+    {
+      "file": "docs/screenshots/v4-generation-compact-list-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "A8542B809CA9AE32ACEE07312ECD5D070A8292EC92DB82EDAB3F9AF70153A6E4"
+    },
+    {
+      "file": "docs/screenshots/v4-long-stored-error-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "38BAE4E3992ED439B4EAB07942328EF84FEB5874E86FAAF126A00E5228F0FCC4"
+    },
+    {
+      "file": "docs/screenshots/v4-generation-mureka-entry-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "25FF6E437704B0B8E9E884FB0050FF05A5735F195D43B6728A44380FDF744157"
+    },
+    {
+      "file": "docs/screenshots/v4-generation-kie-entry-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "47378B9C0D113C4C7C0D9BA49391BF9C23741C248DD87E85AE06EF0CC5F5551D"
+    },
+    {
+      "file": "docs/screenshots/v4-generation-reapi-entry-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "8449D825CE73C1D2094FDE3559CC0B8C291B81FAB31B2EA2076BBE2C396C6D53"
+    },
+    {
+      "file": "docs/screenshots/v4-generation-sunor-entry-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "23736A8A8D9DFBBD200D40FE2911ED397FF19ECF45577DF14748B73F3B4382EA"
+    },
+    {
+      "file": "docs/screenshots/v4-generation-acestep-entry-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "EEEAC224C1659D30BEBFD10F054BC6D928A6F8E89AAC85DFB1CB3BB639D92A46"
+    },
+    {
+      "file": "docs/screenshots/v4-local-generation-confirmation-not-submitted-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "6166C3D5F4E37E08DC20719DD4551FEF7409845A9ABDC58C7B157A316DAA0483"
+    },
+    {
+      "file": "docs/screenshots/v4-long-draft-validation-error-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "8AAFF81F9051506CEF63E6DA3A7B321C2BAD86D19B6AC4E737AB662B09C92A9C"
+    },
+    {
+      "file": "docs/screenshots/v4-generation-image-entry-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "C9479C08E39532EC223F38B37460B26AB43A97EE653C1BB8D6AF289ADFA8773E"
+    },
+    {
+      "file": "docs/screenshots/v4-settings-added-apis-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "8C234377747AE8534610C91D96CE05692C82E9A9CE3E0C612EFE2EE9A71D2E73"
+    },
+    {
+      "file": "docs/screenshots/v4-settings-local-editor-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "1D693DE0752CEA8B3BBE388AB4ADCA093EC1A108C2FBB932C723E3F659BFCC04"
+    },
+    {
+      "file": "docs/screenshots/v4-settings-render-resources-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "FB3B16D8C65C923F083D5236C9EB6A6EBEE4887E9F7414C45D1C7CDF15664DA4"
+    },
+    {
+      "file": "docs/screenshots/v4-settings-storage-1920x1080-20261005-062259-4e0cca.png",
+      "width": 1904,
+      "height": 1041,
+      "sha256": "CE87F13F12D0A3A09753E8CDE97796C24661C47742AFB5541CF146137ACD3745"
+    }
+  ],
+  "gallery": {
+    "passed": true,
+    "images": 47,
+    "pageErrors": [],
+    "consoleErrors": [],
+    "archivedV31BaselineByteMatched": null
+  },
+  "documents": [
+    {
+      "file": "README.md",
+      "sha256": "5D02A77FE03EA89C9F5E68325367E12686EE2D75048745C60F68B53F83F182B6"
+    },
+    {
+      "file": "docs/verification-v4.md",
+      "sha256": "CA785E527EE3C4B64AF58D26F7AB40AE19E050EE25F2F7B702848B4D32562064"
+    },
+    {
+      "file": "docs/composition-performance-v4.md",
+      "sha256": "7A87B5BEC2E75B77D4730818FCB5CA59CCDBEC2A41DF4E7AFE8C3F47F2826A01"
+    },
+    {
+      "file": "docs/video-performance-v4.md",
+      "sha256": "5BAC9D6BBCF26E2CDD8755E0550A6134717A1141900CA123367692009DB4D13E"
+    },
+    {
+      "file": "docs/diagnostics-v4.md",
+      "sha256": "3007C2E83F0403D17E8E36B9EA4F38831E83E110C844C1547681B65E99F96999"
+    },
+    {
+      "file": "docs/migration-v4.md",
+      "sha256": "17752A3F275625D718C109DE529E96BD29B20459F2B1FF2E606D22CE38520934"
+    },
+    {
+      "file": "docs/ui-preview.html",
+      "sha256": "0DBB5CE21291085676DD2489D7C7EF31BF3E88D32A665996DDBAA510B0309847"
+    },
+    {
+      "file": "docs/ui-preview-v3.1.html",
+      "sha256": "2A0E5ADE26E6C44C0EDCFAAF3E3942204506429C5039D427AC0CC151948C7E32"
+    },
+    {
+      "file": "src/renderer/DESIGN.md",
+      "sha256": "153770D842F134F47E189C2AB67F516622045E254036B0B757FB4F4165928CEA"
+    }
+  ],
+  "sourceCodeFilesNotNewerThanPackage": 84,
+  "evidence": {
+    "scratchAudit": "v4-delivery-audit.json",
+    "gallery": "v4-gallery-check.json",
+    "logs": [
+      "v4-final-check.log",
+      "v4-integration-all.log",
+      "v4-e2e-focus-final.log",
+      "v4-dist-final.log",
+      "v4-package-final.log",
+      "v4-portable-final.log",
+      "v4-visual-final.log",
+      "v4-cli-final.log",
+      "v4-composition-hour-final.log"
+    ]
+  },
+  "boundaries": [
+    "Synthetic credentials and media only; no paid cloud generation or real ACE neural inference.",
+    "No GitHub push, model/tool/driver installation or historical user-incident rerun.",
+    "Hardware/performance results apply to this machine and this artificial corpus only.",
+    "Unsigned portable; existing FFmpeg/FFprobe and sufficient local resources are required."
+  ]
+}

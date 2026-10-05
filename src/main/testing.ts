@@ -5,6 +5,8 @@ import path from 'node:path'
 import type { CredentialCheck, ImageDraft, ImageProvider, ImageResult, MusicDraft, MusicMode, MusicProvider, RemoteMusicTask, SavedImage } from '../shared/types'
 import { AppError } from './providers/http'
 import { saveImage } from './downloads'
+import { saveGeneratedAudio, type SaveGeneratedAudioOptions } from './generated-audio'
+import type { GeneratedAudioResult } from '../shared/music-types'
 
 const delay = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms))
 export const TEST_PNG = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAJCAYAAAA7KqwyAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAAGElEQVQokWN4+/nPf0oww6gB/0fD4M9/AG4PK0+mPghEAAAAAElFTkSuQmCC'
@@ -50,4 +52,31 @@ export async function testDownload(_url: string, directory: string, assetId: str
 }
 export async function testDownloadImage(_url: string, directory: string, assetId: string): Promise<SavedImage> {
   return saveImage(TEST_PNG, directory, assetId)
+}
+
+/** Fixed official response shapes, only loaded behind the isolated, unpackaged test gate. */
+export const testMusicFetch: typeof fetch = async (input, init) => {
+  const url = new URL(String(input))
+  if (['127.0.0.1', '[::1]'].includes(url.hostname)) return fetch(input, init)
+  if (!['api.kie.ai', 'reapi.ai', 'sunor.cc'].includes(url.hostname)) throw new Error('Fixture refuses external network')
+  const provider = url.hostname === 'api.kie.ai' ? 'kie' : url.hostname === 'reapi.ai' ? 'reapi' : 'sunor'
+  await delay(100)
+  if (init?.method === 'POST') {
+    const id = `fixture-${provider}-${randomUUID()}`
+    return provider === 'kie' ? Response.json({ code: 200, data: { taskId: id } })
+      : provider === 'reapi' ? Response.json({ id, status: 'processing' })
+        : Response.json({ code: 202, data: { task_id: id, status: 'pending' } }, { status: 202 })
+  }
+  if (url.pathname.endsWith('/credit')) return Response.json({ code: 200, data: 999 })
+  if (url.pathname.endsWith('/balance')) return Response.json(provider === 'reapi' ? { balance: 999 } : { code: 200, data: { available: 999, frozen: 0 } })
+  const id = provider === 'kie' ? url.searchParams.get('taskId')! : url.pathname.split('/').pop()!
+  const urls = [0, 1].map(index => `https://fixture.invalid/${provider}/${id}/${index}.wav`)
+  if (provider === 'kie') return Response.json({ code: 200, data: { taskId: id, state: 'success', resultJson: JSON.stringify({ resultUrls: urls }) } })
+  if (provider === 'reapi') return Response.json({ id, status: 'completed', output: { audio_urls: urls } })
+  return Response.json({ code: 200, data: { task_id: id, status: 'success', output: { result: urls.map(audio_url => ({ audio_url })) } } })
+}
+export async function testSaveGeneratedAudio(options: SaveGeneratedAudioOptions): Promise<GeneratedAudioResult> {
+  if (options.connection) return saveGeneratedAudio(options)
+  if (!options.url.startsWith('https://fixture.invalid/')) throw new Error('Only synthetic cloud audio is permitted in this fixture')
+  return { ...await testDownload(options.url, options.directory, options.assetId), durationMs: 8000 }
 }

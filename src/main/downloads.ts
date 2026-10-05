@@ -80,7 +80,8 @@ async function pinnedFetch(url: URL, address: { address: string; family: number 
           response.resume()
           resolve(new Response(null, { status, headers }))
         } else {
-          resolve(new Response(Readable.toWeb(response) as ReadableStream<Uint8Array>, { status, headers }))
+          const body = Readable.toWeb(response, { strategy: { highWaterMark: 64 * 1024, size: chunk => chunk.byteLength } }) as ReadableStream<Uint8Array>
+          resolve(new Response(body, { status, headers }))
         }
       } catch {
         response.destroy()
@@ -126,7 +127,7 @@ function audioExtension(bytes: Buffer): 'mp3' | 'wav' {
   throw new AppError('下载内容不是受支持的 MP3 或 WAV 音频，未保存文件。')
 }
 
-async function receiveMedia(initial: URL, signal: AbortSignal, fetcher?: typeof fetch, kind: 'audio' | 'image' = 'audio'): Promise<Buffer> {
+async function openMedia(initial: URL, signal: AbortSignal, fetcher?: typeof fetch, kind: 'audio' | 'image' = 'audio'): Promise<Response> {
   let url = initial
   for (let redirects = 0; redirects <= 3; redirects++) {
     const address = await resolvePublic(url)
@@ -162,9 +163,33 @@ async function receiveMedia(initial: URL, signal: AbortSignal, fetcher?: typeof 
       void response.body?.cancel().catch(() => undefined)
       throw new AppError('下载内容不是有效媒体，未保存文件。')
     }
-    return readLimited(response, kind === 'image' ? IMAGE_LIMIT : AUDIO_LIMIT, signal)
+    return response
   }
   throw new AppError('素材下载跳转次数过多。')
+}
+
+/** New-provider streaming receiver. The caller owns the size/deadline budget and body cancellation.
+ * Keep the legacy download APIs buffered, and share their DNS pinning/redirect/credential checks.
+ */
+export async function openCloudAudio(url: string, signal: AbortSignal, fetcher?: typeof fetch): Promise<Response> {
+  const initial = checkedURL(url)
+  if (signal.aborted) throw new TransportError('timeout')
+  // DNS and trusted injected transports need not honor AbortSignal. Stop waiting, and cancel
+  // any late response; the same signal still owns the pinned native request/body after headers.
+  return new Promise<Response>((resolve, reject) => {
+    const abort = (): void => { signal.removeEventListener('abort', abort); reject(new TransportError('timeout')) }
+    signal.addEventListener('abort', abort, { once: true })
+    void openMedia(initial, signal, fetcher).then(response => {
+      signal.removeEventListener('abort', abort)
+      if (signal.aborted) { void response.body?.cancel().catch(() => undefined); reject(new TransportError('timeout')) }
+      else resolve(response)
+    }, error => { signal.removeEventListener('abort', abort); reject(error) })
+    if (signal.aborted) abort()
+  })
+}
+
+async function receiveMedia(initial: URL, signal: AbortSignal, fetcher?: typeof fetch, kind: 'audio' | 'image' = 'audio'): Promise<Buffer> {
+  return readLimited(await openMedia(initial, signal, fetcher, kind), kind === 'image' ? IMAGE_LIMIT : AUDIO_LIMIT, signal)
 }
 
 export async function downloadAudio(url: string, directory: string, assetId: string, fetcher?: typeof fetch): Promise<{ fileName: string }> {
@@ -225,7 +250,7 @@ export async function saveImage(base64: string, directory: string, assetId: stri
   return saveImageBytes(bytes, directory, assetId)
 }
 
-export async function downloadImage(url: string, directory: string, assetId: string, fetcher?: typeof fetch): Promise<SavedImage> {
+export async function downloadImage(url: string, directory: string, assetId: string, fetcher?: typeof fetch, parentSignal?: AbortSignal): Promise<SavedImage> {
   assertAssetId(assetId)
   const initial = checkedURL(url)
   await assetFolder(directory, 'image', true)
@@ -240,7 +265,7 @@ export async function downloadImage(url: string, directory: string, assetId: str
         }
       }
       throw new TransportError('network')
-    })
+    }, parentSignal)
   } catch (error) {
     if (error instanceof AppError) throw error
     throw new AppError('图片下载连接失败或超过 90 秒；未重新生成，请检查网络及服务商后台。')

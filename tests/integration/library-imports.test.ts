@@ -2,7 +2,7 @@ import { createHash, randomUUID } from 'node:crypto'
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { LibraryStore } from '../../src/main/storage/library'
+import { LibraryStore } from '../fixtures/v31/main/storage/library'
 import { DEFAULT_IMAGE, DEFAULT_MUSIC, DEFAULT_VIDEO } from '../../src/shared/schemas'
 import type { Project } from '../../src/shared/types'
 import { requireTools, runTool, type VideoTools } from '../../src/main/video/ffmpeg'
@@ -62,9 +62,9 @@ describe('real FFprobe/FFmpeg library imports', () => {
     const bytes = await readFile(await tone('wav', 'project-original.wav'))
     const file = join(directory, 'audio', `${id}.wav`); await writeFile(file, bytes)
     const project: Project = {
-      version: 3, id: projectId, directory, name: '原始 项目', createdAt: now, updatedAt: now,
+      version: 4, id: projectId, directory, name: '原始 项目', createdAt: now, updatedAt: now,
       music: DEFAULT_MUSIC, image: DEFAULT_IMAGE, video: DEFAULT_VIDEO, musicJobs: [], batches: [], imageJobs: [], images: [], videoJobs: [],
-      audio: [{ id, jobId: randomUUID(), taskId: 'task', remoteId: 'remote', title: '歌曲', fileName: `audio/${id}.wav`, durationMs: 123456789, createdAt: now, model: 'historical-model', prompt: '留存提示词', mode: 'instrumental', kept: false }]
+      audio: [{ id, provider: 'mureka', jobId: randomUUID(), taskId: 'task', remoteId: 'remote', title: '歌曲', fileName: `audio/${id}.wav`, durationMs: 123456789, createdAt: now, model: 'historical-model', prompt: '留存提示词', mode: 'instrumental', kept: false }]
     }
     const library = await store([project]); const item = (await library.all())[0]
     expect(item.durationSeconds).toBeCloseTo(1.25, 2); expect(await library.pathForAsset(item.id)).toBe(file)
