@@ -27,7 +27,7 @@ describe('V4 actual isolated HTTP → asset → parallel composition → usage �
   it('binds generation to A, renders across independent projects, retains assets after deletion and keeps usage after video removal', async () => {
     const dataDir = path.join(root, 'appdata'), mediaRoot = path.join(root, 'media')
     const db = new WorkbenchDB(dataDir); await db.init()
-    await db.put('settings', 'current', { version: 5, mediaRoot, ffmpegPath: tools.ffmpeg, render: { concurrency: 2, threads: 2, encoder: 'cpu', staticVideo: true }, page: 'generation' })
+    await db.put('settings', 'current', { version: 5, mediaRoot, ffmpegPath: tools.ffmpeg, render: { concurrency: 2, threads: 2, encoder: 'cpu' }, page: 'generation' })
     const assets = new AssetStore({ dataDir, root: mediaRoot, getFFmpegPath: () => tools.ffmpeg }); await assets.init()
     const secrets = new SecretStore(dataDir, encryption); await secrets.init()
     const registry = new MusicRegistry(), server = await startAceStepFixture({ audio: await readFile(audio), key: 'a', durationSeconds: 999 })
@@ -62,7 +62,7 @@ describe('V4 actual isolated HTTP → asset → parallel composition → usage �
       expect(one.jobs[0].status, one.jobs[0].error).toBe('succeeded'); expect(two.jobs[0].status, two.jobs[0].error).toBe('succeeded')
       const attempts = [one.jobs[0].attempts[0], two.jobs[0].attempts[0]]
       expect(Math.max(...attempts.map(attempt => Date.parse(attempt.startedAt)))).toBeLessThan(Math.min(...attempts.map(attempt => Date.parse(attempt.finishedAt!))))
-      expect(attempts.every(attempt => attempt.stages?.some(stage => stage.stage === 'publish') && attempt.staticVideo)).toBe(true)
+      expect(attempts.every(attempt => attempt.stages?.some(stage => stage.stage === 'publish') && attempt.staticVideo === false)).toBe(true)
       const videos = (await assets.all()).filter(asset => asset.kind === 'video'); expect(videos).toHaveLength(2)
       for (const video of videos) {
         const info = await probeMedia(tools, await assets.pathForAsset(video.id))

@@ -133,7 +133,7 @@ describe('V4 migration independent storage', () => {
     const storesValue = await stores(); const { db, assets, secrets, encryption } = storesValue
     await migrateV4({ dataDir, defaultMediaRoot, db, assets, secrets })
     expect(db.list('generation')).toEqual([]); expect(db.list('composition')).toEqual([]); expect(db.list('apis')).toEqual([])
-    expect(db.get('settings', 'current')).toEqual({ version: 5, mediaRoot: defaultMediaRoot, page: 'generation', render: { concurrency: 2, threads: 4, encoder: 'auto', staticVideo: true } })
+    expect(db.get('settings', 'current')).toEqual({ version: 5, mediaRoot: defaultMediaRoot, page: 'generation', render: { concurrency: 2, threads: 4, encoder: 'auto' } })
     expect(encryption.decryptString).not.toHaveBeenCalled(); expect(encryption.encryptString).not.toHaveBeenCalled()
     expect(JSON.parse(await readFile(path.join(dataDir, 'settings.json'), 'utf8')).version).toBe(5)
   })
@@ -237,7 +237,9 @@ describe('V4 migration independent storage', () => {
     await mkdir(path.join(directory, 'videos'), { recursive: true }); await writeFile(path.join(directory, 'videos', `${id}.mp4`), content)
     const receipt = { version: 1, id, ownerId, kind: 'batch', name: '原发布名称', state: 'prepared', finishedAt: updatedAt, durationSeconds: 14, assetIds: [sourceId], directory, fileName: `videos/${id}.mp4`, sha256: hash(content), bytes: content.length }
     const receiptBytes = await save(path.join(dataDir, 'export-receipts', `${id}.json`), receipt)
-    await save(path.join(dataDir, 'export-receipts', `${orphanId}.json`), { ...receipt, id: orphanId, fileName: `videos/${orphanId}.mp4`, state: 'committed' })
+    // Independent missing output, not an identical-byte alias whose canonical name depends on UUID order.
+    const orphanContent = Buffer.from('different isolated orphan video payload')
+    await save(path.join(dataDir, 'export-receipts', `${orphanId}.json`), { ...receipt, id: orphanId, fileName: `videos/${orphanId}.mp4`, state: 'committed', sha256: hash(orphanContent), bytes: orphanContent.length })
     const external = path.join(root, 'external', 'song.mp3'), libraryId = randomUUID()
     const oldRecord: LibraryRecord = { version: 1, item: { id: libraryId, kind: 'audio', name: '外部原名', createdAt, sha256: 'a'.repeat(64), bytes: 100, format: 'mp3', durationSeconds: 80, available: false, problem: '缺文件', origins: [{ type: 'import', name: 'song.mp3' }] },
       importPaths: [external], locations: [{ type: 'managed', fileName: `audio/${libraryId}.mp3` }] }

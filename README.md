@@ -1,35 +1,38 @@
-# 油管视频生成 V4.0.2
+# 油管视频生成 V4.0.3
 
 Windows 本地工作台：**独立生成项目、条目式音乐/图片生成、独立合成项目、音乐/图片/视频统一素材库**。在原 V3.1 工程内升级，旧单视频工作台与隐含全局选材已移除。
 
-**4.0.2 更新**：新增“下载音乐/图片模板”和“批量导入提示词”。将外部 AI 返回文本粘贴、解析预览、逐条或统一配置后，一次创建 1–500 个待生成草稿；不自动生成、不产生生成费用。使用与验证说明见 [4.0.2 变更说明](docs/changes-v4.0.2.md)。
+**4.0.3 更新**：撤掉生产用 1 秒静态片段生成、缓存和视频轨循环流复制，恢复静态图片连续编码、GOP 300；保留跨合成项目并行、资源预算和 CPU/QSV/NVENC 检测与安全回退。仅影响后续合成，不重处理历史成片。实测与边界见 [4.0.3 变更说明](docs/changes-v4.0.3.md)。
 
-## 下载与运行（v4.0.2）
+**4.0.2 功能保留**：内置音乐/图片模板下载、批量粘贴解析与预览配置、一次创建 1–500 个待生成草稿；不自动生成、不产生生成费用。见 [4.0.2 说明](docs/changes-v4.0.2.md)。
 
-从 [v4.0.2 Release](https://github.com/Cherry7593/music-longform/releases/tag/v4.0.2) 下载 [Windows x64 便携版 EXE](https://github.com/Cherry7593/music-longform/releases/download/v4.0.2/music-longform-4.0.2-Windows-x64.exe) 和 [SHA-256 校验文件](https://github.com/Cherry7593/music-longform/releases/download/v4.0.2/music-longform-4.0.2-Windows-x64.exe.sha256)，直接运行，无需安装 Node.js。Release 使用英文附件名 `music-longform-4.0.2-Windows-x64.exe`，内容与本地中文名成品完全相同。源码下载包不包含 EXE，构建输出 `dist/` 不提交进源码历史。
+## 下载与运行（v4.0.3）
 
-本地对应文件：`dist/油管视频生成-4.0.2-Windows-x64.exe`，**107,997,786 bytes**。程序未签名；本次模板保存和粘贴创建草稿不需要生成 API，也不产生生成费用。音频校验和本地视频合成仍需要已有 FFmpeg / FFprobe，软件不捆绑或自动部署工具、模型、CUDA、驱动。
+从 [v4.0.3 Release](https://github.com/Cherry7593/music-longform/releases/tag/v4.0.3) 下载 [Windows x64 便携版 EXE](https://github.com/Cherry7593/music-longform/releases/download/v4.0.3/music-longform-4.0.3-Windows-x64.exe) 和 [SHA-256 校验文件](https://github.com/Cherry7593/music-longform/releases/download/v4.0.3/music-longform-4.0.3-Windows-x64.exe.sha256)，直接运行，无需安装 Node.js。附件 `music-longform-4.0.3-Windows-x64.exe` 与本地 `dist/油管视频生成-4.0.3-Windows-x64.exe` 字节一致，大小 **107,996,917 bytes**。程序未签名；音频校验与本地视频合成仍需已有 FFmpeg / FFprobe，不自动部署工具、模型或驱动。
 
 ```text
 SHA-256
-04B47DA74B27DAC0BF084CAC47CC1846D76939588C1C5C235BD1CBD18D0DF557
+03D49427B4A6D72EE2D3BDD426E0ADE015263B738C36BB933EFFB8BF2D977714
 ```
 
-PowerShell 校验：`Get-FileHash -Algorithm SHA256 '.\music-longform-4.0.2-Windows-x64.exe'`。请与随包校验文件及上面的值一致。
+PowerShell 校验：`Get-FileHash -Algorithm SHA256 '.\music-longform-4.0.3-Windows-x64.exe'`。请与上面的值及随包校验文件一致。
+
+源码下载包不包含 EXE，构建输出 `dist/` 不提交进源码历史；便携程序请从 Release 附件下载。[v4.0.2 历史 Release](https://github.com/Cherry7593/music-longform/releases/tag/v4.0.2) 及此前版本保留，不覆盖旧附件。
 
 ### 版本区分
 
 | 版本 | 主要变化 | 查阅入口 |
 |---|---|---|
-| **v4.0.2 · 当前发布** | 内置模板下载、批量粘贴解析与预览配置、原子幂等创建草稿 | [Release](https://github.com/Cherry7593/music-longform/releases/tag/v4.0.2) · [使用与验收](docs/changes-v4.0.2.md) |
+| **v4.0.3 · 当前发布** | 连续编码、GOP 300；移除短片段复用，保留并行 | [Release](https://github.com/Cherry7593/music-longform/releases/tag/v4.0.3) · [变更与定向对照](docs/changes-v4.0.3.md) · [交付清单](docs/release-v4.0.3.json) |
+| v4.0.2 · 已上传 GitHub | 内置模板下载、批量粘贴解析与预览配置、原子幂等创建草稿 | [Release](https://github.com/Cherry7593/music-longform/releases/tag/v4.0.2) · [使用与验收](docs/changes-v4.0.2.md) |
 | v4.0.1 · 已上传 GitHub | 新增独立 Mureka 国内站；来源项目筛选；三处跨页批量选择。视频算法与调度未变 | [Release](https://github.com/Cherry7593/music-longform/releases/tag/v4.0.1) · [变更与验收](docs/changes-v4.0.1.md) |
 | V4.0.0 · 历史本地交付 | 双项目、条目式生成、统一音乐/图片/视频资产、受控并行与独立诊断 | [V4 验收](docs/verification-v4.md) · [性能基线](docs/composition-performance-v4.md) |
 | V3.1.0 · 历史本地交付 | 多平台音乐与 ACE-Step 本地 REST 客户端 | [V3.1 验收](docs/verification-v3.1.md) |
 | v3.0.0 · 上次已上传源码 | 总素材库、整首批量规划与使用记录 | [历史源码标签](https://github.com/Cherry7593/music-longform/tree/v3.0.0) · [V3 验收](docs/verification-v3.md) |
 
-`main` 为当前源码，固定版本请使用对应 `vX.Y.Z` 标签。4.0.2 在已发布的4.0.1上增量更新；原提交历史、已有标签、旧版 Release 附件和历史文档保留。
+当前源码/发布版本为 4.0.3；在已发布的 4.0.2 上增量更新。原提交历史、旧标签和旧 Release 附件保留；固定版本请使用对应 `vX.Y.Z` 标签。
 
-**升级前备份应用数据与全部媒体目录；不要用旧版编辑升级后的同一份数据。** 4.0.2 的批量导入只为新条目增加可选批次标识，不重做资产迁移，不改写旧凭据、任务或素材。
+**升级前备份应用数据与全部媒体目录；不要用旧版编辑升级后的同一份数据。** 4.0.3 兼容读取并忽略旧 `render.staticVideo` 布尔值，保存设置后不再写回；历史任务记录仍能读取。不清空素材库、不改写旧密文或原文件，也不重新处理已经生成的视频。
 
 ### 使用步骤
 
@@ -109,14 +112,14 @@ PowerShell 校验：`Get-FileHash -Algorithm SHA256 '.\music-longform-4.0.2-Wind
 - 关闭时只取消软件自己的本地处理，不停止用户ACE服务或厂商远端请求。视频中断后手动重试从头编码，不承诺断点续编。
 - 每次失败的阶段、相关素材、退出码、系统码、工具/编码器和限长脱敏stderr独立保存；重试不覆盖。证据不足显示“原因未确定”，不一律声称素材损坏。
 - 设置中的工具检查会实际短编码、探测和解码，不只是看编码器名字。硬件失败会说明原因并回退已验证路径，不自动装驱动。
-- 新优化包括指纹/工具版本绑定的校验复用、有界音频图减少中间WAV，以及静态画面闭合GOP缓存/视频轨流拷贝。**只重复画面轨，音乐完整播放一次。** 保留成片完整解码及来源前后指纹检查，不可靠组合回退直接编码。
-- `ultrafast`、`stillimage`及原来的4编码线程是既有设置，未当作新优化。引擎说明见 `docs/video-performance-v4.md`，完整规划→发布/入库/记账实测见 `docs/composition-performance-v4.md`，交付验收见 `docs/verification-v4.md`；不对其他机器承诺相同速度。
+- 保留指纹/工具版本绑定的校验复用和有界音频图，减少不必要的中间 WAV。**画面现为完整连续编码，30fps 下 GOP 300；音乐仍完整播放一次。** 不再生成、读取或循环复制静态视频片段，完整解码与来源前后指纹校验保留。
+- 各编码器既有质量/预设和输出规格保留；移除专为片段拼接设置的每秒关键帧私有覆盖及无 B 帧/闭合 GOP 强制限制。硬件编码或成片验证失败最多回退一次连续 CPU 编码。历史 V4 性能报告保留，但不能视为 4.0.3 实测或片段复用的独立收益；本次对照见 `docs/changes-v4.0.3.md`。
 
 工具从PATH发现，也可在设置选择本地`ffmpeg.exe`，同目录需有`ffprobe.exe`。输出根建议为充足空间的本地NTFS：安全发布依赖同卷硬链接；不支持的文件系统会明确失败，不覆盖原件。空间预约是保守估计，不等于测得的峰值。
 
 ## 旧数据迁移
 
-应用版本4.0.2；设置V5，生成/合成项目及API配置V1，资产/执行/使用发布记录V2，密钥保持V3。批量导入仅在新条目中记录可选批次标识，不重做资产迁移、不改旧密文。
+应用版本4.0.3；设置V5，生成/合成项目及API配置V1，资产/执行/使用发布记录V2，密钥保持V3。本次只兼容忽略旧静图片段开关，不重做资产迁移、不改旧密文；4.0.2 的提示词导入逻辑不变。
 
 启动识别`音乐画布`、`music-canvas`和当前品牌历史目录；多个目录需用户选择，`--user-data-dir`优先。先校验旧V1–V4数据、独占备份元数据、保存稳定ID映射与迁移日志，再登记新索引；中断可恢复，损坏数据保留并明确停止，不以空库替换。
 
@@ -141,13 +144,13 @@ diagnostics/           每次尝试的持久诊断
 migration-v4/          原字节元数据备份、映射、日志、完成标记
 ```
 
-新媒体位于托管根的`audio/`、`images/`、`videos/`。音频原件和恢复文件位于`audio-originals/`、`.generated-audio/`；静态画面缓存位于`.render-cache/`。不要手动拆散这些记录。旧版EXE及历史验收文档保留；不要用旧版编辑升级后的同一份数据。
+新媒体位于托管根的`audio/`、`images/`、`videos/`。音频原件和恢复文件位于`audio-originals/`、`.generated-audio/`；旧`.render-cache/`静图片段留在原处，但4.0.3不再读写或自动删除。不要手动拆散资产记录。旧版EXE及历史验收文档保留；不要用旧版编辑升级后的同一份数据。
 
 ## 从源码开发、验证和打包
 
-本工程验证环境为 Windows x64、Node.js 24.14.1、npm 11.19.0；先自行准备依赖和 FFmpeg/FFprobe。当前源码/发布版本为 **4.0.2**。模板原文位于 [音乐模板](docs/templates/音乐提示词模板.md) 和 [图片模板](docs/templates/图片提示词模板.md)，构建时嵌入应用，成品不依赖源码 `docs` 目录。
+本工程验证环境为 Windows x64、Node.js 24.14.1、npm 11.19.0；先自行准备依赖和 FFmpeg/FFprobe。当前源码/发布版本为 **4.0.3**。模板原文位于 [音乐模板](docs/templates/音乐提示词模板.md) 和 [图片模板](docs/templates/图片提示词模板.md)，构建时嵌入应用，本次未修改。
 
-**4.0.2 已实际通过**：TypeScript、ESLint、260 项相关单测（8 文件）、5 组真实桌面定向流程、正式包内模板逐字节验证，以及便携 EXE 两次启动/重启；一次最终打包成功。包含无 API 草稿、取消不保存、批量设置保留正文、重复点击和回复丢失恢复检查。未运行小时级视频/性能矩阵或付费生成。详见 [4.0.2 验收与校验](docs/changes-v4.0.2.md) 和 [发布清单](docs/release-v4.0.2.json)。4.0.1 的独立验收保留在 [历史说明](docs/changes-v4.0.1.md)。
+**4.0.3 已实际通过**：TypeScript、ESLint、162 项相关单测（9 文件）、26 项真实 FFmpeg 集成测试（2 文件）、两条 3 分钟视频的同素材前后对照、四个成片的 16 次鼠标拖动定位及结尾播放、一次最终构建打包和实际便携 EXE 两次启动。旧设置 true/false 均正常读取并忽略，旧 EXE 保留。未运行小时级矩阵、全量截图或厂商 API 测试。详见 [4.0.3 验收](docs/changes-v4.0.3.md) 和 [交付清单](docs/release-v4.0.3.json)；[4.0.2 历史验收](docs/changes-v4.0.2.md) 保留。
 
 下列为开发者可选的完整命令，视频性能/长测只在明确需要时运行，不是每个小版本的默认验证步骤。
 
@@ -164,13 +167,13 @@ node scripts/video-performance.mjs --help
 node scripts/video-performance.mjs
 node scripts/composition-performance.mjs --help
 node scripts/composition-performance.mjs
-npm.cmd run dist:win -- --config.directories.output=dist/release-4.0.2
+npm.cmd run dist:win -- --config.directories.output=dist/release-4.0.3
 npm.cmd run test:package
 python scripts/portable-smoke.py --help
 python scripts/visual-check.py --help
-Get-FileHash -Algorithm SHA256 '.\dist\油管视频生成-4.0.2-Windows-x64.exe'
+Get-FileHash -Algorithm SHA256 '.\dist\油管视频生成-4.0.3-Windows-x64.exe'
 ```
 
-Python 原生窗口脚本需要已安装的 Python Playwright；应用成品不需要它。4.0.2 定向验证入口为 `node scripts/prompt-import-desktop.mjs --help`，正式包模板检查可传 `--exe dist/release-4.0.2/win-unpacked/油管视频生成.exe`。历史 V4 全量验收见 `docs/verification-v4.md`；外部 AI 返回质量、真实云账号生成权限/计费/效果和 ACE 神经推理仍未验证。
+Python 原生窗口脚本需要已安装的 Python Playwright；应用成品不需要它。4.0.3 定向对照入口：`node scripts/continuous-video-check.mjs --help`；`before` 必须在改动前 4.0.2 生产源码上运行，`after` 复用其隔离素材，`verify` 只复核已有输出、不重测耗时。历史 V4 全量验收见 `docs/verification-v4.md`；本次短样本不外推一小时、其他硬件或任意图片。真实云账号生成和 ACE 神经推理仍未验证。
 
 本版不含模型部署、多账号、Udio、翻唱、续写、参考音频上传、声音克隆、声部分离、训练、云同步、视频导入/AI视频生成、字幕、动态画面、多图轮播、4K或YouTube自动上传。

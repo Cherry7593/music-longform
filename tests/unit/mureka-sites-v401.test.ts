@@ -176,7 +176,7 @@ describe('existing data and original-site recovery', () => {
       queues.push(queue); return { db, secrets, apis, queue, projects: new GenerationProjects(db) }
     }
     const f = await open()
-    await f.db.put('settings', 'current', { version: 5, page: 'generation', mediaRoot: root, render: { concurrency: 2, threads: 4, encoder: 'auto', staticVideo: true } })
+    await f.db.put('settings', 'current', { version: 5, page: 'generation', mediaRoot: root, render: { concurrency: 2, threads: 4, encoder: 'auto' } })
     const entries: GenerationEntry[] = []
     for (const site of ['mureka', 'mureka-cn'] as const) {
       await f.apis.save({ provider: site, key: keys[site] })

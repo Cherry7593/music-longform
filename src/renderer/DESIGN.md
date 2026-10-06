@@ -18,7 +18,7 @@
 - 不将以上视作真实 Electron 全链路。媒体协议播放、原生导入/另存/目录对话框、真实工具检测、云服务、本地推理、重启持久化和最终截图视觉审查由主代理用隔离 Electron profile 验收；未接触真实 profile、密钥或付费接口。
 - 自动化锚点：导航 `nav-generation/composition/library/settings`；项目 `{generation|composition}-create`、`{kind}-project-{id}`、`project-name/rename/delete`；条目 `entry-add`、`entry-{id}`、`entry-expand/copy/delete-{id}`、`entry-provider/prompt/lyrics/mode/input-mode/model/seconds`、`generate-selected/all`；请求 `request-resume/abandon-{id}`、`generation-resume/stop`。
 - 合成锚点：`composition-select-audio/image`、`selector-toggle-{assetId}`、`selector-apply`、`composition-minimum-minutes/transition/plan-button/plan/start/cancel-project`；批次 `batch-{id}`、`batch-pause/continue/cancel-{id}`；任务 `render-job/cancel/diagnostics/play-{id}`、`diagnostic-copy-{id}`。
-- 素材与设置锚点：`library-tab-audio/image/video`、`library-search/import/refresh/export-selected`、`asset-{id}`、`asset-preview/rename/delete-{id}`；`api-add/provider/key/clear-key/test/save`、`api-edit/delete-{provider}`；`settings-tab-apis/render/storage`、`render-concurrency/threads/encoder/static-video/save`、`tools-check`、`storage-choose-root`。
+- 素材与设置锚点：`library-tab-audio/image/video`、`library-search/import/refresh/export-selected`、`asset-{id}`、`asset-preview/rename/delete-{id}`；`api-add/provider/key/clear-key/test/save`、`api-edit/delete-{provider}`；`settings-tab-apis/render/storage`、`render-concurrency/threads/encoder/save`、`tools-check`、`storage-choose-root`。V4.0.3 移除静态片段缓存开关；图片连续编码，跨项目并行、线程与编码器设置保留。
 - 通用确认锚点：`confirm-acknowledge`、`confirm-action`、`delete-confirm`、`rename-input/save`。付费提交与恢复失败后禁用原确认按钮，要求返回核对记录；不会自动重发。删除受阻时没有可提交的删除按钮。
 
 ## 最终真实桌面验证

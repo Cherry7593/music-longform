@@ -1,4 +1,4 @@
-"""Launch the actual V4.0.2 NSIS portable EXE twice; isolated current profiles, no AI calls."""
+"""Launch the actual V4.0.3 NSIS portable EXE twice; isolated current profiles, no AI calls."""
 import argparse
 import ctypes
 from ctypes import wintypes
@@ -35,7 +35,7 @@ def executable_version(executable):
     fields = ctypes.cast(pointer, ctypes.POINTER(wintypes.DWORD))
     assert fields[0] == 0xFEEF04BD
     result = [fields[4] >> 16, fields[4] & 0xFFFF, fields[5] >> 16, fields[5] & 0xFFFF]
-    assert result == [4, 0, 2, 0], f'Expected V4.0.2 executable, got {result}'
+    assert result == [4, 0, 3, 0], f'Expected V4.0.3 executable, got {result}'
     return result
 
 
@@ -163,7 +163,7 @@ def assert_drafts(page, expected, expect):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--exe', type=Path, default=Path('dist/油管视频生成-4.0.2-Windows-x64.exe'))
+    parser.add_argument('--exe', type=Path, default=Path('dist/油管视频生成-4.0.3-Windows-x64.exe'))
     parser.add_argument('--output', type=Path, help='Report parent directory inside PI_SCRATCH_DIR; each run gets a new child')
     parser.add_argument('--keep', action='store_true', help='Keep the isolated profile even on success (failures always retain it)')
     args = parser.parse_args()
@@ -187,12 +187,18 @@ def main():
         subprocess.run(['node', str(helper), '--help'], cwd=workspace, check=True, capture_output=True, text=True, encoding='utf-8')
         seed = subprocess.run(['node', str(helper), '--mode', 'empty', '--root', str(root)], cwd=workspace, check=True, capture_output=True, text=True, encoding='utf-8', timeout=120)
         manifest = json.loads(seed.stdout.strip().splitlines()[-1])
-        assert manifest['synthetic'] and manifest['version'] == '4.0.2'
+        assert manifest['synthetic'] and manifest['version'] == '4.0.3'
         profile = scratch_child(manifest['profile'], scratch)
         assert profile.is_relative_to(root)
         env = clean_env(root)
         for attempt in range(2):
             stage = f'portable launch {attempt + 1}'
+            # Only this owned synthetic profile: exercise both historical switch values on real startup.
+            for settings_file in (profile / 'settings.json', profile / 'workbench' / 'settings' / 'current.json'):
+                legacy = json.loads(settings_file.read_text(encoding='utf-8'))
+                assert legacy['version'] == 5
+                legacy['render']['staticVideo'] = attempt == 0
+                settings_file.write_text(json.dumps(legacy, ensure_ascii=False), encoding='utf-8')
             endpoint = f'http://127.0.0.1:{free_port()}'
             with (output / f'launcher-{attempt + 1}.log').open('w', encoding='utf-8') as log:
                 proc = subprocess.Popen([str(executable), f'--user-data-dir={profile}', f'--remote-debugging-port={endpoint.rsplit(":", 1)[1]}', '--remote-debugging-address=127.0.0.1'], env=env, stdout=log, stderr=log)
@@ -206,6 +212,7 @@ def main():
                     assert page.title() == '油管视频生成'
                     data = bootstrap(page)
                     assert data['testMode'] is False and data['settings']['version'] == 5
+                    assert 'staticVideo' not in data['settings']['render']
                     assert Path(data['settings']['mediaRoot']).resolve() == Path(manifest['mediaRoot']).resolve()
                     assert not data['apis'], 'A clean V4 installation must not pretend default APIs are added'
                     assert page.get_by_role('navigation', name='主导航').get_by_role('button').count() == 4
@@ -214,6 +221,15 @@ def main():
                         assert not data['generationProjects'] and not data['compositionProjects'] and not data['entries']
                         expected = create_drafts(page, expect)
                     assert_drafts(page, expected, expect)
+                    page.get_by_test_id('settings-tab-render').click()
+                    expect(page.get_by_test_id('render-static-video')).to_have_count(0)
+                    expect(page.get_by_text('静态画面缓存复用', exact=True)).to_have_count(0)
+                    expect(page.get_by_text('静态图片连续编码完整画面', exact=False)).to_be_visible()
+                    page.get_by_test_id('render-concurrency').fill('2')
+                    page.get_by_test_id('render-threads').fill('2')
+                    page.get_by_test_id('render-encoder').select_option('cpu')
+                    page.get_by_test_id('render-save').click()
+                    page.wait_for_function('async () => { const r = (await window.canvas.bootstrap()).settings.render; return r.concurrency === 2 && r.threads === 2 && r.encoder === "cpu" && !("staticVideo" in r) }')
                     page.screenshot(path=str(output / f'v4-portable-window-{attempt + 1}.png'))
                     assert not (root / 'dev-flags-must-not-be-used').exists()
                     page.close()  # All saves were flushed; this must be a clean app exit, not a forced kill.
@@ -224,8 +240,9 @@ def main():
                 proc = None
         disk = json.loads((profile / 'workbench' / 'settings' / 'current.json').read_text(encoding='utf-8'))
         assert disk['version'] == 5 and Path(disk['mediaRoot']).resolve().is_relative_to(root)
-        report = {'passed': True, 'version': '4.0.2', 'productVersion': product_version, 'launches': 2, 'executable': str(executable), 'fixture': str(root), 'dualProjects': expected,
-                  'emptyAddedApis': True, 'draftsRetained': True, 'testMode': False, 'generationRequests': 0, 'paidCalls': 0, 'actualInference': False}
+        assert disk['render'] == {'concurrency': 2, 'threads': 2, 'encoder': 'cpu'}
+        report = {'passed': True, 'version': '4.0.3', 'productVersion': product_version, 'launches': 2, 'executable': str(executable), 'fixture': str(root), 'dualProjects': expected,
+                  'emptyAddedApis': True, 'draftsRetained': True, 'legacyStaticTrueFalseIgnored': True, 'removedToggle': True, 'savedWithoutStaticField': True, 'testMode': False, 'generationRequests': 0, 'paidCalls': 0, 'actualInference': False}
         (output / 'report.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
         passed = True
         print(f'PASS: actual V4 NSIS portable twice; independent A/B generation/composition drafts, empty APIs, clean restart. Report: {output / "report.json"}')

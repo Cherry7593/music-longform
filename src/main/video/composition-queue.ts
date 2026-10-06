@@ -13,7 +13,7 @@ import { renderMedia, type RenderProgress } from './pipeline'
 import { discoverTools, requireTools, CancelledError, type VideoTools } from './ffmpeg'
 import { ResourcePool, type ResourceLease } from './resource-pool'
 import { cleanupWork, workDirectory, commitMedia } from './workfiles'
-import { hashMedia, managedDirectory } from '../storage/managed'
+import { hashMedia } from '../storage/managed'
 import { AppError, safeError } from '../providers/http'
 
 const now = () => new Date().toISOString()
@@ -151,7 +151,8 @@ export class CompositionQueue {
       unpin = await this.deps.assets.pin([...job.group.audioIds, job.group.imageId], `render:${job.id}`)
       const options = this.deps.db.get('settings', 'current').render
       const seconds = job.group.audioIds.reduce((sum, id) => sum + (snapshotMap.get(id)?.durationSeconds ?? 0), 0)
-      lease = await this.deps.pool.acquire(job.id, { root, diskBytes: Math.ceil(seconds * 48000 * 2 * 4 * 3.6 + 512 * 1024 ** 2 + (options.staticVideo ? 0 : seconds * 1024000 * 2)), memoryBytes: 512 * 1024 ** 2, gpu: options.encoder !== 'cpu' }, controller.signal, detail => {
+      // Reserve continuous video + AAC, including faststart's second copy and the pipeline's 20% headroom.
+      lease = await this.deps.pool.acquire(job.id, { root, diskBytes: Math.ceil(seconds * (48000 * 2 * 4 * 3 + (8000000 + 192000) / 8 * 2) * 1.2 + 512 * 1024 ** 2), memoryBytes: 512 * 1024 ** 2, gpu: options.encoder !== 'cpu' }, controller.signal, detail => {
         if (detail === lastDetail) return; lastDetail = detail
         writes = writes.then(() => this.mutateJob(task, current => { if (!task.started) { current.status = 'blocked'; current.detail = detail; current.progress = undefined } })).catch(error => { writeFailure = error; controller.abort() })
       })
@@ -168,10 +169,9 @@ export class CompositionQueue {
       const image = await this.verify(snapshotMap.get(assetId)!)
       assetId = undefined; assetName = undefined
       await cleanupWork(root, 'video', job.id); work = await workDirectory(root, 'video', job.id, true)
-      await managedDirectory(path.join(root, '.render-cache'), true)
       const output = await (this.deps.render ?? renderMedia)({ tools, tracks, imagePath: image.path, draft: batchDraft(batch.plan.request, batch.plan.groups[job.index]),
         minimumSeconds: batch.plan.request.minimumSeconds, taskDirectory: work, kind: 'video', signal: controller.signal, onProgress: update,
-        ...{ performance: { ...options, threads: lease.threads, cacheDirectory: path.join(root, '.render-cache') }, onStage: enter } })
+        performance: { encoder: options.encoder, threads: lease.threads }, onStage: enter })
       await writes; if (writeFailure) throw writeFailure
       if (controller.signal.aborted) throw new CancelledError()
       enter('validate')
@@ -190,7 +190,7 @@ export class CompositionQueue {
       if (!committed) throw new AppError('成片已发布，登记回执尚待恢复；不会重新合成')
       await this.succeeded(task, committed)
       recordTiming()
-      const metrics = (output as { metrics?: { encoder: string; staticVideo: boolean } }).metrics
+      const metrics = output.metrics
       await this.mutateJob(task, current => Object.assign(current.attempts.find(item => item.id === attemptId)!, { finishedAt: now(), stages: timings, elapsedMs: performance.now() - startedAt, ...(metrics ? { encoder: metrics.encoder, staticVideo: metrics.staticVideo } : {}) }))
     } catch (error) {
       await writes

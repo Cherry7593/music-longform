@@ -17,7 +17,7 @@ import type { MusicAdapter, MusicDraft, ProviderMusicTask } from '../../src/shar
 let root: string, db: WorkbenchDB, projects: GenerationProjects, queue: GenerationQueue
 const cipher = { isEncryptionAvailable: () => true, encryptString: (key: string) => Buffer.from(Buffer.from(key).map(byte => byte ^ 31)), decryptString: (bytes: Buffer) => Buffer.from(bytes.map(byte => byte ^ 31)).toString() }
 beforeEach(async () => { root = await mkdtemp(path.join(process.env.PI_SCRATCH_DIR!, 'v4-generation-')); db = new WorkbenchDB(root); await db.init(); projects = new GenerationProjects(db)
-  await db.put('settings', 'current', { version: 5, mediaRoot: root, render: { concurrency: 2, threads: 4, encoder: 'cpu', staticVideo: true }, page: 'generation' }) })
+  await db.put('settings', 'current', { version: 5, mediaRoot: root, render: { concurrency: 2, threads: 4, encoder: 'cpu' }, page: 'generation' }) })
 afterEach(async () => { await queue?.shutdown(); await rm(root, { recursive: true, force: true }) })
 async function fixture() {
   const created = new Map<string, MusicDraft>(), assets = new Map<string, WorkbenchAsset>(), rootId = randomUUID()

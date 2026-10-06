@@ -7,7 +7,7 @@ const at = '2026-10-04T12:00:00.000Z'
 function entry(id: string, projectId: string): GenerationEntry { return { version: 1, id, projectId, kind: 'audio', revision: 0, createdAt: at, updatedAt: at, draft: initialEntry('audio', 'mureka'), alternatives: {} } }
 function composition(id: string): CompositionProject { return { version: 1, id, name: id, revision: 0, createdAt: at, updatedAt: at, draft: initialComposition(), batchIds: [] } }
 function fixture() {
-  let snapshot: WorkbenchSnapshot = { settings: { version: 5, page: 'generation', mediaRoot: 'C:\\isolated-demo', lastGenerationId: 'A', lastCompositionId: 'C', render: { concurrency: 2, threads: 8, encoder: 'auto', staticVideo: true } }, encryptionAvailable: true, apis: [], warnings: [], testMode: true,
+  let snapshot: WorkbenchSnapshot = { settings: { version: 5, page: 'generation', mediaRoot: 'C:\\isolated-demo', lastGenerationId: 'A', lastCompositionId: 'C', render: { concurrency: 2, threads: 8, encoder: 'auto' } }, encryptionAvailable: true, apis: [], warnings: [], testMode: true,
     generationProjects: ['A', 'B'].map(id => ({ version: 1, id, name: id, page: 'audio', createdAt: at, updatedAt: at, entryIds: [`${id}-entry`] })), compositionProjects: [composition('C'), composition('D')], entries: [entry('A-entry', 'A'), entry('B-entry', 'B')], requests: [], batches: [], assets: [] }
   const api = {
     bootstrap: vi.fn(async () => structuredClone(snapshot)), updateSettings: vi.fn(async (patch) => { snapshot.settings = { ...snapshot.settings, ...patch }; return structuredClone(snapshot.settings) }),

@@ -1,13 +1,16 @@
+import { randomUUID } from 'node:crypto'
 import { EventEmitter } from 'node:events'
 import { PassThrough } from 'node:stream'
-import { mkdtemp, rm, writeFile, mkdir, symlink } from 'node:fs/promises'
+import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, expectTypeOf, it, vi, type MockInstance } from 'vitest'
 import { CancelledError, runTool } from '../../src/main/video/ffmpeg'
 import { diagnosticFor, redactDiagnostic, RenderClock, withDiagnostic } from '../../src/main/video/render-diagnostics'
-import { safeDirectory, videoEncoderArgs } from '../../src/main/video/encoders'
-import { renderMedia } from '../../src/main/video/pipeline'
+import * as encoders from '../../src/main/video/encoders'
+import * as ffmpeg from '../../src/main/video/ffmpeg'
+import { videoEncoderArgs, type Encoder } from '../../src/main/video/encoders'
+import { renderMedia, type RenderRequest } from '../../src/main/video/pipeline'
 import { DEFAULT_VIDEO } from '../../src/shared/schemas'
 
 const spawn = vi.hoisted(() => vi.fn())
@@ -75,29 +78,173 @@ it('aggregates revisited stages without inventing publishing time and isolates o
   expect(Math.abs(metrics.stages.reduce((sum, s) => sum + s.elapsedMs, 0) - metrics.elapsedMs)).toBeLessThan(1)
 })
 
-it('rejects relative, network, redirected directories and alternate data stream paths', async () => {
-  await expect(safeDirectory(root)).resolves.toBeUndefined()
-  for (const directory of ['.', 'https://fake.invalid', '\\\\server\\cache', `${root}:hidden`]) await expect(safeDirectory(directory)).rejects.toThrow()
-  const target = path.join(root, 'target'), redirected = path.join(root, 'redirected')
-  await mkdir(target); await symlink(target, redirected, process.platform === 'win32' ? 'junction' : 'dir')
-  await expect(safeDirectory(redirected)).rejects.toThrow('重定向')
-})
-
-it('uses explicit closed GOP and no B frames for every candidate without declaring them available', () => {
+it('retains each encoder quality/preset/VBV/output contract with GOP300 and no segment-splicing restrictions', () => {
+  const codecs = {
+    cpu: ['-c:v', 'libx264', '-preset', 'ultrafast', '-tune', 'stillimage', '-crf', '20'],
+    nvenc: ['-c:v', 'h264_nvenc', '-preset', 'p4', '-rc', 'vbr', '-cq', '20', '-b:v', '4M'],
+    qsv: ['-c:v', 'h264_qsv', '-preset', 'veryfast', '-global_quality', '20']
+  }
   for (const encoder of ['cpu', 'nvenc', 'qsv'] as const) {
     const args = videoEncoderArgs(encoder, 2)
-    expect(args[args.indexOf('-g') + 1]).toBe('30')
-    expect(args[args.indexOf('-bf') + 1]).toBe('0')
-    expect(args[args.indexOf('-pix_fmt') + 1]).toBe('yuv420p')
-    expect(args[args.indexOf('-threads') + 1]).toBe('2')
+    expect(args).toEqual([...codecs[encoder], '-threads', '2', '-g', '300', '-maxrate', '8M', '-bufsize', '16M', '-pix_fmt', 'yuv420p', '-color_range', 'tv', '-r', '30'])
+    expect(args.join(' ')).not.toMatch(/open-gop|scenecut|keyint|forced-idr|\+cgop/)
+    expect(args).not.toContain('-bf')
+    expect(args).not.toContain('-flags')
+    expect(args).not.toContain('-x264-params')
   }
 })
 
 describe('performance request boundary', () => {
+  it('exposes only threads and encoder in the performance request type', () => {
+    expectTypeOf<NonNullable<RenderRequest['performance']>>().toEqualTypeOf<{ threads: number; encoder: 'auto' | 'cpu' | 'nvenc' | 'qsv' }>()
+  })
   it.each([0, 17, 1.5, NaN])('rejects invalid thread budget %s before tools run', async threads => {
     spawn.mockClear()
     await expect(renderMedia({ tools: { ffmpeg: executable, ffprobe: executable }, tracks: [], draft: DEFAULT_VIDEO, taskDirectory: root, kind: 'video', signal: new AbortController().signal,
-      performance: { threads, encoder: 'cpu', staticVideo: true, cacheDirectory: root } })).rejects.toMatchObject({ diagnostic: { stage: 'tools', message: expect.stringContaining('性能参数') } })
+      performance: { threads, encoder: 'cpu' } })).rejects.toMatchObject({ diagnostic: { stage: 'tools', message: expect.stringContaining('性能参数') } })
     expect(spawn).not.toHaveBeenCalled()
+  })
+})
+
+// Mock only tool boundaries; exercise the real render state machine, filesystem ownership,
+// stream/spec checks, full-decode frame counts and source hashing without hardware or codecs.
+describe('continuous rendering and one-shot CPU fallback', () => {
+  type Fault = 'encode' | 'streams' | 'audio' | 'duration' | 'decode' | 'frames'
+  let req: RenderRequest, controller: AbortController, activeEncoder: Encoder
+  let faults: Partial<Record<Encoder, Fault>>, cancel: 'encode-error' | 'encode-signal' | 'decode-error' | undefined
+  let events: string[], commands: Array<{ encoder: Encoder; args: string[] }>, decodes: string[][]
+  let selection: MockInstance<typeof encoders.selectEncoder>
+
+  beforeEach(async () => {
+    const directory = await mkdtemp(path.join(root, 'bounded-render-'))
+    const source = path.join(directory, 'source.flac'), image = path.join(directory, 'image.png')
+    await writeFile(source, 'immutable synthetic audio'); await writeFile(image, 'immutable synthetic image')
+    controller = new AbortController(); activeEncoder = 'nvenc'; faults = {}; cancel = undefined
+    events = []; commands = []; decodes = []
+    const id = randomUUID()
+    req = { tools: { ffmpeg: executable, ffprobe: executable }, kind: 'video', taskDirectory: directory, imagePath: image,
+      tracks: [{ id, path: source, durationSeconds: 2 }], signal: controller.signal, performance: { threads: 2, encoder: 'nvenc' },
+      draft: { ...DEFAULT_VIDEO, initialized: true, audioIds: [id], imageId: randomUUID(), durationMode: 'all', transition: 'cut', fadeInSeconds: 0, fadeOutSeconds: 0 } }
+    vi.spyOn(encoders, 'toolIdentity').mockResolvedValue('ffmpeg version synthetic|fixture')
+    selection = vi.spyOn(encoders, 'selectEncoder').mockImplementation(async (_tools, preference, _directory, signal) => {
+      if (signal.aborted) throw new CancelledError()
+      const encoder = preference === 'auto' ? 'nvenc' : preference
+      return { encoder, statuses: [{ encoder, available: true, message: 'isolated probe evidence' }], fallbacks: [] }
+    })
+    vi.spyOn(ffmpeg, 'probeMedia').mockImplementation(async (_tools, file, signal) => {
+      if (signal?.aborted) throw new CancelledError()
+      if (file === image) return { durationSeconds: 0, streams: [{ codec_type: 'video', codec_name: 'png', nb_read_frames: '1' }] }
+      const audio = { codec_type: 'audio', codec_name: 'flac', sample_rate: '48000', channels: 2, duration: '2' }
+      if (file === source || file === path.join(directory, 'master.wav')) return { durationSeconds: 2, streams: [audio] }
+      if (file !== path.join(directory, 'video.partial.mp4')) throw new Error(`Unexpected probe fixture: ${file}`)
+      events.push(`probe:${activeEncoder}`)
+      const fault = faults[activeEncoder]
+      return { durationSeconds: fault === 'duration' ? 3 : 2, streams: [
+        { codec_type: 'video', codec_name: 'h264', width: fault === 'streams' ? 1280 : 1920, height: 1080, pix_fmt: 'yuv420p', r_frame_rate: '30/1', duration: '2' },
+        { ...audio, codec_name: 'aac', channels: fault === 'audio' ? 1 : 2 }
+      ] }
+    })
+    vi.spyOn(ffmpeg, 'runTool').mockImplementation(async (_tool, args, options) => {
+      if (options?.signal?.aborted) throw new CancelledError()
+      const output = args.at(-1)!
+      if (output === path.join(directory, 'master.wav')) {
+        await writeFile(output, 'synthetic mixed master', { flag: 'wx' }); return { stdout: '', stderr: '' }
+      }
+      if (output === path.join(directory, 'video.partial.mp4')) {
+        const codec = args[args.indexOf('-c:v') + 1]
+        activeEncoder = codec === 'libx264' ? 'cpu' : codec === 'h264_nvenc' ? 'nvenc' : 'qsv'
+        commands.push({ encoder: activeEncoder, args: [...args] }); events.push(`encode:${activeEncoder}`)
+        // Abort a regressed retry loop rather than consuming unbounded work in this fixture.
+        if (commands.length > 3) { controller.abort(); throw new CancelledError() }
+        await writeFile(output, `private ${activeEncoder} partial`, { flag: 'wx' })
+        if (cancel === 'encode-error') throw new CancelledError()
+        if (cancel === 'encode-signal') { controller.abort(); throw new Error('child stopped after abort') }
+        if (faults[activeEncoder] === 'encode') throw withDiagnostic(new Error('synthetic encode failure'), { stage: 'encode', encoder: activeEncoder, exitCode: 73, stderr: 'fixture encode failure' })
+        return { stdout: '', stderr: '' }
+      }
+      if (output === '-' && args.includes(path.join(directory, 'video.partial.mp4')) && args.includes('null')) {
+        decodes.push([...args]); events.push(`decode:${activeEncoder}`)
+        if (cancel === 'decode-error') throw new CancelledError()
+        if (faults[activeEncoder] === 'decode') throw withDiagnostic(new Error('synthetic complete-decode failure'), { stage: 'validate', exitCode: 74 })
+        return { stdout: `frame=${faults[activeEncoder] === 'frames' ? 59 : 60}\nprogress=end\n`, stderr: '' }
+      }
+      throw new Error(`Unexpected tool invocation: ${args.join(' ')}`)
+    })
+  })
+  afterEach(async () => { vi.restoreAllMocks(); await rm(req.taskDirectory, { recursive: true, force: true }) })
+
+  function expectContinuous(expected: Encoder[]): void {
+    expect(commands.map(command => command.encoder)).toEqual(expected)
+    for (const { encoder, args } of commands) {
+      const codecArgs = videoEncoderArgs(encoder, 2), start = args.indexOf('-c:v')
+      expect(args.slice(start, start + codecArgs.length)).toEqual(codecArgs)
+      expect(args[args.indexOf('-loop') + 1]).toBe('1')
+      expect(args[args.indexOf('-i') + 1]).toBe(req.imagePath)
+      expect(args).toEqual(expect.arrayContaining(['-n', '-vf', encoders.staticFilter(req.draft.fit), '-c:a', 'aac', '-b:a', '192k']))
+      expect(args).not.toContain('-stream_loop'); expect(args).not.toContain('copy'); expect(args).not.toContain('-shortest')
+    }
+    for (const args of decodes) {
+      expect(args).toEqual(expect.arrayContaining(['-xerror', '-err_detect', 'explode', '-fps_mode', 'passthrough', '-f', 'null']))
+      expect(args.filter((_, i) => args[i - 1] === '-map')).toEqual(['0:a:0', '0:v:0'])
+      for (const limit of ['-t', '-to', '-frames:v', '-shortest']) expect(args).not.toContain(limit)
+    }
+  }
+  function expectSelections(expected: string[]): void { expect(selection.mock.calls.map(call => call[1])).toEqual(expected) }
+
+  it.each([true, false])('ignores legacy staticVideo=%s and even a nonlocal cacheDirectory without a cache fallback', async staticVideo => {
+    const performance = { threads: 2, encoder: 'cpu' as const, staticVideo, cacheDirectory: 'https://fake.invalid/cache' }
+    req.performance = performance
+    const before = await readFile(req.imagePath!)
+    const result = await renderMedia(req)
+    expect(result.metrics).toMatchObject({ encoder: 'cpu', staticVideo: false, fallbacks: [] })
+    expect(result.metrics).not.toHaveProperty('cacheHit')
+    expect(events).toEqual(['encode:cpu', 'probe:cpu', 'decode:cpu'])
+    expectContinuous(['cpu']); expectSelections(['cpu'])
+    expect(await readFile(req.imagePath!)).toEqual(before)
+    expect((await readdir(req.taskDirectory)).some(name => /cache|static-|encoder-test/.test(name))).toBe(false)
+  })
+  it.each(['nvenc', 'qsv'] as const)('falls back exactly once after an actual %s encode failure and fully validates CPU output', async encoder => {
+    req.performance!.encoder = encoder; faults[encoder] = 'encode'
+    const result = await renderMedia(req)
+    expect(result.metrics).toMatchObject({ encoder: 'cpu', staticVideo: false, fallbacks: [expect.objectContaining({ encoder, stage: 'encode', exitCode: 73 })] })
+    expect(result.metrics).not.toHaveProperty('cacheHit')
+    expect(events).toEqual([`encode:${encoder}`, 'encode:cpu', 'probe:cpu', 'decode:cpu'])
+    expectContinuous([encoder, 'cpu']); expectSelections([encoder, 'cpu'])
+  })
+  it.each(['streams', 'audio', 'duration', 'decode', 'frames'] as const)('re-encodes hardware output once after %s validation failure and repeats complete validation', async fault => {
+    faults.nvenc = fault
+    const result = await renderMedia(req)
+    expect(result.metrics).toMatchObject({ encoder: 'cpu', staticVideo: false, fallbacks: [expect.objectContaining({ encoder: 'nvenc', stage: 'validate' })] })
+    expect(result.metrics).not.toHaveProperty('cacheHit')
+    expect(events).toEqual(['encode:nvenc', 'probe:nvenc', ...(['decode', 'frames'].includes(fault) ? ['decode:nvenc'] : []), 'encode:cpu', 'probe:cpu', 'decode:cpu'])
+    expectContinuous(['nvenc', 'cpu']); expectSelections(['nvenc', 'cpu'])
+  })
+  it.each(['encode', 'streams', 'audio', 'duration', 'decode', 'frames'] as const)('rejects CPU %s failure directly without retrying or bypassing validation', async fault => {
+    req.performance!.encoder = 'cpu'; faults.cpu = fault
+    await expect(renderMedia(req)).rejects.toMatchObject({ diagnostic: { stage: fault === 'encode' ? 'encode' : 'validate', encoder: 'cpu' } })
+    expectContinuous(['cpu']); expectSelections(['cpu'])
+    expect(events).toEqual(['encode:cpu', ...(fault === 'encode' ? [] : ['probe:cpu']), ...(['decode', 'frames'].includes(fault) ? ['decode:cpu'] : [])])
+  })
+  it.each(['encode', 'decode', 'frames'] as const)('rejects a failed %s CPU fallback instead of attempting a third encode', async fault => {
+    faults.nvenc = 'decode'; faults.cpu = fault
+    await expect(renderMedia(req)).rejects.toMatchObject({ diagnostic: { stage: fault === 'encode' ? 'encode' : 'validate', encoder: 'cpu' } })
+    expectContinuous(['nvenc', 'cpu']); expectSelections(['nvenc', 'cpu'])
+    expect(events).toEqual(['encode:nvenc', 'probe:nvenc', 'decode:nvenc', 'encode:cpu', ...(fault === 'encode' ? [] : ['probe:cpu', 'decode:cpu'])])
+  })
+  it.each(['encode-error', 'encode-signal', 'decode-error', 'validate-signal'] as const)('does not CPU-fallback on cancellation at %s', async stage => {
+    if (stage === 'validate-signal') req.onStage = value => { if (value === 'validate') controller.abort() }
+    else cancel = stage
+    if (stage === 'encode-signal') await expect(renderMedia(req)).rejects.toThrow()
+    else await expect(renderMedia(req)).rejects.toBeInstanceOf(CancelledError)
+    expectContinuous(['nvenc']); expectSelections(['nvenc'])
+    if (stage.endsWith('signal')) expect(controller.signal.aborted).toBe(true)
+  })
+  it('never deletes or overwrites an occupied output even when hardware was selected', async () => {
+    const output = path.join(req.taskDirectory, 'video.partial.mp4')
+    await writeFile(output, 'pre-existing user media')
+    faults.nvenc = 'encode'
+    await expect(renderMedia(req)).rejects.toThrow('不会覆盖')
+    expect(await readFile(output, 'utf8')).toBe('pre-existing user media')
+    expectContinuous([]); expectSelections(['nvenc'])
   })
 })

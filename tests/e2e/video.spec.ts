@@ -47,9 +47,9 @@ test('V4 legacy migration to one real FFmpeg output: in-page selection, 65 secon
 
     await page.getByTestId('nav-settings').click(); await page.getByTestId('settings-tab-render').click()
     await page.getByTestId('render-concurrency').fill('1'); await page.getByTestId('render-threads').fill('2')
-    await page.getByTestId('render-encoder').selectOption('cpu'); await page.getByTestId('render-static-video').check()
+    await page.getByTestId('render-encoder').selectOption('cpu'); await expect(page.getByTestId('render-static-video')).toHaveCount(0)
     await page.getByTestId('render-save').click()
-    await expect.poll(async () => (await snapshot(page)).settings.render).toEqual({ concurrency: 1, threads: 2, encoder: 'cpu', staticVideo: true })
+    await expect.poll(async () => (await snapshot(page)).settings.render).toEqual({ concurrency: 1, threads: 2, encoder: 'cpu' })
     await page.getByTestId('nav-composition').click()
     await expect(page.getByTestId('composition-workspace')).toContainText('未完成导出不会自动重跑')
     await page.getByTestId('composition-plan-button').click()
@@ -84,7 +84,7 @@ test('V4 legacy migration to one real FFmpeg output: in-page selection, 65 secon
     const batch = state.batches[0], job = batch.jobs[0], video = state.assets.find(asset => asset.id === job.videoAssetId)!
     expect(batch.state).toBe('completed'); expect(batch.jobs).toHaveLength(1); expect(job.attempts).toHaveLength(1)
     expect(job.status).toBe('succeeded'); expect(job.attempts[0].finishedAt).toBeTruthy()
-    expect(job.attempts[0].staticVideo).toBe(true)
+    expect(job.attempts[0].staticVideo).toBe(false)
     expect(job.attempts[0].stages?.some(stage => stage.stage === 'publish')).toBe(true)
     expect(batch.plan.request.fit).toBe('cover')
     expect(state.compositionProjects.find(project => project.id === migrated.id)?.draft.fit).toBe('contain')

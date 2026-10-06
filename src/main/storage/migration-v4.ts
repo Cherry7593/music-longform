@@ -486,7 +486,7 @@ async function performMigration(options: V4MigrationOptions): Promise<{ warnings
   const lastGenerationId = snapshot.legacySettings?.lastProjectId ?? snapshot.config?.generationProjectId
   const lastCompositionId = lastGenerationId ? changes.find(change => change.table === 'composition' && change.id === journal.mappings[`composition/single/${lastGenerationId}`])?.id : undefined
   const settings: WorkbenchSettings = { version: 5, mediaRoot: snapshot.mediaRoot, ffmpegPath: snapshot.legacySettings?.ffmpegPath,
-    render: { concurrency: 2, threads: 4, encoder: 'auto', staticVideo: true }, page: 'generation', lastGenerationId, lastCompositionId }
+    render: { concurrency: 2, threads: 4, encoder: 'auto' }, page: 'generation', lastGenerationId, lastCompositionId }
   changes.push({ table: 'settings', id: 'current', value: settings })
   const seen = new Set<string>()
   for (const change of changes) {

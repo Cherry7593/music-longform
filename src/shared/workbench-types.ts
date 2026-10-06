@@ -95,7 +95,7 @@ export interface ExecutionBatch {
   state: 'running' | 'pausing' | 'paused' | 'completed' | 'partial' | 'cancelled'
   plan: BatchPlan; jobs: RenderJob[]; message?: string
 }
-export interface RenderSettings { concurrency: number; encoder: 'auto' | 'cpu' | 'nvenc' | 'qsv'; staticVideo: boolean; threads: number }
+export interface RenderSettings { concurrency: number; encoder: 'auto' | 'cpu' | 'nvenc' | 'qsv'; threads: number }
 export interface WorkbenchSettings {
   version: 5; mediaRoot: string; ffmpegPath?: string; render: RenderSettings
   lastGenerationId?: string; lastCompositionId?: string; page: PageId

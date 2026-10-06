@@ -25,7 +25,7 @@ beforeEach(async () => {
   root = await mkdtemp(path.join(process.env.PI_SCRATCH_DIR!, 'v4-composition-unit-'))
   db = new WorkbenchDB(root); await db.init(); projects = new CompositionProjects(db)
   diagnostics = new DiagnosticStore(root); await diagnostics.init()
-  await db.put('settings', 'current', { version: 5, mediaRoot: root, page: 'composition', render: { concurrency: 2, threads: 2, encoder: 'cpu', staticVideo: true } })
+  await db.put('settings', 'current', { version: 5, mediaRoot: root, page: 'composition', render: { concurrency: 2, threads: 2, encoder: 'cpu' } })
 })
 afterEach(async () => { await queue?.shutdown(); await rm(root, { recursive: true, force: true }) })
 
@@ -57,7 +57,8 @@ async function fixture(concurrency = 2) {
     deletionInfo: async () => ({ ownedFiles: 1, externalOriginalsKept: true }), delete: vi.fn(async () => undefined)
   } as unknown as AssetStore
   const publications = new PublicationStore(root, store); await publications.init()
-  const pool = new ResourcePool(() => ({ concurrency, threads: 2, encoder: 'cpu', staticVideo: true }), async () => ({ threads: 16, freeMemory: 16 * 1024 ** 3, freeDisk: 80 * 1024 ** 3 }))
+  const pool = new ResourcePool(() => ({ concurrency, threads: 2, encoder: 'cpu' }), async () => ({ threads: 16, freeMemory: 16 * 1024 ** 3, freeDisk: 80 * 1024 ** 3 }))
+  const acquire = vi.spyOn(pool, 'acquire')
   const gates = new Map<string, { request: RenderRequest; finish: () => void; fail: (error: unknown) => void }>()
   const render = vi.fn((request: RenderRequest) => new Promise<RenderResult>((resolve, reject) => {
     const id = path.basename(request.taskDirectory).replace('.work-', '')
@@ -84,7 +85,7 @@ async function fixture(concurrency = 2) {
     return queue.start(project.id, plan.id)
   }
   const entered = async (id: string) => { await vi.waitFor(() => expect(gates.has(id)).toBe(true), { timeout: 5000 }); return gates.get(id)! }
-  return { start, entered, pool, publications, register, values, usages, pins, gates, render, errors, audioIds, imageIds, store }
+  return { start, entered, pool, acquire, publications, register, values, usages, pins, gates, render, errors, audioIds, imageIds, store }
 }
 
 describe('V4 composition execution, publication and recovery', () => {
@@ -92,6 +93,9 @@ describe('V4 composition execution, publication and recovery', () => {
     const f = await fixture(), a = await f.start(), b = await f.start()
     const left = await f.entered(a.jobs[0].id), right = await f.entered(b.jobs[0].id)
     expect(f.pool.running).toBe(2)
+    expect(left.request.performance).toEqual({ encoder: 'cpu', threads: 2 })
+    expect(right.request.performance).toEqual({ encoder: 'cpu', threads: 2 })
+    expect(f.acquire.mock.calls[0][1].diskBytes).toBe(Math.ceil(65 * (48000 * 2 * 4 * 3 + (8000000 + 192000) / 8 * 2) * 1.2 + 512 * 1024 ** 2))
     const project = projects.get(a.projectId)
     await projects.update(project.id, project.revision, { draft: { ...project.draft, fit: 'cover' } })
     expect(db.get('executions', a.id).plan.request.fit).toBe('contain')

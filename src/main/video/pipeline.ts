@@ -1,4 +1,4 @@
-import { lstat, realpath, rm, stat, statfs, writeFile } from 'node:fs/promises'
+import { lstat, realpath, rm, statfs, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { videoDraftSchema } from '../../shared/schemas'
 import type { VideoDraft, VideoJobStatus, VideoTimeline } from '../../shared/types'
@@ -6,7 +6,7 @@ import { AppError } from '../providers/http'
 import { assertLocalMediaFile, CancelledError, probeMedia, runTool, type VideoTools } from './ffmpeg'
 import { calculateTimeline } from './timeline'
 import type { RenderMetrics, RenderStage } from '../../shared/video-diagnostics'
-import { hashMedia, selectEncoder, staticFilter, staticSegment, toolIdentity, videoEncoderArgs, type Encoder } from './encoders'
+import { hashMedia, selectEncoder, staticFilter, toolIdentity, videoEncoderArgs, type Encoder } from './encoders'
 import { diagnosticFor, RenderClock, withDiagnostic } from './render-diagnostics'
 
 export interface RenderTrack { id: string; path: string; durationSeconds: number }
@@ -23,7 +23,7 @@ export interface RenderRequest {
   signal: AbortSignal
   onProgress?: (event: RenderProgress) => void
   onStage?: (stage: RenderStage) => void
-  performance?: { threads: number; encoder: 'auto' | 'cpu' | 'nvenc' | 'qsv'; cacheDirectory: string; staticVideo: boolean }
+  performance?: { threads: number; encoder: 'auto' | 'cpu' | 'nvenc' | 'qsv' }
 }
 
 const RATE = 48000
@@ -58,12 +58,12 @@ function previewWindow(req: RenderRequest, timeline: VideoTimeline): { start: nu
   return { start, duration: end - start }
 }
 
-async function preflightSpace(req: RenderRequest, timeline: VideoTimeline, directAudio = false, segmentBytes?: number): Promise<void> {
+async function preflightSpace(req: RenderRequest, timeline: VideoTimeline, directAudio = false): Promise<void> {
   const preparedSeconds = timeline.tracks.filter(track => track.usedSeconds > 0).reduce((sum, track) => sum + track.durationSeconds, 0)
   // Prepared WAVs + disjoint transition/body WAVs + full master WAV. Bound video by its VBV rate;
   // allow faststart's second copy, headers, rounding, and 256 MiB headroom. No source is modified.
   const audio = (directAudio ? timeline.outputSeconds : preparedSeconds * 2 + timeline.outputSeconds) * PCM_BYTES_PER_SECOND
-  const video = req.kind === 'video' ? (segmentBytes === undefined ? timeline.outputSeconds * 8000000 / 8 : Math.ceil(timeline.outputSeconds) * segmentBytes) * 2 + timeline.outputSeconds * 192000 / 8 * 2 : 30 * PCM_BYTES_PER_SECOND
+  const video = req.kind === 'video' ? timeline.outputSeconds * (8000000 + 192000) / 8 * 2 : 30 * PCM_BYTES_PER_SECOND
   const required = Math.ceil((audio + video) * 1.2 + 256 * 1024 * 1024)
   let free: number
   try {
@@ -116,8 +116,7 @@ async function renderAttempt(req: RenderRequest, clock: RenderClock, context: { 
     || req.kind !== 'video' || parsed.data.durationMode !== 'all')) throw new AppError('批量最短时长约束不正确。')
   // Capture all caller-owned mutable arrays/objects; edits to the UI cannot change an active render.
   if (req.performance && (!Number.isInteger(req.performance.threads) || req.performance.threads < 1 || req.performance.threads > 16
-    || !['auto', 'cpu', 'nvenc', 'qsv'].includes(req.performance.encoder) || typeof req.performance.staticVideo !== 'boolean'
-    || typeof req.performance.cacheDirectory !== 'string')) throw new AppError('视频性能参数无效。')
+    || !['auto', 'cpu', 'nvenc', 'qsv'].includes(req.performance.encoder))) throw new AppError('视频性能参数无效。')
   req = { ...req, tools: { ...req.tools }, draft: parsed.data, tracks: req.tracks.map(track => ({ ...track })), performance: req.performance ? { ...req.performance } : undefined }
   const base = toolBase(req)
   const threads = req.performance?.threads ?? 4
@@ -180,7 +179,6 @@ async function renderAttempt(req: RenderRequest, clock: RenderClock, context: { 
   }
   context.assetId = undefined
   let encoder: Encoder = 'cpu', identity = ''
-  let segment: { filePath: string; cacheHit: boolean } | undefined
   if (req.kind === 'video') {
     clock.enter('tools')
     identity = await toolIdentity(req.tools, req.signal)
@@ -189,21 +187,7 @@ async function renderAttempt(req: RenderRequest, clock: RenderClock, context: { 
     encoder = selection.encoder; clock.metrics.encoder = encoder
     clock.metrics.fallbacks!.push(...selection.fallbacks)
     for (const fallback of selection.fallbacks) notify('analyzing', 0.02, `${fallback.encoder} 实际探测失败（${fallback.category}）；最终使用 ${encoder}`)
-    if ((req.performance?.staticVideo ?? true) && draft.durationMode === 'all') {
-      clock.enter('encode')
-      try {
-        segment = await staticSegment({ tools: req.tools, image: req.imagePath!, imageHash: sourceHashes.get(req.imagePath!)!, fit: draft.fit, encoder, threads, identity,
-          cacheDirectory: req.performance?.cacheDirectory ?? req.taskDirectory, taskDirectory: req.taskDirectory, signal: req.signal })
-        clock.metrics.cacheHit = segment.cacheHit
-      } catch (error) {
-        if (error instanceof CancelledError || req.signal.aborted) throw error
-        clock.metrics.fallbacks!.push(diagnosticFor(error, { stage: 'encode', encoder, suggestion: '静图缓存/短片组合未通过验证，回退直接 CPU 编码。' }))
-        encoder = 'cpu'; clock.metrics.encoder = encoder
-        await selectEncoder(req.tools, 'cpu', req.taskDirectory, req.signal, threads, identity)
-        notify('analyzing', 0.03, '静图缓存/短片不可用，回退直接 CPU 编码（保留完整输出校验）')
-      }
-    }
-    await preflightSpace(req, timeline, directAudio, segment ? (await stat(segment.filePath)).size : undefined)
+    await preflightSpace(req, timeline, directAudio)
   }
   clock.metrics.audioPath = directAudio ? 'bounded-direct' : 'prepared-segments'
   clock.enter('audio')
@@ -326,7 +310,7 @@ async function renderAttempt(req: RenderRequest, clock: RenderClock, context: { 
   clock.enter('encode')
   let filePath: string
   let expectedSeconds: number
-  let directFallback: (() => Promise<void>) | undefined
+  let cpuFallback: (() => Promise<void>) | undefined
   if (req.kind === 'preview') {
     const window = previewWindow(req, timeline)
     filePath = file('preview.partial.wav')
@@ -340,27 +324,27 @@ async function renderAttempt(req: RenderRequest, clock: RenderClock, context: { 
     catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error }
     expectedSeconds = timeline.outputSeconds
     const videoSeconds = Math.ceil(samples(expectedSeconds) * 30 / RATE) / 30
-    const encode = async (copy: boolean): Promise<void> => {
-      const videoInput = copy ? ['-stream_loop', '-1', '-t', decimal(videoSeconds), ...input(segment!.filePath)]
-        : ['-loop', '1', '-framerate', '30', '-t', decimal(videoSeconds), ...input(req.imagePath!)]
-      await runTool(req.tools.ffmpeg, [...base, ...videoInput, ...input(master), '-map', '0:v:0', '-map', '1:a:0',
-        ...(copy ? ['-c:v', 'copy'] : ['-vf', staticFilter(draft.fit), ...videoEncoderArgs(encoder, threads)]),
+    const encode = async (): Promise<void> => {
+      // Loop the source image to display it throughout the song, not an encoded video fragment.
+      await runTool(req.tools.ffmpeg, [...base, '-loop', '1', '-framerate', '30', '-t', decimal(videoSeconds), ...input(req.imagePath!), ...input(master), '-map', '0:v:0', '-map', '1:a:0',
+        '-vf', staticFilter(draft.fit), ...videoEncoderArgs(encoder, threads),
         '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-ac', '2', '-map_metadata', '-1', '-movflags', '+faststart', filePath
-      ], { signal: req.signal, diagnostic: { stage: 'encode', encoder }, onProgress: seconds => notify('encoding', 0.60 + 0.35 * Math.min(1, seconds / expectedSeconds), copy ? '静图视频轨循环流拷贝；完整音乐仅播放一次' : `直接 ${encoder} 编码 1920×1080 静态画面与音乐`) })
+      ], { signal: req.signal, diagnostic: { stage: 'encode', encoder }, onProgress: seconds => notify('encoding', 0.60 + 0.35 * Math.min(1, seconds / expectedSeconds), `连续 ${encoder} 编码 1920×1080 静态画面；完整音乐仅播放一次`) })
     }
-    directFallback = async (): Promise<void> => {
+    cpuFallback = async (): Promise<void> => {
+      checkAbort(req)
       clock.enter('encode')
       await rm(filePath, { force: true }) // checked absent before this attempt; only its private partial output
-      encoder = 'cpu'; clock.metrics.encoder = encoder; clock.metrics.staticVideo = false
+      encoder = 'cpu'; clock.metrics.encoder = encoder
       await selectEncoder(req.tools, 'cpu', req.taskDirectory, req.signal, threads, identity)
       await preflightSpace(req, timeline, directAudio)
-      await encode(false)
+      await encode()
     }
-    try { await encode(!!segment); clock.metrics.staticVideo = !!segment }
+    try { await encode() }
     catch (error) {
-      if (error instanceof CancelledError || req.signal.aborted || !segment && encoder === 'cpu') throw error
-      clock.metrics.fallbacks!.push(diagnosticFor(error, { stage: 'encode', encoder, suggestion: '流拷贝/硬件失败，回退直接 CPU 编码。' }))
-      await directFallback()
+      if (error instanceof CancelledError || req.signal.aborted || encoder === 'cpu') throw error
+      clock.metrics.fallbacks!.push(diagnosticFor(error, { stage: 'encode', encoder, suggestion: '硬件编码失败，回退连续 CPU 编码。' }))
+      await cpuFallback()
     }
   }
   const validate = async (): Promise<Awaited<ReturnType<typeof probeMedia>>> => {
@@ -389,9 +373,9 @@ async function renderAttempt(req: RenderRequest, clock: RenderClock, context: { 
   let result: Awaited<ReturnType<typeof probeMedia>>
   try { result = await validate() }
   catch (error) {
-    if (error instanceof CancelledError || req.signal.aborted || !clock.metrics.staticVideo || !directFallback) throw error
-    clock.metrics.fallbacks!.push(diagnosticFor(error, { stage: 'validate', encoder, suggestion: '静图流拷贝成片未通过完整校验，回退 CPU 并重新完整校验。' }))
-    await directFallback()
+    if (error instanceof CancelledError || req.signal.aborted || encoder === 'cpu' || !cpuFallback) throw error
+    clock.metrics.fallbacks!.push(diagnosticFor(error, { stage: 'validate', encoder, suggestion: '硬件成片未通过完整校验，回退连续 CPU 编码并重新完整校验。' }))
+    await cpuFallback()
     result = await validate()
   }
   for (const source of sources) {

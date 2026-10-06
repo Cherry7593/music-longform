@@ -16,11 +16,11 @@ export interface VideoDiagnostic {
 export interface RenderMetrics {
   stages: StageTiming[]
   encoder: string
+  /** Historical diagnostic compatibility; new renders always report false. */
   staticVideo: boolean
   elapsedMs: number
   /** Successful CPU/direct fallbacks remain visible, not silently called hardware success. */
   fallbacks?: VideoDiagnostic[]
-  cacheHit?: boolean
   audioPath?: 'bounded-direct' | 'prepared-segments'
 }
 export interface EncoderStatus { encoder: 'cpu' | 'nvenc' | 'qsv'; available: boolean; message: string }

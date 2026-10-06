@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { ResourcePool, type ResourceSample } from '../../src/main/video/resource-pool'
 const GiB = 1024 ** 3
-const settings = () => ({ concurrency: 2, threads: 4, encoder: 'cpu' as const, staticVideo: true })
+const settings = () => ({ concurrency: 2, threads: 4, encoder: 'cpu' as const })
 const demand = { root: 'C:\\isolated', diskBytes: GiB, memoryBytes: 256 * 1024 ** 2, gpu: false }
 const resources = (): ResourceSample => ({ threads: 16, freeMemory: 8 * GiB, freeDisk: 20 * GiB, freeGpu: 4 * GiB })
 

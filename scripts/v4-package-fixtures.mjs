@@ -194,7 +194,7 @@ export async function makeVisualProfile(root, engine) {
   const settings = await current.db.update('settings', 'current', value => { value.lastGenerationId = generationId; value.lastCompositionId = compositionId })
   // settings.json is a compatibility mirror; WorkbenchDB current remains authoritative.
   await writeFile(path.join(current.profile, 'settings.json'), `${JSON.stringify(settings, null, 2)}\n`)
-  const manifest = { synthetic: true, version: '4.0.2', mode: 'visual', profile: current.profile, mediaRoot: current.mediaRoot, generationId, compositionId, entryId: visibleEntries[0].id, failedEntryId: failedEntry.id,
+  const manifest = { synthetic: true, version: '4.0.3', mode: 'visual', profile: current.profile, mediaRoot: current.mediaRoot, generationId, compositionId, entryId: visibleEntries[0].id, failedEntryId: failedEntry.id,
     longError, audioIds, imageIds, assets: assets.length, generationRequests: 1, paidCalls: 0, actualInference: false }
   await saveJSON(path.join(root, 'synthetic.json'), manifest)
   return manifest
@@ -211,7 +211,7 @@ async function main() {
   let manifest
   if (values.mode === 'empty') {
     const { profile, mediaRoot } = await createCurrentProfile(root, engine)
-    manifest = { synthetic: true, version: '4.0.2', mode: 'empty', profile, mediaRoot }
+    manifest = { synthetic: true, version: '4.0.3', mode: 'empty', profile, mediaRoot }
     await saveJSON(path.join(root, 'synthetic.json'), manifest)
   } else if (values.mode === 'visual') manifest = await makeVisualProfile(root, engine)
   else throw new Error('Expected --mode empty or visual')

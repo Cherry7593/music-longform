@@ -62,7 +62,9 @@ const renderJobSchema = z.object({ id: idSchema, index: z.number().int().min(0).
   attempts: z.array(attemptSchema).max(1000), startedAt: timestamp.optional(), finishedAt: timestamp.optional(), queuedAt: timestamp }).strict()
 export const executionBatchSchema = z.object({ version: z.literal(2), id: idSchema, projectId: idSchema, planId: idSchema, name: nameSchema, createdAt: timestamp, updatedAt: timestamp,
   state: z.enum(['running', 'pausing', 'paused', 'completed', 'partial', 'cancelled']), plan: batchPlanSchema, jobs: z.array(renderJobSchema).min(1).max(100), message: z.string().max(2000).optional() }).strict()
-export const renderSettingsSchema = z.object({ concurrency: z.number().int().min(1).max(4), encoder: z.enum(['auto', 'cpu', 'nvenc', 'qsv']), staticVideo: z.boolean(), threads: z.number().int().min(1).max(16) }).strict()
+// V4.0.0–4.0.2 persisted this switch. Accept only its old boolean shape, then discard it.
+export const renderSettingsSchema = z.object({ concurrency: z.number().int().min(1).max(4), encoder: z.enum(['auto', 'cpu', 'nvenc', 'qsv']), staticVideo: z.boolean().optional(), threads: z.number().int().min(1).max(16) }).strict()
+  .transform(({ staticVideo: _legacyStaticVideo, ...settings }) => { void _legacyStaticVideo; return settings })
 export const workbenchSettingsSchema = z.object({ version: z.literal(5), mediaRoot: z.string().max(4096).refine(localLibraryPath), ffmpegPath: z.string().max(4096).refine(localLibraryPath).optional(), render: renderSettingsSchema,
   lastGenerationId: idSchema.optional(), lastCompositionId: idSchema.optional(), page: z.enum(['generation', 'composition', 'library', 'settings']) }).strict()
 export const settingsUpdateSchema = workbenchSettingsSchema.pick({ page: true, lastGenerationId: true, lastCompositionId: true, render: true }).partial().strict()
