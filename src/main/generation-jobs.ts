@@ -6,7 +6,7 @@ import type { AssetStore } from './storage/assets-v2'
 import type { ApiConfigurations } from './storage/api-configurations'
 import type { MusicRegistry } from './providers/music-registry'
 import type { ImageProvider } from '../shared/types'
-import type { GenerationRequest, GenerationSelection } from '../shared/workbench-types'
+import type { GenerationKind, GenerationRequest, GenerationSelection } from '../shared/workbench-types'
 import type { MusicBinding, ProviderMusicTask } from '../shared/music-types'
 import { generationSelectionSchema, imageInput, musicInput, newAssetName, submissionIssue } from '../shared/workbench-schemas'
 import { AppError, safeError } from './providers/http'
@@ -25,17 +25,25 @@ interface Dependencies {
   saveAudio?: typeof saveGeneratedAudio; saveImage?: typeof downloadImage; prepare?: () => Promise<void>; pollMs?: number
   onError?: (message: string) => void
 }
-/** A single confirmed queue, immutable per-entry requests, never a repeated-count generator. */
+interface Lane { queue: Set<string>; active?: { id: string; controller: AbortController }; worker?: Promise<void> }
+/** Confirmed queues, immutable per-entry requests, never a repeated-count generator. Music and images run in independent serial lanes. */
 export class GenerationQueue {
-  private readonly queue = new Set<string>()
-  private active?: { id: string; controller: AbortController }
-  private worker?: Promise<void>
+  private readonly lanes: Record<GenerationKind, Lane> = { audio: { queue: new Set() }, image: { queue: new Set() } }
   private closing = false
   private imageResponses = new Map<string, { url: string; model: string }>()
   constructor(private readonly deps: Dependencies) { }
-  get busy(): boolean { return Boolean(this.active || this.queue.size) }
-  async idle(): Promise<void> { while (this.worker) await this.worker }
-  async shutdown(): Promise<void> { this.closing = true; this.queue.clear(); this.active?.controller.abort(); await this.idle() }
+  get busy(): boolean { return Object.values(this.lanes).some(lane => lane.active || lane.queue.size) }
+  async idle(): Promise<void> {
+    for (let workers = this.workers(); workers.length; workers = this.workers()) await Promise.all(workers)
+  }
+  async shutdown(): Promise<void> {
+    this.closing = true
+    for (const lane of Object.values(this.lanes)) { lane.queue.clear(); lane.active?.controller.abort() }
+    await this.idle()
+  }
+  private workers(): Promise<void>[] { return Object.values(this.lanes).flatMap(lane => lane.worker ? [lane.worker] : []) }
+  private tracked(id: string): boolean { return Object.values(this.lanes).some(lane => lane.active?.id === id || lane.queue.has(id)) }
+  private enqueue(request: GenerationRequest): void { this.lanes[request.kind].queue.add(request.id); this.pump(request.kind) }
   async recover(): Promise<void> {
     const changes: Change[] = []
     for (const request of this.deps.db.list('requests')) {
@@ -77,7 +85,7 @@ export class GenerationQueue {
     this.checkSelection(value)
     // Tool preflight happens before any paid POST, not after the first response.
     if (value.entries.some(item => db.get('entries', item.id).kind === 'audio')) await this.prepare()
-    const requestIds: string[] = []
+    const requests: GenerationRequest[] = []
     await db.transact(() => {
       if (db.has('submissions', value.submissionId)) return []
       this.checkSelection(value)
@@ -89,36 +97,35 @@ export class GenerationQueue {
           createdAt: stamp, updatedAt: stamp, snapshot: structuredClone(entry.draft), binding: this.deps.apis.binding(entry.draft.provider!), status: 'pending', assetIds: []
         }
         request.submissionId = value.submissionId // Reconfirmed, never-submitted requests now share this confirmation's failure boundary.
-        request.status = 'pending'; request.updatedAt = stamp; request.error = undefined; request.detail = '等待串行提交（不会重复创建）'
+        request.status = 'pending'; request.updatedAt = stamp; request.error = undefined; request.detail = `等待串行提交（${request.kind === 'audio' ? '音乐' : '图片'}队列，不会重复创建）`
         entry.requestId = requestId; entry.updatedAt = stamp
-        requestIds.push(requestId)
+        requests.push(request)
         changes.push({ table: 'requests', id: requestId, value: request }, { table: 'entries', id: entry.id, value: entry })
         return { ...item, requestId }
       })
       changes.push({ table: 'submissions', id: value.submissionId, value: { version: 1, id: value.submissionId, projectId: value.projectId, createdAt: stamp, entries: items } })
       return changes
     })
-    for (const id of requestIds) this.queue.add(id)
-    this.pump()
+    for (const request of requests) this.enqueue(request)
   }
   async stop(projectId: string): Promise<void> {
     await this.deps.db.transact(() => this.deps.db.list('requests').filter(request => request.projectId === projectId && ['pending', 'paused'].includes(request.status) && !request.taskId && !request.outputs?.length).map(request => {
-      this.queue.delete(request.id)
+      this.lanes[request.kind].queue.delete(request.id)
       return { table: 'requests', id: request.id, value: { ...request, status: 'cancelled', updatedAt: now(), detail: '未提交请求已停止，已受理任务不受影响。' } }
     }))
   }
   async resume(id: string): Promise<void> {
     if (this.closing) throw new AppError('软件正在关闭')
     const request = this.deps.db.get('requests', id)
-    if (this.active?.id === id || this.queue.has(id)) return
+    if (this.tracked(id)) return
     if (!['failed', 'paused', 'unknown'].includes(request.status) || (!request.taskId && !request.outputs?.length)) throw new AppError('此条目不能恢复查询；未提交条目请重新统一确认，没有任务 ID 的未知请求须先核对。')
     this.deps.apis.connection(request.binding)
     if (request.kind === 'audio') await this.prepare()
     await this.change(id, { status: 'paused', detail: '等待恢复原请求，不创建新任务。', error: undefined })
-    this.queue.add(id); this.pump()
+    this.enqueue(request)
   }
   async abandon(id: string): Promise<void> {
-    if (this.active?.id === id || this.queue.has(id)) throw new AppError('请等待当前任务结束或先停止未提交任务')
+    if (this.tracked(id)) throw new AppError('请等待当前任务结束或先停止未提交任务')
     await this.deps.db.update('requests', id, request => {
       if (!['unknown', 'failed', 'paused', 'cancelled'].includes(request.status)) throw new AppError('只能明确结束暂停、失败或未知请求的追踪')
       request.status = 'abandoned'; request.recoverable = false; request.updatedAt = now()
@@ -132,19 +139,21 @@ export class GenerationQueue {
   private change(id: string, patch: Partial<GenerationRequest>) {
     return this.deps.db.update('requests', id, request => { Object.assign(request, patch, { updatedAt: now() }) })
   }
-  private pump(): void {
-    if (this.worker || this.closing) return
-    this.worker = (async () => {
-      while (!this.closing && this.queue.size) {
-        const id = this.queue.values().next().value!; this.queue.delete(id)
+  /** One worker per media kind: a long music poll never blocks image requests, and vice versa. */
+  private pump(kind: GenerationKind): void {
+    const lane = this.lanes[kind]
+    if (lane.worker || this.closing) return
+    lane.worker = (async () => {
+      while (!this.closing && lane.queue.size) {
+        const id = lane.queue.values().next().value!; lane.queue.delete(id)
         const request = this.deps.db.get('requests', id)
         if (!['pending', 'paused'].includes(request.status)) continue
-        const controller = new AbortController(); this.active = { id, controller }
+        const controller = new AbortController(); lane.active = { id, controller }
         try { await this.process(request, controller.signal) }
         catch (error) { this.deps.onError?.(`请求记录保存失败：${safeError(error)}。请保留数据并重启核对，不能直接再次生成。`) }
-        finally { this.active = undefined }
+        finally { lane.active = undefined }
       }
-    })().finally(() => { this.worker = undefined; if (this.queue.size && !this.closing) this.pump() })
+    })().finally(() => { lane.worker = undefined; if (lane.queue.size && !this.closing) this.pump(kind) })
   }
   private async process(request: GenerationRequest, signal: AbortSignal): Promise<void> {
     let creating = false
@@ -172,7 +181,7 @@ export class GenerationQueue {
       await this.change(request.id, { status: uncertain ? 'unknown' : 'failed', recoverable: Boolean(current.taskId || current.outputs?.length), error: safeError(error).slice(0, 4000), detail: current.assetIds.length ? `已保存 ${current.assetIds.length} 个结果；只补缺失结果，不重新生成。` : '未自动重发，已保存文件保留。' })
       // Pause only this confirmed submission, not unrelated projects/providers already queued.
       await this.deps.db.transact(() => this.deps.db.list('requests').filter(next => next.submissionId === request.submissionId && next.status === 'pending').map(next => {
-        this.queue.delete(next.id); return { table: 'requests', id: next.id, value: { ...next, status: 'paused', updatedAt: now(), detail: '本提交出现错误，后续请求已暂停，请核对后继续。' } }
+        this.lanes[next.kind].queue.delete(next.id); return { table: 'requests', id: next.id, value: { ...next, status: 'paused', updatedAt: now(), detail: '本提交出现错误，后续请求已暂停，请核对后继续。' } }
       }))
     }
   }

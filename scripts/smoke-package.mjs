@@ -7,11 +7,11 @@ import { workspaceRoot, scratchPath, createFixtureRoot, loadV4Fixtures, createCu
 
 const { values } = parseArgs({ options: { help: { type: 'boolean' }, exe: { type: 'string' }, output: { type: 'string' }, keep: { type: 'boolean' } } })
 if (values.help) {
-  console.log('Usage: node scripts/smoke-package.mjs [--exe dist/release-4.0.3/win-unpacked/油管视频生成.exe] [--output <scratch report directory>] [--keep]\nRequires a built V4.0.3 package and PI_SCRATCH_DIR. Tests isolated V1/V4 migration, real safeStorage/sharp, local synthetic ACE HTTP and one 65s composition. Never builds or calls a paid API.')
+  console.log('Usage: node scripts/smoke-package.mjs [--exe dist/release-4.0.4/win-unpacked/油管视频生成.exe] [--output <scratch report directory>] [--keep]\nRequires a built V4.0.4 package and PI_SCRATCH_DIR. Tests isolated V1/V4 migration, real safeStorage/sharp, local synthetic ACE HTTP and one 65s composition. Never builds or calls a paid API.')
 } else await main()
 
 async function main() {
-  const executablePath = path.resolve(workspaceRoot, values.exe ?? 'dist/release-4.0.3/win-unpacked/油管视频生成.exe')
+  const executablePath = path.resolve(workspaceRoot, values.exe ?? 'dist/release-4.0.4/win-unpacked/油管视频生成.exe')
   if (!(await lstat(executablePath)).isFile()) throw new Error(`V4 packaged executable is missing: ${executablePath}; run packaging separately`)
   const root = await createFixtureRoot(), output = values.output ? scratchPath(values.output) : await createFixtureRoot('v4-package-report-')
   await mkdir(output, { recursive: true })
@@ -26,7 +26,7 @@ async function main() {
     scratchPath(profile)
     app = await electron.launch({ executablePath, args: [`--user-data-dir=${profile}`], env, timeout: 60000 })
     const actual = await app.evaluate(({ app }) => ({ packaged: app.isPackaged, profile: app.getPath('userData'), version: app.getVersion() }))
-    expect(actual).toMatchObject({ packaged: true, version: '4.0.3' }); expect(path.resolve(actual.profile)).toBe(path.resolve(profile))
+    expect(actual).toMatchObject({ packaged: true, version: '4.0.4' }); expect(path.resolve(actual.profile)).toBe(path.resolve(profile))
     // Only the explicit isolated close choice is answered. Native import/save dialogs are patched per operation below.
     await app.evaluate(({ dialog }) => {
       const original = dialog.showMessageBox.bind(dialog)
@@ -318,14 +318,14 @@ async function main() {
     expect(await lstat(ignoredDirectory).then(() => true, error => { if (error.code === 'ENOENT') return false; throw error })).toBe(false)
     await migrationEvidence(legacy)
     record('deleted generation/composition projects remain playable; durable success/usage, no repeated POST or poll on restart, packaged dev flags ignored')
-    await writeFile(path.join(output, 'report.json'), JSON.stringify({ passed: true, version: '4.0.3', executablePath, synthetic: true, fixture: root, checks, historicalVersions: [1, 4], secretVersion: 3,
+    await writeFile(path.join(output, 'report.json'), JSON.stringify({ passed: true, version: '4.0.4', executablePath, synthetic: true, fixture: root, checks, historicalVersions: [1, 4], secretVersion: 3,
       actualInference: false, paidCalls: 0, createRequests: createCount, generatedAudioSeconds: generated.durationSeconds, outputSeconds: info.durationSeconds, outputSHA256: digest(savedBytes), usageAfterRestart: 1, testMode: false }, null, 2))
     passed = true
     console.log(`PASS: V4 real packaged migration/HTTP/one-output composition/deletion/restart; synthetic only. Report: ${path.join(output, 'report.json')}`)
   } catch (error) {
     console.error(`FAIL at ${stage}; isolated fixture retained: ${root}`)
     if (page) await page.screenshot({ path: path.join(output, 'v4-package-failure.png') }).catch(() => undefined)
-    await writeFile(path.join(output, 'report.json'), JSON.stringify({ passed: false, version: '4.0.3', stage, fixture: root, checks, error: String(error), actualInference: false, paidCalls: 0 }, null, 2)).catch(() => undefined)
+    await writeFile(path.join(output, 'report.json'), JSON.stringify({ passed: false, version: '4.0.4', stage, fixture: root, checks, error: String(error), actualInference: false, paidCalls: 0 }, null, 2)).catch(() => undefined)
     throw error
   } finally {
     await app?.close().catch(() => undefined); await aceServer?.close()

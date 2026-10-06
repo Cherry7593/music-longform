@@ -26,23 +26,29 @@ async function fixture() {
   const query = vi.fn(async (_draft: MusicDraft, id: string) => result(id))
   const adapter: MusicAdapter = { create, query, check: vi.fn(async () => ({ message: 'fixture' })) }
   const registry = { get: vi.fn(() => adapter) } as unknown as MusicRegistry
+  const images = { generate: vi.fn(async () => ({ url: 'https://fixture.invalid/image.png', model: 'Qwen/Qwen-Image' })), check: vi.fn() }
   const secrets = new SecretStore(root, cipher); await secrets.init()
-  const api = new ApiConfigurations(db, secrets, registry, { generate: vi.fn(), check: vi.fn() }); await api.init()
-  await api.save({ provider: 'reapi', key: 'fixture-reapi-v4' }); await api.save({ provider: 'kie', key: 'fixture-kie-v4' })
+  const api = new ApiConfigurations(db, secrets, registry, images); await api.init()
+  await api.save({ provider: 'reapi', key: 'fixture-reapi-v4' }); await api.save({ provider: 'kie', key: 'fixture-kie-v4' }); await api.save({ provider: 'siliconflow', key: 'fixture-siliconflow-v4' })
   const register = vi.fn(async (input: AssetRegistration) => {
     const asset: WorkbenchAsset = { id: input.id, kind: input.kind, name: input.name, createdAt: input.createdAt, updatedAt: input.createdAt, available: true, origins: [input.origin], usages: [], usedCount: 0, queuedCount: 0, historyUncertain: false }
     assets.set(asset.id, asset); return asset
   })
   const assetStore = { managedRootId: async () => rootId, rootDirectory: async () => root, all: async () => [...assets.values()], register } as unknown as AssetStore
   const saveAudio = vi.fn(async ({ assetId }: { assetId: string }) => ({ fileName: `audio/${assetId}.wav`, durationMs: 10000 }))
+  const saveImage = vi.fn(async (_url: string, _directory: string, assetId: string) => ({ fileName: `images/${assetId}.png`, width: 1664, height: 928, format: 'png' as const }))
   const errors: string[] = []
-  queue = new GenerationQueue({ db, assets: assetStore, apis: api, registry, images: { generate: vi.fn(), check: vi.fn() }, saveAudio, prepare: async () => undefined, pollMs: 1, onError: error => errors.push(error) })
+  queue = new GenerationQueue({ db, assets: assetStore, apis: api, registry, images, saveAudio, saveImage, prepare: async () => undefined, pollMs: 1, onError: error => errors.push(error) })
   async function entry(projectId: string, prompt: string, provider: 'reapi' | 'kie' = 'reapi'): Promise<GenerationEntry> {
     const value = await projects.add(projectId, 'audio')
     return projects.updateEntry(value.id, 0, { ...initialEntry('audio', provider), mode: 'instrumental', prompt }, {})
   }
+  async function imageEntry(projectId: string, prompt: string): Promise<GenerationEntry> {
+    const value = await projects.add(projectId, 'image')
+    return projects.updateEntry(value.id, 0, { ...initialEntry('image', 'siliconflow'), prompt }, {})
+  }
   const selection = (projectId: string, entries: GenerationEntry[]) => ({ projectId, submissionId: randomUUID(), entries: entries.map(({ id, revision }) => ({ id, revision })) })
-  return { api, adapter, create, query, register, saveAudio, assets, created, result, entry, selection, errors }
+  return { api, adapter, create, query, register, saveAudio, saveImage, images, assets, created, result, entry, imageEntry, selection, errors }
 }
 
 describe('entry-based confirmed serial request queue', () => {
@@ -118,6 +124,30 @@ describe('entry-based confirmed serial request queue', () => {
     expect(a.status).toBe('unknown'); expect(b.status).toBe('paused')
     expect(a.submissionId).toBe(merged.submissionId); expect(b.submissionId).toBe(merged.submissionId)
     expect(db.list('submissions')).toHaveLength(3)
+  })
+
+  it('runs image requests while a music request is still polling, keeping each kind serial', async () => {
+    const f = await fixture(), project = await projects.create()
+    const music = await f.entry(project.id, 'long music'), first = await f.imageEntry(project.id, 'image one'), second = await f.imageEntry(project.id, 'image two')
+    let release!: () => void
+    const gate = new Promise<void>(resolve => { release = resolve })
+    f.create.mockImplementationOnce(async draft => { f.created.set('task-slow', draft); return { id: 'task-slow', status: 'running' } })
+    f.query.mockImplementationOnce(async (_draft, id) => { await gate; return f.result(id) })
+    let inFlight = 0, peak = 0
+    f.images.generate.mockImplementation(async () => {
+      peak = Math.max(peak, ++inFlight); await new Promise(resolve => setTimeout(resolve, 5)); inFlight--
+      return { url: 'https://fixture.invalid/image.png', model: 'Qwen/Qwen-Image' }
+    })
+    await queue.submit(f.selection(project.id, [music]))
+    await queue.submit(f.selection(project.id, [first, second]))
+    const request = (entry: GenerationEntry) => db.get('requests', db.get('entries', entry.id).requestId!)
+    await vi.waitFor(() => { expect([first, second].map(entry => request(entry).status)).toEqual(['succeeded', 'succeeded']) })
+    expect(request(music).status).toBe('running'); expect(queue.busy).toBe(true)
+    expect(f.images.generate).toHaveBeenCalledTimes(2); expect(f.saveImage).toHaveBeenCalledTimes(2); expect(peak).toBe(1)
+    release(); await queue.idle()
+    expect(request(music).status).toBe('succeeded'); expect(queue.busy).toBe(false)
+    expect(f.create).toHaveBeenCalledTimes(1); expect(f.errors).toEqual([])
+    expect([...f.assets.values()].map(asset => asset.kind).sort()).toEqual(['audio', 'audio', 'image', 'image'])
   })
 
   it('binds confirmation to exact revisions and rejects foreign or duplicate entry identities', async () => {
