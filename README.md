@@ -214,7 +214,7 @@ npm.cmd run dist:win -- --config.directories.output=dist/release-4.0.4
 npm.cmd run test:package
 python scripts/portable-smoke.py --help
 python scripts/visual-check.py --help
-Get-FileHash -Algorithm SHA256 '.\dist\油管视频生成-4.0.4-Windows-x64.exe'
+Get-FileHash -Algorithm SHA256 '.\dist\release-4.0.4\油管视频生成-4.0.4-Windows-x64.exe'
 ```
 
 Python 原生窗口脚本需要已安装的 Python Playwright；应用成品不需要它。4.0.3 定向对照入口：`node scripts/continuous-video-check.mjs --help`；`before` 必须在改动前 4.0.2 生产源码上运行，`after` 复用其隔离素材，`verify` 只复核已有输出、不重测耗时。历史 V4 全量验收见 `docs/verification-v4.md`；本次短样本不外推一小时、其他硬件或任意图片。真实云账号生成和 ACE 神经推理仍未验证。
